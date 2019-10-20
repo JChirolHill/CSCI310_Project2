@@ -44,44 +44,24 @@ public class YelpFetcher {
         return shops;
     }
 
+    public void fetch(double latitude, double longitude) {
+        Log.d(TAG, "in fetch of yelp");
+        requestJSONParse(BASE_URL + "&latitude=" + latitude + "&longitude=" + longitude);
+    }
+
     // performs the json request
     public void requestJSONParse(String reqURL) {
+        Log.d(TAG, "in requestJSONParse with url: " + reqURL);
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, reqURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Log.d(TAG, "response from yelp: " + response.toString());
-
-                try {
-                    JSONArray jsonshops = response.getJSONArray("businesses");
-                    for(int i=0; i<jsonshops.length(); i++) {
-                        JSONObject coord = jsonshops.getJSONObject(i).getJSONObject("coordinates");
-                        BasicShop bs = null;
-                        try {
-                            bs = new BasicShop("0", coord.getDouble("latitude"), coord.getDouble("longitude"));
-                            bs.setName(jsonshops.getJSONObject(i).getString("name"));
-                            bs.setRating(jsonshops.getJSONObject(i).getDouble("rating"));
-                            Log.d(TAG, jsonshops.getJSONObject(i).toString());
-                            bs.setPriceRange(jsonshops.getJSONObject(i).getString("price"));
-                        } catch(JSONException e) {
-                            Log.d(TAG, e.getMessage());
-                        }
-
-                        // only add if have a name, other params optional
-                        if(bs != null && bs.getName() != null) {
-                            shops.add(bs);
-                        }
-                    }
-                    map.drawUpdatedList();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                parse(response);
             }
         },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, "error: " + error.getMessage() + error.getCause());
+                        Log.d(TAG, "ERROR FROM YELP: " + error.getMessage() + error.getCause());
                         NetworkResponse networkResponse = error.networkResponse;
                         if (networkResponse != null && networkResponse.data != null) {
                             String jsonError = new String(networkResponse.data);
@@ -103,11 +83,33 @@ public class YelpFetcher {
         queue.add(req);
     }
 
-    public void fetch(double latitude, double longitude) {
-        requestJSONParse(BASE_URL + "&latitude=" + latitude + "&longitude=" + longitude);
-    }
+    public void parse(JSONObject response) {
+        Log.d(TAG, "response from yelp: " + response.toString());
 
-    public void parse() {
+        try {
+            JSONArray jsonshops = response.getJSONArray("businesses");
+            for(int i=0; i<jsonshops.length(); i++) {
+                JSONObject coord = jsonshops.getJSONObject(i).getJSONObject("coordinates");
+                BasicShop bs = null;
+                try {
+                    bs = new BasicShop("0", coord.getDouble("latitude"), coord.getDouble("longitude"));
+                    bs.setName(jsonshops.getJSONObject(i).getString("name"));
+                    bs.setRating(jsonshops.getJSONObject(i).getDouble("rating"));
+                    Log.d(TAG, jsonshops.getJSONObject(i).toString());
+                    bs.setPriceRange(jsonshops.getJSONObject(i).getString("price"));
+                } catch(JSONException e) {
+                    Log.d(TAG, e.getMessage());
+                }
 
+                // only add if have a name, other params optional
+                if(bs != null && bs.getName() != null) {
+                    shops.add(bs);
+                }
+            }
+            map.drawUpdatedList();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

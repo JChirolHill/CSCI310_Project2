@@ -6,10 +6,13 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,10 +34,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         OnMapReadyCallback {
     private final String TAG = MapsActivity.class.getSimpleName();
 
+//    private Button btnFindShops;
     private LocationManager locationManager;
     private Location myLocation;
     private GoogleMap mMap;
     private YelpFetcher yelpFetcher;
+    private LatLng currLatLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,16 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         yelpFetcher = new YelpFetcher(getApplicationContext(), this);
+
+//        btnFindShops = findViewById(R.id.btnFindShops);
+//
+//        btnFindShops.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                yelpFetcher.fetch(currLatLng.latitude, currLatLng.longitude);
+//                Log.d(TAG, "fetched from yelp");
+//            }
+//        });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -80,7 +95,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         mMap.setOnMarkerClickListener(this);
 
         // Add a marker in current spot and move the camera
-        LatLng currLatLng = null;
+        currLatLng = null;
 
         myLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
 
@@ -105,6 +120,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         mMap.addMarker(marker);
 
         // get coffeeshop data from volley
+        Log.d(TAG, "fetching from yelp first time");
         yelpFetcher.fetch(myLocation.getLatitude(), myLocation.getLongitude());
     }
 
@@ -116,19 +132,25 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     @Override
     public boolean onMyLocationButtonClick() {
         Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
-        return false;
+        return false; // (the camera animates to the user's current position).
     }
 
     @Override
     public boolean onMarkerClick (Marker marker) {
         Log.d(TAG, "MARKER WAS CLICKED: " + marker.getTitle());
-        Toast.makeText(this, "Clicked on marker:\n" + marker.getTitle(), Toast.LENGTH_LONG).show();
+        Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_LONG)
+                .setAction("View Drinks", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // launch intent to view shop details here
+                        Log.d(TAG, "click on view drinks for shop");
+                    }
+                }).show();
         return false; // moves camera to the selected marker
     }
 
     public void drawUpdatedList() {
+        Log.d(TAG, "called drawUpdatedList");
         // add markers for all coffeeshops
         for(BasicShop bs : yelpFetcher.getShops()) {
             String snippet = "Rating: " + Double.toString(bs.getRating());
