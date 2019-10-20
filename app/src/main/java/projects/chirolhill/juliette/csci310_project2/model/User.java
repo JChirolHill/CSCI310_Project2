@@ -8,6 +8,7 @@ public abstract class User {
     protected boolean isMerchant;
 
     public static final int CAFFEINE_LIMIT = 400; // in milligrams
+    public static final String PREF_USER_ID = "pref_user_id";
 
     public String getuID() {
         return uID;

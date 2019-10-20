@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">CSCI310_Project2</string>
+    <string name="app_name">Bean and Leaf</string>
+    <string name="signin">Begin</string>
+    <string name="onemoment">One moment please...</string>
+    <string name="signinfail">Sign in was unsuccessful, try again?</string>
+    <string name="title_activity_sign_in">SignInActivity</string>
 </resources>

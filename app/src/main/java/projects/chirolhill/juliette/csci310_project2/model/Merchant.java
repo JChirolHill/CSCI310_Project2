@@ -24,8 +24,8 @@ public class Merchant {
 
     // returns true if successful claim
     public boolean claimShop(BasicShop s) {
-        if(shops.get(s.id) == null && s.getClass() != ) {
-            addShop(s);
+        if(shops.get(s.id) == null && !(s instanceof Shop)) {
+            addShop(new Shop(s.id, this));
             return true;
         }
         return false;
