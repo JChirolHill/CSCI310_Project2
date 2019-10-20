@@ -10,8 +10,8 @@ public class Shop extends BasicShop {
     private Merchant owner;
     private List<String> verificationDocs;
 
-    public Shop(String id, Merchant owner) {
-        super(id);
+    public Shop(String id, Merchant owner, BasicShop basicShop) {
+        super(basicShop);
         this.owner = owner;
         drinks = new HashSet<>();
         verificationDocs = new ArrayList<>();

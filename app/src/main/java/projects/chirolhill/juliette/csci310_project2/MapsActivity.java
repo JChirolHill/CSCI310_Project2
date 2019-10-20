@@ -10,25 +10,31 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
+import projects.chirolhill.juliette.csci310_project2.model.YelpFetcher;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
+        GoogleMap.OnMarkerClickListener,
         OnMapReadyCallback {
     private final String TAG = MapsActivity.class.getSimpleName();
 
     private LocationManager locationManager;
     private Location myLocation;
     private GoogleMap mMap;
+    private YelpFetcher yelpFetcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +42,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         setContentView(R.layout.activity_maps);
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        yelpFetcher = new YelpFetcher(getApplicationContext(), this);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -70,6 +77,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         mMap.setMyLocationEnabled(true);
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
+        mMap.setOnMarkerClickListener(this);
 
         // Add a marker in current spot and move the camera
         LatLng currLatLng = null;
@@ -78,12 +86,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         if (myLocation != null) {
             currLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-            Log.i("Location Info", "Location achieved!");
+            Log.d(TAG,"Location Info: Location achieved!");
         } else {
-            Log.i("Location Info", "No location :(");
+            Log.d(TAG,"Location Info: No location :(");
         }
-        MarkerOptions marker = new MarkerOptions().position(
-                currLatLng).title("You are here!").snippet("Your current location");
+        MarkerOptions marker = new MarkerOptions()
+                .position(currLatLng)
+                .title("You are here!")
+                .snippet("Your current location")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 
         // Moving Camera to a Location with animation
         CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -92,6 +103,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         mMap.animateCamera(CameraUpdateFactory
                 .newCameraPosition(cameraPosition));
         mMap.addMarker(marker);
+
+        // get coffeeshop data from volley
+        yelpFetcher.fetch(myLocation.getLatitude(), myLocation.getLongitude());
     }
 
     @Override
@@ -107,12 +121,22 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         return false;
     }
 
-//    public void drawUpdatedList() {
-//        // add markers for all coffeeshops
-//        Log.d(TAG, "size when update: " + volley.getLocations().size());
-//        for(Pair<Double, Double> coord : volley.getLocations()) {
-//            mMap.addMarker(new MarkerOptions().position(
-//                    new LatLng(coord.first, coord.second)).title("A coffeeshop").snippet("coffeeshop description"));
-//        }
-//    }
+    @Override
+    public boolean onMarkerClick (Marker marker) {
+        Log.d(TAG, "MARKER WAS CLICKED: " + marker.getTitle());
+        Toast.makeText(this, "Clicked on marker:\n" + marker.getTitle(), Toast.LENGTH_LONG).show();
+        return false; // moves camera to the selected marker
+    }
+
+    public void drawUpdatedList() {
+        // add markers for all coffeeshops
+        for(BasicShop bs : yelpFetcher.getShops()) {
+            String snippet = "Rating: " + Double.toString(bs.getRating());
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(bs.getLocation().latitude, bs.getLocation().longitude))
+                    .title(bs.getName())
+                    .snippet(snippet)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+        }
+    }
 }
