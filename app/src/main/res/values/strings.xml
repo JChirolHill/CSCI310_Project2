@@ -4,4 +4,5 @@
     <string name="onemoment">One moment please...</string>
     <string name="signinfail">Sign in was unsuccessful, try again?</string>
     <string name="title_activity_sign_in">SignInActivity</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
