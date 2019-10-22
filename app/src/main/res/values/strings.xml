@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Bean and Leaf</string>
     <string name="signin">Begin</string>
-    <string name="onemoment">One moment please...</string>
+    <string name="onemoment">One moment please&#8230;</string>
     <string name="signinfail">Sign in was unsuccessful, try again?</string>
     <string name="title_activity_sign_in">SignInActivity</string>
     <string name="find_shops">Find Nearby Shops</string>

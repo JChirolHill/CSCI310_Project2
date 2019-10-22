@@ -29,8 +29,7 @@ public class YelpFetcher {
 
     protected RequestQueue queue;
     private List<BasicShop> shops;
-//    private List<Pair<Double, Double>> mLocations;
-    private final String BASE_URL = "https://api.yelp.com/v3/businesses/search?term=coffee&open_now=true";
+    private final String BASE_URL = "https://api.yelp.com/v3/businesses/search?term=coffee+tea&open_now=true";
     private final String YELP_API_KEY = "Nyt3b2FngNfZvaimvE5glNIOO9aVLdLNTNKQ2jVlC9dReEY9JVKcYcRm8i5EOT2IHP7GDH8jljJ0Mki8fCeBlSFcQhu8st2pJzFjcT9E5qF44nvoi1yI-KAg_jyZXXYx";
     private MapsActivity map;
 
@@ -45,13 +44,11 @@ public class YelpFetcher {
     }
 
     public void fetch(double latitude, double longitude) {
-        Log.d(TAG, "in fetch of yelp");
         requestJSONParse(BASE_URL + "&latitude=" + latitude + "&longitude=" + longitude);
     }
 
     // performs the json request
     public void requestJSONParse(String reqURL) {
-        Log.d(TAG, "in requestJSONParse with url: " + reqURL);
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, reqURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -84,18 +81,17 @@ public class YelpFetcher {
     }
 
     public void parse(JSONObject response) {
-        Log.d(TAG, "response from yelp: " + response.toString());
-
         try {
             JSONArray jsonshops = response.getJSONArray("businesses");
             for(int i=0; i<jsonshops.length(); i++) {
                 JSONObject coord = jsonshops.getJSONObject(i).getJSONObject("coordinates");
                 BasicShop bs = null;
                 try {
+                    Log.d(TAG, jsonshops.getJSONObject(i).toString());
+
                     bs = new BasicShop("0", coord.getDouble("latitude"), coord.getDouble("longitude"));
                     bs.setName(jsonshops.getJSONObject(i).getString("name"));
                     bs.setRating(jsonshops.getJSONObject(i).getDouble("rating"));
-                    Log.d(TAG, jsonshops.getJSONObject(i).toString());
                     bs.setPriceRange(jsonshops.getJSONObject(i).getString("price"));
                 } catch(JSONException e) {
                     Log.d(TAG, e.getMessage());
@@ -107,6 +103,7 @@ public class YelpFetcher {
                 }
             }
             map.drawUpdatedList();
+            shops.clear();
 
         } catch (JSONException e) {
             e.printStackTrace();
