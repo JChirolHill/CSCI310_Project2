@@ -3,5 +3,14 @@
     <string name="signin">Begin</string>
     <string name="onemoment">One moment please...</string>
     <string name="signinfail">Sign in was unsuccessful, try again?</string>
+    <string name="createAccountTitle">Welcome</string>
+    <string name="createAccountSubtitle">Please fill in your account details</string>
+    <string name="usernamePrompt">Username:</string>
+    <string name="emailPrompt">Email:</string>
+    <string name="isMerchantPrompt">Are you a merchant?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="save">Save</string>
     <string name="title_activity_sign_in">SignInActivity</string>
+    <string name="title_activity_profile">ProfileActivity</string>
 </resources>

@@ -19,6 +19,8 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 import java.util.List;
 
+import projects.chirolhill.juliette.csci310_project2.model.Customer;
+import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.User;
 
 public class SignInActivity extends AppCompatActivity {
@@ -73,9 +75,27 @@ public class SignInActivity extends AppCompatActivity {
                 prefEditor.putString(User.PREF_USER_ID, user.getUid());
                 prefEditor.commit();
 
-                // launch main activity
-                Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(i);
+                // save to database
+                User c = new Customer();
+                c.setuID(user.getUid());
+                c.setUsername(user.getDisplayName());
+                c.setEmail(user.getEmail());
+
+                if(Database.getInstance().getUser(user.getUid()) != null) { // new user
+                    // launch intent to profile page
+                    Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+                    i.putExtra(User.PREF_USER_ID, c.getuID());
+                    i.putExtra(User.PREF_USERNAME, c.getUsername());
+                    i.putExtra(User.PREF_EMAIL, c.getEmail());
+                    startActivity(i);
+                }
+                else {
+                    // launch main activity
+                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(i);
+                }
+
+
             }
             else {
                 textMoment.setText(R.string.signinfail);

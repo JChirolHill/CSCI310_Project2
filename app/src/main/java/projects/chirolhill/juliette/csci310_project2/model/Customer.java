@@ -3,7 +3,9 @@ package projects.chirolhill.juliette.csci310_project2.model;
 public class Customer extends User {
     private UserLog log;
 
-    public Customer() { }
+    public Customer() {
+        this.setMerchant(false);
+    }
 
     public UserLog getLog() {
         return log;

@@ -3,11 +3,12 @@ package projects.chirolhill.juliette.csci310_project2.model;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Merchant {
+public class Merchant extends User {
     private Map<String, Shop> shops;
 
     public Merchant() {
-        shops = new HashMap<>();
+        this.shops = new HashMap<>();
+        this.isMerchant = true;
     }
 
     public Map<String, Shop> getShops() {
