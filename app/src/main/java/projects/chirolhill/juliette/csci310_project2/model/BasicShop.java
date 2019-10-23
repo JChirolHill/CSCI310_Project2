@@ -10,6 +10,8 @@ public class BasicShop {
     protected double rating;
     protected String priceRange;
     protected LatLng location;
+    protected String imgURL;
+    protected String address;
 
     public BasicShop(String id, double latitude, double longitude) {
         this.id = id;
@@ -46,6 +48,14 @@ public class BasicShop {
         return location;
     }
 
+    public String getImgURL() {
+        return imgURL;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -60,5 +70,13 @@ public class BasicShop {
 
     public void setLocation(LatLng location) {
         this.location = location;
+    }
+
+    public void setImgURL(String imgURL) {
+        this.imgURL = imgURL;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }
