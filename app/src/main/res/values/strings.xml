@@ -7,4 +7,5 @@
     <string name="find_shops">Find Nearby Shops</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_shop_info">ShopInfoActivity</string>
+    <string name="shopName">Shop Name</string>
 </resources>
