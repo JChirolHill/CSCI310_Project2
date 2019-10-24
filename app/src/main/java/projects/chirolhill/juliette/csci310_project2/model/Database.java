@@ -32,6 +32,8 @@ public class Database {
         return ourInstance;
     }
 
+    private User currUser;
+
     //  initialize all the references
     private Database() {
         firebase = FirebaseDatabase.getInstance();
@@ -61,30 +63,32 @@ public class Database {
 //        });
 //    }
 
+    public User returnActualUser(User fromDatabase) {
+        return fromDatabase;
+    }
+
     // returns user if exists, null if does not exist
     public User getUser(String id) {
-//        final String userid = id;
+        Log.d(TAG, id);
         dbUsersRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, dataSnapshot.toString());
+                Log.d(TAG, dataSnapshot.getValue().toString());
                 if(dataSnapshot.getValue() == null) {
-
+                    currUser = null;
                 }
                 else {
-
+//                    returnActualUser(u);
+                    if(dataSnapshot.child("isMerchant").equals(true)) {
+                        currUser = new Merchant();
+                        currUser = dataSnapshot.getValue(Merchant.class);
+                    }
+                    else {
+                        currUser = new Customer();
+                        currUser = dataSnapshot.getValue(Customer.class);
+                    }
+//                    currUser = dataSnapshot.getValue(User.class);
                 }
-//                if(dataSnapshot.child(userid).exists()) {
-//                    User u = null;
-//                    if(dataSnapshot.child(userid).child("isMerchant").equals(true)) {
-//                        u = new Merchant();
-//                        u = dataSnapshot.child(userid).getValue(Merchant.class);
-//                    }
-//                    else {
-//                        u = new Customer();
-//                        u = dataSnapshot.child(userid).getValue(Customer.class);
-//                    }
-//                }
             }
 
             @Override
@@ -92,17 +96,22 @@ public class Database {
                 Log.d(TAG, databaseError.getMessage());
             }
         });
-        return null;
+
+        return currUser;
     }
 
     // returns error message, null if no problems
     // if pass in null user, will delete the item in database
     public String addUser(User u) {
         try {
-            if(dbUsersRef.child(u.getUsername()) != null) {
+//            Log.d(TAG, dbUsersRef.child(u.getuID()).toString());
+            if(getUser(u.getuID()) != null) {
                 return "Someone already has this username, please pick another";
             }
-            dbUsersRef.child(u.getUsername()).setValue(u);
+//            if(dbUsersRef.child(u.getUsername()) != null) {
+//                return "Someone already has this username, please pick another";
+//            }
+            dbUsersRef.child(u.getuID()).setValue(u);
         } catch(DatabaseException de) {
             Log.d(TAG, de.getMessage());
             return "Username cannot contain the following characters: . # $ [ ]";
@@ -111,10 +120,10 @@ public class Database {
     }
 
     // returns true if new user, false otherwise
-    public boolean userExists(User u) {
-        if(dbUsersRef.child(u.getUsername()) != null && !dbUsersRef.child(u.getUsername()).child("email").equals(u.getEmail())) {
-            return true;
-        }
-        return false;
-    }
+//    public boolean userExists(User u) {
+//        if(dbUsersRef.child(u.getUsername()) != null && !dbUsersRef.child(u.getUsername()).child("email").equals(u.getEmail())) {
+//            return true;
+//        }
+//        return false;
+//    }
 }

@@ -76,17 +76,18 @@ public class SignInActivity extends AppCompatActivity {
                 prefEditor.commit();
 
                 // save to database
-                User c = new Customer();
-                c.setuID(user.getUid());
-                c.setUsername(user.getDisplayName());
-                c.setEmail(user.getEmail());
+//                User c = new Customer();
+//                c.setuID(user.getUid());
+//                c.setUsername(user.getDisplayName());
+//                c.setEmail(user.getEmail());
 
-                if(Database.getInstance().getUser(user.getUid()) != null) { // new user
+                Object o = Database.getInstance().getUser(user.getUid());
+                if(Database.getInstance().getUser(user.getUid()) == null) { // new user
                     // launch intent to profile page
                     Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
-                    i.putExtra(User.PREF_USER_ID, c.getuID());
-                    i.putExtra(User.PREF_USERNAME, c.getUsername());
-                    i.putExtra(User.PREF_EMAIL, c.getEmail());
+                    i.putExtra(User.PREF_USER_ID, user.getUid());
+                    i.putExtra(User.PREF_USERNAME, user.getDisplayName());
+                    i.putExtra(User.PREF_EMAIL, user.getEmail());
                     startActivity(i);
                 }
                 else {

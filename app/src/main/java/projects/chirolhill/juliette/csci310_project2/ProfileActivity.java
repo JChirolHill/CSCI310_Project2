@@ -54,9 +54,9 @@ public class ProfileActivity extends AppCompatActivity {
         textError = findViewById(R.id.textError);
         btnSave = findViewById(R.id.btnSave);
 
-        Intent i = getIntent();
-
-        textTitle.setText(R.string.createAccountTitle + ", " + i.getStringExtra(User.PREF_USERNAME));
+        final Intent i = getIntent();
+//         + ", " + i.getStringExtra(User.PREF_USERNAME)
+        textTitle.setText(R.string.createAccountTitle);
         editUsername.setText(i.getStringExtra(User.PREF_USERNAME));
         editEmail.setText(i.getStringExtra(User.PREF_EMAIL));
         radioBtnNo.setChecked(true);
@@ -79,6 +79,7 @@ public class ProfileActivity extends AppCompatActivity {
                 else {
                     u = new Customer();
                 }
+                u.setuID(i.getStringExtra(User.PREF_USER_ID));
                 u.setUsername(editUsername.getText().toString());
                 u.setEmail(editEmail.getText().toString());
 
