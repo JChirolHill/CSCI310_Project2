@@ -4,7 +4,9 @@ import android.util.Pair;
 
 import com.google.android.gms.maps.model.LatLng;
 
-public class BasicShop {
+import java.io.Serializable;
+
+public class BasicShop implements Serializable {
     protected String id;
     protected String name;
     protected double rating;
@@ -12,6 +14,12 @@ public class BasicShop {
     protected LatLng location;
     protected String imgURL;
     protected String address;
+
+    public static final String PREF_BASIC_SHOP_NAME = "pref_basic_shop_name";
+    public static final String PREF_BASIC_SHOP_RATING = "pref_basic_shop_rating";
+    public static final String PREF_BASIC_SHOP_PRICE = "pref_basic_shop_price";
+    public static final String PREF_BASIC_SHOP_ADDRESS = "pref_basic_shop_address";
+    public static final String PREF_BASIC_SHOP_IMAGE = "pref_basic_shop_image";
 
     public BasicShop(String id, double latitude, double longitude) {
         this.id = id;
@@ -26,6 +34,8 @@ public class BasicShop {
         this.rating = bs.rating;
         this.priceRange = bs.priceRange;
         this.location = bs.location;
+        this.imgURL = bs.imgURL;
+        this.address = bs.address;
     }
 
     public String getId() {

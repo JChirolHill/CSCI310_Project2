@@ -2,6 +2,7 @@ package projects.chirolhill.juliette.csci310_project2;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -25,6 +26,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
 import projects.chirolhill.juliette.csci310_project2.model.YelpFetcher;
 
@@ -40,11 +44,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private GoogleMap mMap;
     private YelpFetcher yelpFetcher;
     private LatLng currLatLng;
+    private Map<String, BasicShop> shopListing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        shopListing = new HashMap<>();
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         yelpFetcher = new YelpFetcher(getApplicationContext(), this);
@@ -141,13 +148,23 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 //        currLatLng = marker.getPosition();
         if(marker.getPosition().latitude != currLatLng.latitude
                 && marker.getPosition().longitude != currLatLng.longitude) {
-            Log.d(TAG, "MARKER WAS CLICKED: " + marker.getTitle());
+            final String selectedShopName = marker.getTitle();
             Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_LONG)
                     .setAction("View Drinks", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            // get the clicked shop
+                            BasicShop selectedShop = shopListing.get(selectedShopName);
+
                             // launch intent to view shop details here
-                            Log.d(TAG, "click on view drinks for shop");
+                            Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
+                            i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
+                            i.putExtra(BasicShop.PREF_BASIC_SHOP_NAME, selectedShop.getName());
+                            i.putExtra(BasicShop.PREF_BASIC_SHOP_PRICE, selectedShop.getPriceRange());
+                            i.putExtra(BasicShop.PREF_BASIC_SHOP_RATING, selectedShop.getRating());
+                            i.putExtra(BasicShop.PREF_BASIC_SHOP_IMAGE, selectedShop.getImgURL());
+                            i.putExtra(BasicShop.PREF_BASIC_SHOP_ADDRESS, selectedShop.getAddress());
+                            startActivity(i);
                         }
                     }).show();
         }
@@ -160,6 +177,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         // add markers for all coffeeshops
         for(BasicShop bs : yelpFetcher.getShops()) {
             String snippet = "Rating: " + Double.toString(bs.getRating());
+            shopListing.put(bs.getName(), bs);
             mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(bs.getLocation().latitude, bs.getLocation().longitude))
                     .title(bs.getName())
