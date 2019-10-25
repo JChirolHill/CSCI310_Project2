@@ -1,6 +1,7 @@
 package projects.chirolhill.juliette.csci310_project2.model;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -70,6 +71,12 @@ public class Database {
     // returns user if exists, null if does not exist
     public User getUser(String id) {
         Log.d(TAG, id);
+//        DatabaseReference.CompletionListener listener = new DatabaseReference.CompletionListener() {
+//            @Override
+//            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+//
+//            }
+//        };
         dbUsersRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
