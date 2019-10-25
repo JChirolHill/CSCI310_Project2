@@ -30,7 +30,8 @@
         android:scaleType="centerCrop"
         app:layout_constraintTop_toBottomOf="@id/textAddress"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/common_google_signin_btn_text_dark"/>
 
     <TextView
         android:id="@+id/textRating"
