@@ -55,7 +55,6 @@ public class ProfileActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.btnSave);
 
         final Intent i = getIntent();
-//         + ", " + i.getStringExtra(User.PREF_USERNAME)
         textTitle.setText(R.string.createAccountTitle);
         editUsername.setText(i.getStringExtra(User.PREF_USERNAME));
         editEmail.setText(i.getStringExtra(User.PREF_EMAIL));
