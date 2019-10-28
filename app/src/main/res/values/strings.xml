@@ -2,14 +2,25 @@
     <string name="app_name">Bean and Leaf</string>
 
     <!-- Sign in activity -->
+    <string name="title_activity_sign_in">SignInActivity</string>
     <string name="signin">Begin</string>
     <string name="onemoment">One moment please&#8230;</string>
     <string name="signinfail">Sign in was unsuccessful, try again?</string>
-    <string name="title_activity_sign_in">SignInActivity</string>
+  
+    <!-- Profile activity -->
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="createAccountTitle">Welcome</string>
+    <string name="createAccountSubtitle">Please fill in your account details</string>
+    <string name="usernamePrompt">Username:</string>
+    <string name="emailPrompt">Email:</string>
+    <string name="isMerchantPrompt">Are you a merchant?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="save">Save</string>
 
     <!-- Map activity -->
-    <string name="find_shops">Find Nearby Shops</string>
     <string name="title_activity_maps">Map</string>
+    <string name="find_shops">Find Nearby Shops</string>
 
     <!-- Shop info activity -->
     <string name="title_activity_shop_info">ShopInfoActivity</string>

@@ -19,6 +19,8 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 import java.util.List;
 
+import projects.chirolhill.juliette.csci310_project2.model.Customer;
+import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.User;
 
 public class SignInActivity extends AppCompatActivity {
@@ -65,7 +67,7 @@ public class SignInActivity extends AppCompatActivity {
 
             if(resultCode == RESULT_OK) {
                 // Successfully signed in
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                 // save to shared preferences
                 SharedPreferences prefs = this.getSharedPreferences("Settings", Context.MODE_PRIVATE);
@@ -73,9 +75,29 @@ public class SignInActivity extends AppCompatActivity {
                 prefEditor.putString(User.PREF_USER_ID, user.getUid());
                 prefEditor.commit();
 
-                // launch main activity
-                Intent i = new Intent(getApplicationContext(), MapsActivity.class);
-                startActivity(i);
+                // initialize callback
+                Database.getInstance().setCallback(new Database.Callback() {
+                    @Override
+                    public void dbCallback(Object o) {
+                        User u = (User)o;
+                        if(u == null) { // new user
+                            // launch intent to profile page
+                            Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+                            i.putExtra(User.PREF_USER_ID, user.getUid());
+                            i.putExtra(User.PREF_USERNAME, user.getDisplayName());
+                            i.putExtra(User.PREF_EMAIL, user.getEmail());
+                            startActivity(i);
+                        }
+                        else { // user already in database
+                            // launch main activity
+                            Intent i = new Intent(getApplicationContext(), MapsActivity.class);
+                            startActivity(i);
+                        }
+                    }
+                });
+
+                // retrieve user from database to check if exists (see callback above)
+                Database.getInstance().getUser(user.getUid());
             }
             else {
                 textMoment.setText(R.string.signinfail);

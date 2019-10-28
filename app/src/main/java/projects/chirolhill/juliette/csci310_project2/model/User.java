@@ -1,17 +1,26 @@
 package projects.chirolhill.juliette.csci310_project2.model;
 
+import java.io.Serializable;
+
 public abstract class User {
     protected String uID;
     protected String username;
     protected String email;
-    protected String password;
+//    protected String password;
     protected boolean isMerchant;
 
     public static final int CAFFEINE_LIMIT = 400; // in milligrams
     public static final String PREF_USER_ID = "pref_user_id";
+    public static final String PREF_USERNAME = "pref_username";
+    public static final String PREF_EMAIL = "pref_email";
+    public static final String PREF_IS_MERCHANT = "pref_is_merchant";
 
     public String getuID() {
         return uID;
+    }
+
+    public void setuID(String uID) {
+        this.uID = uID;
     }
 
     public String getUsername() {
@@ -30,9 +39,9 @@ public abstract class User {
         this.email = email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+//    public void setPassword(String password) {
+//        this.password = password;
+//    }
 
     public boolean isMerchant() {
         return isMerchant;
@@ -42,7 +51,7 @@ public abstract class User {
         isMerchant = merchant;
     }
 
-    public boolean checkPassword(String pw) {
-        return this.password.equals(pw);
-    }
+//    public boolean checkPassword(String pw) {
+//        return this.password.equals(pw);
+//    }
 }
