@@ -6,7 +6,7 @@
     <string name="signin">Begin</string>
     <string name="onemoment">One moment please&#8230;</string>
     <string name="signinfail">Sign in was unsuccessful, try again?</string>
-  
+
     <!-- Profile activity -->
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="createAccountTitle">Welcome</string>
@@ -27,4 +27,11 @@
     <string name="rating">Rating</string>
     <string name="price">Price</string>
     <string name="itemsListed">Available Drinks</string>
+
+    <!-- Claim shop activity -->
+    <string name="title_activity_claim_shop">ClaimShopActivity</string>
+    <string name="verificationDocsPrompt">Please take a picture of the documents as proof of ownership.</string>
+    <string name="capture">Capture</string>
+    <string name="claim">Claim</string>
+    <string name="submit">Submit</string>
 </resources>

@@ -84,7 +84,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 String addResult = Database.getInstance().addUser(u);
                 if(addResult == null) {
-                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                    Intent i = new Intent(getApplicationContext(), MapsActivity.class);
                     startActivity(i);
                 }
                 else { // some errors
