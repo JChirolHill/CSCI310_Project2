@@ -14,7 +14,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/signin"/>
+        android:text="@string/signin"
+        android:textColor="@color/colorBackground"
+        android:background="@color/colorPrimaryDark"/>
     <TextView
         android:id="@+id/textMoment"
         android:layout_width="wrap_content"
