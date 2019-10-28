@@ -33,7 +33,7 @@ public class Database {
         return ourInstance;
     }
 
-    private User currUser;
+    private User tempUser = null;
 
     //  initialize all the references
     private Database() {
@@ -64,47 +64,56 @@ public class Database {
 //        });
 //    }
 
-    public User returnActualUser(User fromDatabase) {
-        return fromDatabase;
+//    public User returnActualUser(User fromDatabase) {
+//        return fromDatabase;
+//    }
+
+    private void storeUser(User fromDatabase) {
+        tempUser = fromDatabase;
+        getUser(tempUser.getuID());
     }
 
     // returns user if exists, null if does not exist
     public User getUser(String id) {
-        Log.d(TAG, id);
-//        DatabaseReference.CompletionListener listener = new DatabaseReference.CompletionListener() {
-//            @Override
-//            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-//
-//            }
-//        };
-        dbUsersRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, dataSnapshot.getValue().toString());
-                if(dataSnapshot.getValue() == null) {
-                    currUser = null;
+        if(tempUser != null) {
+            Log.d(TAG, "user set, returning user");
+            User temp = tempUser;
+            tempUser = null;
+            return temp;
+        }
+        else {
+            Log.d(TAG, id);
+            dbUsersRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                    Log.d(TAG, dataSnapshot.getValue().toString());
+//                    if(dataSnapshot.getValue() == null) {
+//                        currUser = null;
+//                    }
+//                    else {
+////                    returnActualUser(u);
+//                        if(dataSnapshot.child("isMerchant").equals(true)) {
+//                            currUser = new Merchant();
+//                            currUser = dataSnapshot.getValue(Merchant.class);
+//                        }
+//                        else {
+//                            currUser = new Customer();
+//                            currUser = dataSnapshot.getValue(Customer.class);
+//                        }
+////                    currUser = dataSnapshot.getValue(User.class);
+//                    }
                 }
-                else {
-//                    returnActualUser(u);
-                    if(dataSnapshot.child("isMerchant").equals(true)) {
-                        currUser = new Merchant();
-                        currUser = dataSnapshot.getValue(Merchant.class);
-                    }
-                    else {
-                        currUser = new Customer();
-                        currUser = dataSnapshot.getValue(Customer.class);
-                    }
-//                    currUser = dataSnapshot.getValue(User.class);
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.d(TAG, databaseError.getMessage());
                 }
-            }
+            });
+        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d(TAG, databaseError.getMessage());
-            }
-        });
 
-        return currUser;
+        return null;
+//        return currUser;
     }
 
     // returns error message, null if no problems
