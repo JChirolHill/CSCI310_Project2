@@ -187,6 +187,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         return false; // moves camera to the selected marker
     }
 
+
+    /**
+     * Calculates directions from current location to specified marker.
+     * Currently only providing one route (the fastest).
+     */
+    public void calculateRoute() {
+
+    }
+
     public void drawUpdatedList() {
         Log.d(TAG, "called drawUpdatedList");
         // add markers for all coffeeshops
