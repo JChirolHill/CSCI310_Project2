@@ -81,20 +81,28 @@ public class SignInActivity extends AppCompatActivity {
 //                c.setUsername(user.getDisplayName());
 //                c.setEmail(user.getEmail());
 
-                Object o = Database.getInstance().getUser(user.getUid());
-                if(Database.getInstance().getUser(user.getUid()) == null) { // new user
-                    // launch intent to profile page
-                    Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
-                    i.putExtra(User.PREF_USER_ID, user.getUid());
-                    i.putExtra(User.PREF_USERNAME, user.getDisplayName());
-                    i.putExtra(User.PREF_EMAIL, user.getEmail());
-                    startActivity(i);
-                }
-                else {
-                    // launch main activity
-                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(i);
-                }
+                Database.getInstance().setUserRetriever(new Database.UserRetriever() {
+                    @Override
+                    public void retrieveUser(User u) {
+                        if(u == null) { // new user
+                            // launch intent to profile page
+                            Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+                            i.putExtra(User.PREF_USER_ID, u.getuID());
+                            i.putExtra(User.PREF_USERNAME, u.getUsername());
+                            i.putExtra(User.PREF_EMAIL, u.getEmail());
+                            startActivity(i);
+                        }
+                        else {
+                            // launch main activity
+                            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(i);
+                        }
+                    }
+                });
+
+                Database.getInstance().getUser(user.getUid());
+
+
 
 
             }
