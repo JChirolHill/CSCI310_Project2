@@ -103,6 +103,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 currLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
                 Log.d(TAG,"Location Info: Location achieved!");
             } else {
+                currLatLng = new LatLng(34.0224, 118.2851);
                 Log.d(TAG,"Location Info: No location :(");
             }
             MarkerOptions marker = new MarkerOptions()
