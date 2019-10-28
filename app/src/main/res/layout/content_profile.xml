@@ -134,6 +134,8 @@
         android:layout_height="wrap_content"
         android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/colorBackground"
+        android:background="@color/colorPrimaryDark"/>
 
 </android.support.constraint.ConstraintLayout>
