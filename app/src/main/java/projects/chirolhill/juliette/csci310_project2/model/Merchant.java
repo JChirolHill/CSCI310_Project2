@@ -26,7 +26,7 @@ public class Merchant extends User {
     // returns true if successful claim
     public boolean claimShop(BasicShop s) {
         if(shops.get(s.id) == null && !(s instanceof Shop)) {
-            addShop(new Shop(s.id, this));
+            addShop(new Shop(s.id, this, s));
             return true;
         }
         return false;

@@ -90,7 +90,7 @@ public class SignInActivity extends AppCompatActivity {
                         }
                         else { // user already in database
                             // launch main activity
-                            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                            Intent i = new Intent(getApplicationContext(), MapsActivity.class);
                             startActivity(i);
                         }
                     }
