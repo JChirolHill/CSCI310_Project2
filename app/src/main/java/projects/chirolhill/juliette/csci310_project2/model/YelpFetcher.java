@@ -93,6 +93,10 @@ public class YelpFetcher {
                     bs.setName(jsonshops.getJSONObject(i).getString("name"));
                     bs.setRating(jsonshops.getJSONObject(i).getDouble("rating"));
                     bs.setPriceRange(jsonshops.getJSONObject(i).getString("price"));
+                    bs.setImgURL(jsonshops.getJSONObject(i).getString("image_url"));
+                    String address = jsonshops.getJSONObject(i).getJSONObject("location").getString("address1")
+                            + ", " + jsonshops.getJSONObject(i).getJSONObject("location").getString("city");
+                    bs.setAddress(address);
                 } catch(JSONException e) {
                     Log.d(TAG, e.getMessage());
                 }
