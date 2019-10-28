@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -41,6 +43,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private final String TAG = MapsActivity.class.getSimpleName();
 
 //    private Button btnFindShops;
+    private ImageButton imgProfile;
+
     private LocationManager locationManager;
     private Location myLocation;
     private GoogleMap mMap;
@@ -58,6 +62,16 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         yelpFetcher = new YelpFetcher(getApplicationContext(), this);
 
+        imgProfile = findViewById(R.id.imgProfile);
+
+        imgProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+                i.putExtra(ProfileActivity.EXTRA_READONLY, true);
+                startActivity(i);
+            }
+        });
 //        btnFindShops = findViewById(R.id.btnFindShops);
 //
 //        btnFindShops.setOnClickListener(new View.OnClickListener() {

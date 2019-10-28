@@ -23,4 +23,14 @@
         <!--android:text="@string/find_shops"-->
         <!--android:layout_marginLeft="8dp"-->
         <!--android:layout_marginTop="8dp"/>-->
+    <ImageButton
+        android:id="@+id/imgProfile"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:src="@mipmap/profile"
+        android:background="@null"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"/>
 </android.support.constraint.ConstraintLayout>

@@ -48,7 +48,7 @@ public abstract class User {
     }
 
     public void setMerchant(boolean merchant) {
-        isMerchant = merchant;
+        this.isMerchant = merchant;
     }
 
 //    public boolean checkPassword(String pw) {

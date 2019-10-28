@@ -10,6 +10,7 @@
     <!-- Profile activity -->
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="createAccountTitle">Welcome</string>
+    <string name="viewAccountTitle">View Profile</string>
     <string name="createAccountSubtitle">Please fill in your account details</string>
     <string name="usernamePrompt">Username:</string>
     <string name="emailPrompt">Email:</string>
@@ -17,6 +18,10 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="save">Save</string>
+    <string name="edit">Edit</string>
+    <string name="typeUser">Type of User:</string>
+    <string name="merchant">Merchant</string>
+    <string name="customer">Customer</string>
 
     <!-- Map activity -->
     <string name="title_activity_maps">Map</string>
