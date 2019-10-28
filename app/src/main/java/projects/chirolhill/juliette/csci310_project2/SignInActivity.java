@@ -73,6 +73,7 @@ public class SignInActivity extends AppCompatActivity {
                 SharedPreferences prefs = this.getSharedPreferences("Settings", Context.MODE_PRIVATE);
                 SharedPreferences.Editor prefEditor = prefs.edit();
                 prefEditor.putString(User.PREF_USER_ID, user.getUid());
+                prefEditor.putString(User.PREF_EMAIL, user.getEmail());
                 prefEditor.commit();
 
                 // initialize callback
@@ -83,12 +84,20 @@ public class SignInActivity extends AppCompatActivity {
                         if(u == null) { // new user
                             // launch intent to profile page
                             Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+                            i.putExtra(ProfileActivity.EXTRA_READONLY, false);
                             i.putExtra(User.PREF_USER_ID, user.getUid());
                             i.putExtra(User.PREF_USERNAME, user.getDisplayName());
                             i.putExtra(User.PREF_EMAIL, user.getEmail());
                             startActivity(i);
                         }
                         else { // user already in database
+                            // set shared preferences
+                            SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor prefEditor = prefs.edit();
+                            prefEditor.putString(User.PREF_USERNAME, u.getUsername());
+                            prefEditor.putBoolean(User.PREF_IS_MERCHANT, u.isMerchant());
+                            prefEditor.commit();
+
                             // launch main activity
                             Intent i = new Intent(getApplicationContext(), MapsActivity.class);
                             startActivity(i);
