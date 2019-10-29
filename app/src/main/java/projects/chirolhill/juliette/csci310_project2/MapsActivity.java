@@ -179,7 +179,10 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
                                 // launch intent to claim the shop
                                 Intent i = new Intent(getApplicationContext(), ClaimShopActivity.class);
+                                i.putExtra(BasicShop.PREF_BASIC_SHOP_ID, selectedShop.getId());
                                 i.putExtra(BasicShop.PREF_BASIC_SHOP_NAME, selectedShop.getName());
+                                i.putExtra(BasicShop.PREF_BASIC_SHOP_LATITUDE, selectedShop.getLocation().latitude);
+                                i.putExtra(BasicShop.PREF_BASIC_SHOP_LONGITUDE, selectedShop.getLocation().longitude);
                                 startActivity(i);
                             }
                         }).show();

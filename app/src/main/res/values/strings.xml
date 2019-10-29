@@ -39,4 +39,9 @@
     <string name="capture">Capture</string>
     <string name="claim">Claim</string>
     <string name="submit">Submit</string>
+    <string name="alreadyHasOwner">This shop already has an owner.</string>
+    <string name="failedImgUpload">Failed to upload images.</string>
+    <string name="pendingApproval">Your claim of this shop is pending approval.</string>
+    <string name="ownershipApproved">Your claim of this shop has been approved.</string>
+    <string name="viewShop">View Shop Details</string>
 </resources>

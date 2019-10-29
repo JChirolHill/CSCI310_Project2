@@ -89,7 +89,8 @@ public class YelpFetcher {
                 try {
                     Log.d(TAG, jsonshops.getJSONObject(i).toString());
 
-                    bs = new BasicShop("0", coord.getDouble("latitude"), coord.getDouble("longitude"));
+                    String id = jsonshops.getJSONObject(i).getString("id");
+                    bs = new BasicShop(id, coord.getDouble("latitude"), coord.getDouble("longitude"));
                     bs.setName(jsonshops.getJSONObject(i).getString("name"));
                     bs.setRating(jsonshops.getJSONObject(i).getDouble("rating"));
                     bs.setPriceRange(jsonshops.getJSONObject(i).getString("price"));

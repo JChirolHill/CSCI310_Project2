@@ -19,40 +19,86 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <TextView
-        android:id="@+id/textVerifDocsPrompt"
-        android:layout_width="wrap_content"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layoutClaimShop"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/verificationDocsPrompt"
         android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@id/textClaimHeader"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-    <Button
-        android:id="@+id/btnCapture"
+        app:layout_constraintTop_toBottomOf="@id/textClaimHeader">
+        <TextView
+            android:id="@+id/textVerifDocsPrompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/verificationDocsPrompt"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        <Button
+            android:id="@+id/btnCapture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/capture"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@id/textVerifDocsPrompt"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        <ImageView
+            android:id="@+id/imageVerifDocs"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="24dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/textVerifDocsPrompt"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layoutPending"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/textClaimHeader">
+        <TextView
+            android:id="@+id/textPending"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pendingApproval"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        <Button
+            android:id="@+id/btnViewShop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/viewShop"
+            android:layout_marginTop="24dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/textPending"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+    </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/textError"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/capture"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toBottomOf="@id/textVerifDocsPrompt"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-    <ImageView
-        android:id="@+id/imageVerifDocs"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        android:layout_marginTop="24dp"
+        android:text="@string/alreadyHasOwner"
+        android:textColor="#f00"
+        android:layout_marginTop="32dp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/textVerifDocsPrompt"
+        app:layout_constraintTop_toBottomOf="@id/layoutClaimShop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
     <Button
         android:id="@+id/btnSubmit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/submit"
-        android:visibility="gone"
+        android:enabled="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 </android.support.constraint.ConstraintLayout>

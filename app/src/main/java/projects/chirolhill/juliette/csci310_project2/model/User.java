@@ -2,7 +2,7 @@ package projects.chirolhill.juliette.csci310_project2.model;
 
 import java.io.Serializable;
 
-public abstract class User {
+public abstract class User implements Serializable {
     protected String uID;
     protected String username;
     protected String email;
