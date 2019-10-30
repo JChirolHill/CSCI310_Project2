@@ -238,6 +238,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         directions.origin(currLatLngDirectionsAPI); // NOTE: had to create an add'l "currLatLng" for now cuz there are dif LatLng types
         */
 
+        // TODO: try setting up an external server ... "using the Google Maps Web Service client libraries from Google App Engine instances"
+        // thus, requests go from *app* --> server --> directions API
+        //                        *app* <-- server <-- directions API
+        // https://cloud.google.com/blog/products/maps-platform/making-most-of-google-maps-web-service
+
         // DEBUG
         Log.d(TAG, "calculateDirections: destination is " + destination.toString());
 
@@ -245,6 +250,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         GeocodingResult[] results = GeocodingApi.reverseGeocode(mGeoApiContext, currLatLngDirectionsAPI).awaitIgnoreError();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         Log.i(TAG, gson.toJson(results[0].addressComponents));
+
+        // TODO initiate polyline drawing on actual map
     }
 
     /**
