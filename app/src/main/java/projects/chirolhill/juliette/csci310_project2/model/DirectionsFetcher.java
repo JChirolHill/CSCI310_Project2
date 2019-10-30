@@ -106,32 +106,73 @@ public class DirectionsFetcher {
 
         /**
          * JSON Object model: https://developers.google.com/maps/documentation/directions/intro#DirectionsResponseElements
+         * NOTE: I may have parsed inefficiently. It seemed that anytime I wanted to get to a nested
+         * JSON Object, I had to declare and cast that nested section as its own JSONObject.
          */
-        String startAddress = "", endAddress = "";
-        LatLng startLocation = null, endLocation = null;
-        JSONArray routes, legs;
-        JSONObject firstRoute, firstLeg, startLocationObj, endLocationObj;
+        JSONArray routes;
         try {
             routes = response.getJSONArray("routes");
-            firstRoute = (JSONObject) routes.get(0);
-            legs = firstRoute.getJSONArray("legs");
-            firstLeg = (JSONObject) legs.get(0);
-
-            startAddress = firstLeg.getString("start_address");
-            endAddress = firstLeg.getString("end_address");
-            startLocationObj = (JSONObject) firstLeg.get("start_location");
-            endLocationObj = (JSONObject) firstLeg.get("end_location");
-            startLocation = new LatLng(startLocationObj.getDouble("lat"),
-                    startLocationObj.getDouble("lng"));
-            endLocation = new LatLng(endLocationObj.getDouble("lat"),
-                    endLocationObj.getDouble("lng"));
 
             // create the response object
-            this.mostRecentResponse = new DirectionsResponse(mode, startAddress, startLocation,
-                    endAddress, endLocation);
+            this.mostRecentResponse = new DirectionsResponse(mode);
 
             // add each route to the response object
+            for (int i = 0; i < routes.length(); i++) {
+                JSONObject currentRoute = routes.getJSONObject(i);
+                JSONArray legs = currentRoute.getJSONArray("legs");
 
+                // NOTE: route only has one leg, since we don't define waypoints
+                JSONObject leg = legs.getJSONObject(0);
+
+                JSONObject distanceObj, durationObj, startLocationObj, endLocationObj, polylineObj;
+                distanceObj = leg.getJSONObject("distance");
+                durationObj = leg.getJSONObject("duration");
+                startLocationObj = leg.getJSONObject("start_location");
+                endLocationObj = leg.getJSONObject("end_location");
+                polylineObj = currentRoute.getJSONObject("overview_polyline");
+
+                // extract the necessary parameters for a route from the leg
+                String startAddress = "", endAddress = "", duration = "", distance = "", encodedPolyline = "";
+                LatLng startLocation = null, endLocation = null;
+
+                startAddress = leg.getString("start_address");
+                endAddress = leg.getString("end_address");
+                startLocation = new LatLng(startLocationObj.getDouble("lat"),
+                        startLocationObj.getDouble("lng"));
+                endLocation = new LatLng(endLocationObj.getDouble("lat"),
+                        endLocationObj.getDouble("lng"));
+                distance = distanceObj.getString("text");
+                duration = durationObj.getString("text");
+                encodedPolyline = polylineObj.getString("points");
+
+                // steps aren't critical yet, so make the object as is for now
+                DirectionsRoute route = new DirectionsRoute(mode, startAddress, startLocation,
+                        endAddress, endLocation, distance, duration, encodedPolyline);
+
+                // extract the sequence of steps within this route
+                ArrayList<DirectionsStep> steps = new ArrayList<DirectionsStep>();
+                JSONArray stepsJSONArray = leg.getJSONArray("steps");
+                for (int j = 0; j < stepsJSONArray.length(); j++) {
+                    JSONObject step = stepsJSONArray.getJSONObject(j);
+                    String stepText = "", stepDuration = "", stepDistance = "";
+
+                    JSONObject stepDistanceObj, stepDurationObj;
+                    stepDistanceObj = step.getJSONObject("distance");
+                    stepDurationObj = step.getJSONObject("duration");
+
+                    stepText = step.getString("html_instructions");
+                    stepDistance = stepDistanceObj.getString("text");
+                    stepDuration = stepDurationObj.getString("text");
+
+                    steps.add(new DirectionsStep(stepText, stepDistance, stepDuration));
+                }
+
+                // add steps to route object
+                route.setSteps(steps);
+
+                // add route to response object
+                this.mostRecentResponse.addRoute(route);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
             // TODO: initiate some sort of error logic for when there are no directions

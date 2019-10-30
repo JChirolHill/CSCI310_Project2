@@ -18,30 +18,22 @@ public class DirectionsRoute {
     private LatLng startLocation;
     private String endAddress;
     private LatLng endLocation;
-    private double duration; // in minutes
-    private double distance; // in miles
+    private String distance; // google api provides string, e.g. "11 mins"
+    private String duration; // google api provides string, e.g. "3.4 mi"
+    private String encodedPolyline;
     private ArrayList<DirectionsStep> steps; // human-readable steps (e.g. "turn left at ___")
 
-    /**
-     * This class represents a single step of a route;
-     * e.g. "in 1.4 miles, Turn left at 1600 Amphitheatre Parkway"
-     */
-    class DirectionsStep {
-        private String step;
-        private double duration; // in minutes
-        private double distance; // in miles
-    }
-
     public DirectionsRoute(String mode, String startAddress, LatLng startLocation, String endAddress,
-                           LatLng endLocation, double duration, double distance, ArrayList<DirectionsStep> steps) {
+                           LatLng endLocation, String distance, String duration, String encodedPolyline) {
         this.mode = mode;
         this.startAddress = startAddress;
         this.startLocation = startLocation;
         this.endAddress = endAddress;
         this.endLocation = endLocation;
-        this.duration = duration;
         this.distance = distance;
-        this.steps = steps;
+        this.duration = duration;
+        this.encodedPolyline = encodedPolyline;
+        this.steps = new ArrayList<DirectionsStep>();
     }
 
     public String getMode() {
@@ -84,20 +76,28 @@ public class DirectionsRoute {
         this.endLocation = endLocation;
     }
 
-    public double getDuration() {
-        return duration;
-    }
-
-    public void setDuration(double duration) {
-        this.duration = duration;
-    }
-
-    public double getDistance() {
+    public String getDistance() {
         return distance;
     }
 
-    public void setDistance(double distance) {
+    public void setDistance(String distance) {
         this.distance = distance;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
+
+    public String getEncodedPolyline() {
+        return encodedPolyline;
+    }
+
+    public void setEncodedPolyline(String encodedPolyline) {
+        this.encodedPolyline = encodedPolyline;
     }
 
     public ArrayList<DirectionsStep> getSteps() {
