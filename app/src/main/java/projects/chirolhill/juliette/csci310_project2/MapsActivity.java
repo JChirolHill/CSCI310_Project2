@@ -53,7 +53,6 @@ public class MapsActivity extends FragmentActivity implements
     private YelpFetcher yelpFetcher;
     private DirectionsFetcher directionsFetcher;
     private LatLng currLatLng;
-    private com.google.maps.model.LatLng currLatLngDirectionsAPI;
     private Map<String, BasicShop> shopListing;
 
     @Override
@@ -128,11 +127,9 @@ public class MapsActivity extends FragmentActivity implements
 
             if (myLocation != null) {
                 currLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-                currLatLngDirectionsAPI = new com.google.maps.model.LatLng(myLocation.getLatitude(), myLocation.getLongitude());
                 Log.d(TAG,"Location Info: Location achieved!");
             } else {
                 currLatLng = new LatLng(34.0224, 118.2851);
-                currLatLngDirectionsAPI = new com.google.maps.model.LatLng(34.0224, 118.2851);
                 Log.d(TAG,"Location Info: No location :(");
             }
             MarkerOptions marker = new MarkerOptions()
@@ -220,7 +217,7 @@ public class MapsActivity extends FragmentActivity implements
 
         // trigger the HTTP GET request
         directionsFetcher.fetch(currLatLng.latitude, currLatLng.longitude,
-                marker.getPosition().latitude, marker.getPosition().longitude);
+                marker.getPosition().latitude, marker.getPosition().longitude, "driving"); // TODO programmatically assign 'mode'
         // extract the response (kind of weird to separate the two, but I'm not sure how else to
         // get the response to MapsActivity)
         DirectionsResponse response = directionsFetcher.getResponse();

@@ -11,6 +11,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,7 +33,10 @@ public class DirectionsFetcher {
     private final String BASE_URL = "https://maps.googleapis.com/maps/api/directions/json?";
     private final String API_KEY = "AIzaSyA3pV-0qvHbr3wRFaFu05UPrkQYdtT6QKM"; // server API key, dif than application one
     private MapsActivity map;
-    private DirectionsResponse response;
+
+    // MUST BE RESET BETWEEN EACH REQUEST
+    private DirectionsResponse mostRecentResponse;
+    private String mostRecentRequestURL;
 
     public DirectionsFetcher(Context context, MapsActivity map) {
         queue = Volley.newRequestQueue(context);
@@ -45,14 +49,20 @@ public class DirectionsFetcher {
      * @param originLng: longitude of origin
      * @param destLat: latitude of destination
      * @param destLng: longitude of destination
+     * @param mode: the type of travel, "driving" or "walking"
      */
-    public void fetch(double originLat, double originLng, double destLat, double destLng) {
-        //TODO support parameters for mode (either driving or walking) and multiple routes
+    public void fetch(double originLat, double originLng, double destLat, double destLng, String mode) {
+        // CLEAR RESULTS OF PREVIOUS REQUEST
+        this.mostRecentResponse = null;
+        this.mostRecentRequestURL = null;
 
-        String requestURL = BASE_URL + "origin=" + Double.toString(originLat) + "," + Double.toString(originLng)
-                + "&destination=" + Double.toString(destLat) + "," + Double.toString(destLng) + "&key=" + API_KEY;
-        Log.i(TAG, "REQUEST URL = " + requestURL);
-        requestJSONParse(requestURL);
+        //TODO support parameters for mode (either driving or walking) and multiple routes
+        this.mostRecentRequestURL = BASE_URL + "origin=" + Double.toString(originLat) + "," + Double.toString(originLng)
+                + "&destination=" + Double.toString(destLat) + "," + Double.toString(destLng)
+                + (mode.equals("walking") ? "&mode=walking" : "&mode=driving") + "&key=" + API_KEY;
+
+        Log.i(TAG, "REQUEST URL = " + this.mostRecentRequestURL);
+        requestJSONParse(this.mostRecentRequestURL);
     }
 
     /**
@@ -87,12 +97,47 @@ public class DirectionsFetcher {
      * @param response
      */
     public void parse(JSONObject response) {
-        Log.i(TAG, "parse");
-        Log.i(TAG, response.toString());
+        Log.i(TAG, "DirectionsFetcher.parse() response = " + response.toString());
 
-        // TODO create a DirectionsResponse object that has the polylines, etc, extracted out
+        String mode = "driving";
+        if (this.mostRecentRequestURL != null) {
+            if (this.mostRecentRequestURL.contains("&mode=walking")) mode = "walking";
+        }
 
+        /**
+         * JSON Object model: https://developers.google.com/maps/documentation/directions/intro#DirectionsResponseElements
+         */
+        String startAddress = "", endAddress = "";
+        LatLng startLocation = null, endLocation = null;
+        JSONArray routes, legs;
+        JSONObject firstRoute, firstLeg, startLocationObj, endLocationObj;
+        try {
+            routes = response.getJSONArray("routes");
+            firstRoute = (JSONObject) routes.get(0);
+            legs = firstRoute.getJSONArray("legs");
+            firstLeg = (JSONObject) legs.get(0);
+
+            startAddress = firstLeg.getString("start_address");
+            endAddress = firstLeg.getString("end_address");
+            startLocationObj = (JSONObject) firstLeg.get("start_location");
+            endLocationObj = (JSONObject) firstLeg.get("end_location");
+            startLocation = new LatLng(startLocationObj.getDouble("lat"),
+                    startLocationObj.getDouble("lng"));
+            endLocation = new LatLng(endLocationObj.getDouble("lat"),
+                    endLocationObj.getDouble("lng"));
+
+            // create the response object
+            this.mostRecentResponse = new DirectionsResponse(mode, startAddress, startLocation,
+                    endAddress, endLocation);
+
+            // add each route to the response object
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            // TODO: initiate some sort of error logic for when there are no directions
+        }
     }
 
-    public DirectionsResponse getResponse() { return this.response; }
+    public DirectionsResponse getResponse() { return this.mostRecentResponse; }
+
 }
