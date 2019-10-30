@@ -2,15 +2,18 @@ package projects.chirolhill.juliette.csci310_project2.model;
 
 import android.util.Pair;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Order {
+public class Order implements Serializable {
     private String id;
     private Map<String, Pair<Drink, Integer>> drinks; // store drinks and number of orders
     private Shop shop;
     private Trip trip;
     private Customer user;
+
+    public static final String PREF_ORDER = "pref_order";
 
     public Order(String id, Shop shop, Trip trip, Customer user) {
         this.id = id;

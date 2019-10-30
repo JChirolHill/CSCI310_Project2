@@ -33,4 +33,10 @@
     <string name="price">Price</string>
     <string name="itemsListed">Available Drinks</string>
     <string name="title_activity_order">OrderActivity</string>
+
+    <!-- Order activity -->
+    <string name="title_activity_order_confirmation">Order Confirmation</string>
+    <string name="totalMoneySpent">Total Money Spent:</string>
+    <string name="itemsOrdered">Items you ordered:</string>
+    <string name="caffeineLevel">Current Caffeine Level For Today:</string>
 </resources>
