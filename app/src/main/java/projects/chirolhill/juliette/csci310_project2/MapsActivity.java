@@ -37,6 +37,7 @@ import projects.chirolhill.juliette.csci310_project2.model.YelpFetcher;
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
         GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnInfoWindowClickListener,
         OnMapReadyCallback {
     private final String TAG = MapsActivity.class.getSimpleName();
 
@@ -144,6 +145,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             // get coffeeshop data from volley
             Log.d(TAG, "fetching from yelp first time");
             yelpFetcher.fetch(myLocation.getLatitude(), myLocation.getLongitude());
+
+            // needed for OnInfoWindowClickListener() to work
+            mMap.setOnInfoWindowClickListener(this);
+
+            // TODO make a "GeoApiContext"
         }
     }
 
@@ -163,6 +169,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 //        currLatLng = marker.getPosition();
         if(marker.getPosition().latitude != currLatLng.latitude
                 && marker.getPosition().longitude != currLatLng.longitude) {
+
             final String selectedShopName = marker.getTitle();
             Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_LONG)
                     .setAction("View Drinks", new View.OnClickListener() {
@@ -187,12 +194,39 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         return false; // moves camera to the selected marker
     }
 
+    /**
+     * Allows a click of a given marker's info window to trigger a directions query.
+     * @param marker
+     */
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+
+    }
+
 
     /**
      * Calculates directions from current location to specified marker.
      * Currently only providing one route (the fastest).
      */
-    public void calculateRoute() {
+    public void calculateDirections(Marker marker) {
+        Log.d(TAG, "calculateDirections: calculating directions.");
+
+        LatLng destination = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
+
+        // NOTE: the best practice to do this involves setting up an intermediate proxy server,
+        //       specifically to prevent people from decompiling your application and taking
+        //       advantage of your API key ... but this is a sandboxed app (for now)
+
+
+
+
+    }
+
+    /**
+     * Uses supplied route data to draw the appropriate polyline.
+     * Currently non-clickable, single line.
+     */
+    public void drawPolyline() {
 
     }
 
@@ -209,4 +243,5 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
         }
     }
+
 }
