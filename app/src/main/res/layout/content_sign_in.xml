@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,7 +6,9 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".SignInActivity"
-    tools:showIn="@layout/activity_sign_in">
+    tools:showIn="@layout/activity_sign_in"
+    android:background="@color/colorBackground">
+
 
     <ImageView
         android:id="@+id/imageLogo"
@@ -16,7 +17,7 @@
         android:scaleType="centerCrop"
         android:scaleX=".5"
         android:scaleY=".5"
-        android:src="@drawable/logo"/>
+        android:src="@drawable/logo20"/>
 
     <Button
         android:id="@+id/btnSignIn"
@@ -25,7 +26,7 @@
         android:text="@string/signin"
         android:textColor="@color/colorBackground"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="240dp"
+        android:layout_marginBottom="200dp"
         android:background="@drawable/button_background"/>
 
     <TextView
@@ -36,5 +37,4 @@
         android:layout_gravity="center"
         android:textSize="24dp"
         android:visibility="gone"/>
-<!--</android.support.constraint.ConstraintLayout>-->
 </FrameLayout>
