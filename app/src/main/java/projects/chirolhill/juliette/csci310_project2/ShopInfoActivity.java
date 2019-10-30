@@ -43,16 +43,13 @@ public class ShopInfoActivity extends AppCompatActivity {
         textAddress = findViewById(R.id.textAddress);
 
         Intent i = getIntent();
-//        currShop = (BasicShop)i.getSerializableExtra(BasicShop.PREF_BASIC_SHOP);
 
         textShopName.setText(i.getStringExtra(BasicShop.PREF_BASIC_SHOP_NAME));
-//        imageShop.setImageResource(currShop.getImgURL());
         textRating.setText(Double.toString(i.getDoubleExtra(BasicShop.PREF_BASIC_SHOP_RATING, 0.0)));
         textPrice.setText(i.getStringExtra(BasicShop.PREF_BASIC_SHOP_PRICE));
         textAddress.setText(i.getStringExtra(BasicShop.PREF_BASIC_SHOP_ADDRESS));
 
         // load image
-        String image = i.getStringExtra(BasicShop.PREF_BASIC_SHOP_IMAGE);
         Picasso.get().load(i.getStringExtra(BasicShop.PREF_BASIC_SHOP_IMAGE)).into(imageShop);
         
         // only show items if exists as shop in database

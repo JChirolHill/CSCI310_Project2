@@ -31,6 +31,14 @@ public class Shop extends BasicShop {
         return verificationDocs;
     }
 
+    public void addVerificationDoc(String doc) {
+        this.verificationDocs.add(doc);
+    }
+
+    public void setVerificationDocs(List<String> verificationDocs) {
+        this.verificationDocs = verificationDocs;
+    }
+
     public boolean isPendingApproval() {
         return pendingApproval;
     }

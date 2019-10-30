@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
+import projects.chirolhill.juliette.csci310_project2.model.MapShop;
 import projects.chirolhill.juliette.csci310_project2.model.User;
 import projects.chirolhill.juliette.csci310_project2.model.YelpFetcher;
 
@@ -175,14 +176,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             @Override
                             public void onClick(View v) {
                                 // get the clicked shop
-                                BasicShop selectedShop = shopListing.get(selectedShopName);
+                                BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
 
                                 // launch intent to claim the shop
                                 Intent i = new Intent(getApplicationContext(), ClaimShopActivity.class);
-                                i.putExtra(BasicShop.PREF_BASIC_SHOP_ID, selectedShop.getId());
-                                i.putExtra(BasicShop.PREF_BASIC_SHOP_NAME, selectedShop.getName());
-                                i.putExtra(BasicShop.PREF_BASIC_SHOP_LATITUDE, selectedShop.getLocation().latitude);
-                                i.putExtra(BasicShop.PREF_BASIC_SHOP_LONGITUDE, selectedShop.getLocation().longitude);
+                                i.putExtra(BasicShop.PREF_BASIC_SHOP, selectedShop);
                                 startActivity(i);
                             }
                         }).show();
@@ -215,12 +213,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public void drawUpdatedList() {
         Log.d(TAG, "called drawUpdatedList");
         // add markers for all coffeeshops
-        for(BasicShop bs : yelpFetcher.getShops()) {
-            String snippet = "Rating: " + Double.toString(bs.getRating());
-            shopListing.put(bs.getName(), bs);
+        for(MapShop ms : yelpFetcher.getShops()) {
+            String snippet = "Rating: " + Double.toString(ms.getRating());
+            shopListing.put(ms.getName(), ms);
             mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(bs.getLocation().latitude, bs.getLocation().longitude))
-                    .title(bs.getName())
+                    .position(new LatLng(ms.getLocation().latitude, ms.getLocation().longitude))
+                    .title(ms.getName())
                     .snippet(snippet)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
         }

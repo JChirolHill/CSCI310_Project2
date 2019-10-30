@@ -1,10 +1,7 @@
 package projects.chirolhill.juliette.csci310_project2.model;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -21,12 +18,17 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
+import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.ClaimShopActivity;
+import projects.chirolhill.juliette.csci310_project2.model.dbadapters.DatabaseCustomer;
+import projects.chirolhill.juliette.csci310_project2.model.dbadapters.DatabaseMerchant;
+import projects.chirolhill.juliette.csci310_project2.model.dbadapters.DatabaseShop;
 
 public class Database {
-    /** Callback interface
-     *  does all the work you want to do with the object returned from the database
+    /**
+     * Callback interface
+     * does all the work you want to do with the object returned from the database
      */
     public interface Callback {
         void dbCallback(Object o);
@@ -38,9 +40,10 @@ public class Database {
         this.cb = cb;
     }
 
-    /** Database class
-     *  getUser fetches the user at a particular uID
-     *  addUser can ADD a user, UPDATE a user, and DELETE a user (pass in null)
+    /**
+     * Database class
+     * getUser fetches the user at a particular uID
+     * addUser can ADD a user, UPDATE a user, and DELETE a user (pass in null)
      */
     private static final String TAG = Database.class.getSimpleName();
 
@@ -84,13 +87,11 @@ public class Database {
                     currUser = null;
                 }
                 else { // existing user in database
-                    if(dataSnapshot.child("isMerchant").equals(true)) {
-                        currUser = new Merchant();
-                        currUser = dataSnapshot.getValue(Merchant.class);
+                    if((boolean)dataSnapshot.child("isMerchant").getValue() == true) {
+                        currUser = (Merchant)dataSnapshot.getValue(DatabaseMerchant.class).revertToOriginal();
                     }
                     else {
-                        currUser = new Customer();
-                        currUser = dataSnapshot.getValue(Customer.class);
+                        currUser = (Customer)dataSnapshot.getValue(DatabaseCustomer.class).revertToOriginal();
                     }
                 }
                 cb.dbCallback(currUser);
@@ -107,7 +108,12 @@ public class Database {
     // if pass in null user, will delete the item in database
     public String addUser(User u) {
         try {
-            dbUsersRef.child(u.getuID()).setValue(u);
+            if(u.isMerchant()) {
+                dbUsersRef.child(u.getuID()).setValue(new DatabaseMerchant((Merchant)u));
+            }
+            else {
+                dbUsersRef.child(u.getuID()).setValue(new DatabaseCustomer((Customer)u));
+            }
         } catch(DatabaseException de) {
             Log.d(TAG, de.getMessage());
             return "Username cannot contain the following characters: . # $ [ ]";
@@ -125,8 +131,8 @@ public class Database {
                 if(dataSnapshot.getValue() == null) { // new shop, not in database
                     currShop = null;
                 }
-                else { // existing user in database
-                    currShop = dataSnapshot.getValue(Shop.class);
+                else { // existing shop in database
+                    currShop = (Shop)dataSnapshot.getValue(DatabaseShop.class).revertToOriginal();
                 }
                 cb.dbCallback(currShop);
             }
@@ -142,7 +148,7 @@ public class Database {
     // if pass in null shop, will delete the item in database
     public String addShop(Shop s) {
         try {
-            dbShopsRef.child(s.getId()).setValue(s);
+            dbShopsRef.child(s.getId()).setValue(new DatabaseShop(s));
         } catch(DatabaseException de) {
             Log.d(TAG, de.getMessage());
             return de.getMessage();

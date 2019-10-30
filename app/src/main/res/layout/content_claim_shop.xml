@@ -44,11 +44,10 @@
             app:layout_constraintEnd_toEndOf="parent"/>
         <ImageView
             android:id="@+id/imageVerifDocs"
-            android:layout_width="400dp"
-            android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="fitCenter"
             android:layout_marginTop="24dp"
-            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/textVerifDocsPrompt"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -69,16 +68,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
-        <Button
-            android:id="@+id/btnViewShop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/viewShop"
-            android:layout_marginTop="24dp"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/textPending"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
     </android.support.constraint.ConstraintLayout>
 
     <TextView
@@ -89,7 +78,7 @@
         android:textColor="#f00"
         android:layout_marginTop="32dp"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/layoutClaimShop"
+        app:layout_constraintTop_toBottomOf="@id/layoutPending"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

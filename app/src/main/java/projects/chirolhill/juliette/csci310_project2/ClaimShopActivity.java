@@ -34,7 +34,6 @@ public class ClaimShopActivity extends AppCompatActivity {
     private ConstraintLayout layoutPending;
     private TextView textError;
     private TextView textPending;
-    private Button btnViewShop;
 
     public static final int REQUEST_IMAGE_CAPTURE = 1;
     public static final String FAIL = "fail";
@@ -59,7 +58,6 @@ public class ClaimShopActivity extends AppCompatActivity {
         layoutPending = findViewById(R.id.layoutPending);
         textError = findViewById(R.id.textError);
         textPending = findViewById(R.id.textPending);
-        btnViewShop = findViewById(R.id.btnViewShop);
 
         verificationDocs = new ArrayList<>();
 
@@ -67,17 +65,15 @@ public class ClaimShopActivity extends AppCompatActivity {
         ownerID = prefs.getString(User.PREF_USER_ID, "INVALID USER ID");
 
         Intent i = getIntent();
-        basicShop = new BasicShop(i.getStringExtra(BasicShop.PREF_BASIC_SHOP_ID),
-                i.getDoubleExtra(BasicShop.PREF_BASIC_SHOP_LATITUDE, 0.0),
-                i.getDoubleExtra(BasicShop.PREF_BASIC_SHOP_LONGITUDE, 0.0));
-        textClaimHeader.setText(R.string.claim + " " + i.getStringExtra(Shop.PREF_BASIC_SHOP_NAME));
+        basicShop = (BasicShop)i.getSerializableExtra(BasicShop.PREF_BASIC_SHOP);
+        textClaimHeader.setText(getResources().getString(R.string.claim) + " " + basicShop.getName());
 
         // check if shop already claimed
         Database.getInstance().setCallback(new Database.Callback() {
             @Override
             public void dbCallback(Object o) {
                 if(o != null) {
-                    Shop s = (Shop)o;
+                    final Shop s = (Shop)o;
                     if(!s.getOwnerID().equals(ownerID)) { // already has an owner
                         layoutClaimShop.setVisibility(View.GONE);
                         textError.setVisibility(View.VISIBLE);
@@ -88,6 +84,17 @@ public class ClaimShopActivity extends AppCompatActivity {
                             renderPendingApproval();
                         }
                         else { // shop approved
+                            // add this shop to list of shops
+                            Database.getInstance().setCallback(new Database.Callback() {
+                                @Override
+                                public void dbCallback(Object o) {
+                                    Merchant m = (Merchant)o;
+                                    m.addShop(s);
+                                    Database.getInstance().addUser(m);
+                                }
+                            });
+                            Database.getInstance().getUser(ownerID);
+
                             renderApproved();
                         }
                     }
@@ -115,28 +122,19 @@ public class ClaimShopActivity extends AppCompatActivity {
                             renderPendingApproval();
 
                             // create the shop in database
-                            String addShopResult = Database.getInstance().addShop(
-                                    new Shop(ownerID, new BasicShop(basicShop)));
+                            String addShopResult = Database.getInstance().addShop(new Shop(ownerID, new BasicShop(basicShop)));
                             if(addShopResult != null) {
                                 textError.setText(addShopResult);
+                                textError.setVisibility(View.VISIBLE);
                             }
                         }
                         else if(o.equals(FAIL)) {
                             textError.setText(R.string.failedImgUpload);
+                            textError.setVisibility(View.VISIBLE);
                         }
-                        textError.setVisibility(View.VISIBLE);
                     }
                 });
                 Database.getInstance().uploadImages(basicShop.getId(), verificationDocs);
-            }
-        });
-
-        btnViewShop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // ownership approved, user clicked to view the shop details
-                Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
-                startActivity(i);
             }
         });
     }
@@ -171,7 +169,6 @@ public class ClaimShopActivity extends AppCompatActivity {
     private void renderApproved() {
         layoutClaimShop.setVisibility(View.GONE);
         textPending.setText(R.string.ownershipApproved);
-        btnViewShop.setVisibility(View.VISIBLE);
         layoutPending.setVisibility(View.VISIBLE);
     }
 }
