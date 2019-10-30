@@ -32,8 +32,7 @@
     <string name="rating">Rating</string>
     <string name="price">Price</string>
     <string name="itemsListed">Available Drinks</string>
-<<<<<<< HEAD
-
+  
     <!-- Claim shop activity -->
     <string name="title_activity_claim_shop">ClaimShopActivity</string>
     <string name="verificationDocsPrompt">Please take a picture of the documents as proof of ownership.</string>
@@ -45,13 +44,11 @@
     <string name="pendingApproval">Your claim of this shop is pending approval.</string>
     <string name="ownershipApproved">Your claim of this shop has been approved. View shop details from your profile page.</string>
     <string name="viewShop">View Shop Details</string>
-=======
-    <string name="title_activity_order">OrderActivity</string>
 
     <!-- Order activity -->
+    <string name="title_activity_order">OrderActivity</string>
     <string name="title_activity_order_confirmation">Order Confirmation</string>
     <string name="totalMoneySpent">Total Money Spent:</string>
     <string name="itemsOrdered">Items you ordered:</string>
     <string name="caffeineLevel">Current Caffeine Level For Today:</string>
->>>>>>> f5f9e813390857242e7b804b14f2055859f27245
 </resources>
