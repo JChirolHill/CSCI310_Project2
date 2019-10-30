@@ -32,6 +32,7 @@ public class DirectionsFetcher {
     private final String BASE_URL = "https://maps.googleapis.com/maps/api/directions/json?";
     private final String API_KEY = "AIzaSyA3pV-0qvHbr3wRFaFu05UPrkQYdtT6QKM"; // server API key, dif than application one
     private MapsActivity map;
+    private DirectionsResponse response;
 
     public DirectionsFetcher(Context context, MapsActivity map) {
         queue = Volley.newRequestQueue(context);
@@ -89,7 +90,9 @@ public class DirectionsFetcher {
         Log.i(TAG, "parse");
         Log.i(TAG, response.toString());
 
-        // TODO acknowledge these results in map
+        // TODO create a DirectionsResponse object that has the polylines, etc, extracted out
+
     }
 
+    public DirectionsResponse getResponse() { return this.response; }
 }

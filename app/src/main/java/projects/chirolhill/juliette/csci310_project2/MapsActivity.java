@@ -33,6 +33,7 @@ import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
 import projects.chirolhill.juliette.csci310_project2.model.DirectionsFetcher;
+import projects.chirolhill.juliette.csci310_project2.model.DirectionsResponse;
 import projects.chirolhill.juliette.csci310_project2.model.YelpFetcher;
 
 public class MapsActivity extends FragmentActivity implements
@@ -217,8 +218,12 @@ public class MapsActivity extends FragmentActivity implements
         // DEBUG
         Log.d(TAG, "calculateDirections: calculating directions.");
 
+        // trigger the HTTP GET request
         directionsFetcher.fetch(currLatLng.latitude, currLatLng.longitude,
                 marker.getPosition().latitude, marker.getPosition().longitude);
+        // extract the response (kind of weird to separate the two, but I'm not sure how else to
+        // get the response to MapsActivity)
+        DirectionsResponse response = directionsFetcher.getResponse();
 
         // TODO initiate polyline drawing on actual map
     }
