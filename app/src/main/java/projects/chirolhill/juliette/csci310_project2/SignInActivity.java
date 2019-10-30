@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -28,6 +29,7 @@ public class SignInActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 0;
 
     private Button btnSignIn;
+    private ImageView imageLogo;
     private TextView textMoment;
 
     @Override
@@ -37,6 +39,7 @@ public class SignInActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        imageLogo = findViewById(R.id.imageLogo);
         btnSignIn = findViewById(R.id.btnSignIn);
         textMoment = findViewById(R.id.textMoment);
 
@@ -44,6 +47,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 btnSignIn.setVisibility(View.GONE);
+                imageLogo.setVisibility(View.GONE);
                 textMoment.setVisibility(View.VISIBLE);
 
                 List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -111,6 +115,7 @@ public class SignInActivity extends AppCompatActivity {
             else {
                 textMoment.setText(R.string.signinfail);
                 btnSignIn.setVisibility(View.VISIBLE);
+                imageLogo.setVisibility(View.VISIBLE);
             }
         }
     }
