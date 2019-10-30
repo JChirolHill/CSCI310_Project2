@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
+import projects.chirolhill.juliette.csci310_project2.model.DirectionsFetcher;
 import projects.chirolhill.juliette.csci310_project2.model.YelpFetcher;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
@@ -54,6 +55,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private Location myLocation;
     private GoogleMap mMap;
     private YelpFetcher yelpFetcher;
+    private DirectionsFetcher directionsFetcher;
     private LatLng currLatLng;
     private com.google.maps.model.LatLng currLatLngDirectionsAPI;
     private Map<String, BasicShop> shopListing;
@@ -68,6 +70,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         yelpFetcher = new YelpFetcher(getApplicationContext(), this);
+        directionsFetcher = new DirectionsFetcher(getApplicationContext(), this);
 
         imgProfile = findViewById(R.id.imgProfile);
 
@@ -94,12 +97,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // needed to access the Directions API in calculateDirections()
-        if (mGeoApiContext == null) {
-            mGeoApiContext = new GeoApiContext.Builder()
-                    .apiKey(getString(R.string.google_maps_key))
-                    .build();
-        }
+//        // needed to access the Directions API in calculateDirections()
+//        if (mGeoApiContext == null) {
+//            mGeoApiContext = new GeoApiContext.Builder()
+//                    .apiKey(getString(R.string.google_maps_key))
+//                    .build();
+//        }
     }
 
     /**
@@ -223,35 +226,38 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
      * Currently only providing one route (the fastest).
      */
     public void calculateDirections(Marker marker) {
-        // DEBUG
-        Log.d(TAG, "calculateDirections: calculating directions.");
+//        // DEBUG
+//        Log.d(TAG, "calculateDirections: calculating directions.");
+//
+//        LatLng destination = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
+//
+//        // NOTE: the best practice to do this involves setting up an intermediate proxy server,
+//        //       specifically to prevent people from decompiling your application and taking
+//        //       advantage of your API key ... but this is a sandboxed app (for now)
+//
+//        /* METHOD 1: YouTube Tutorial (https://www.youtube.com/watch?v=f47L1SL5S0o&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=19)
+//        DirectionsApiRequest directions = new DirectionsApiRequest(mGeoApiContext);
+//        directions.alternatives(false); // restrict results to one route (the fastest) for now
+//        directions.origin(currLatLngDirectionsAPI); // NOTE: had to create an add'l "currLatLng" for now cuz there are dif LatLng types
+//        */
+//
+//        // TODO: try setting up an external server ... "using the Google Maps Web Service client libraries from Google App Engine instances"
+//        // thus, requests go from *app* --> server --> directions API
+//        //                        *app* <-- server <-- directions API
+//        // https://cloud.google.com/blog/products/maps-platform/making-most-of-google-maps-web-service
+//
+//        // DEBUG
+//        Log.d(TAG, "calculateDirections: destination is " + destination.toString());
+//
+//        // TODO make asynchronous or place in proper try-catch
+//        GeocodingResult[] results = GeocodingApi.reverseGeocode(mGeoApiContext, currLatLngDirectionsAPI).awaitIgnoreError();
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//        Log.i(TAG, gson.toJson(results[0].addressComponents));
+//
+//        // TODO initiate polyline drawing on actual map
 
-        LatLng destination = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
-
-        // NOTE: the best practice to do this involves setting up an intermediate proxy server,
-        //       specifically to prevent people from decompiling your application and taking
-        //       advantage of your API key ... but this is a sandboxed app (for now)
-
-        /* METHOD 1: YouTube Tutorial (https://www.youtube.com/watch?v=f47L1SL5S0o&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=19)
-        DirectionsApiRequest directions = new DirectionsApiRequest(mGeoApiContext);
-        directions.alternatives(false); // restrict results to one route (the fastest) for now
-        directions.origin(currLatLngDirectionsAPI); // NOTE: had to create an add'l "currLatLng" for now cuz there are dif LatLng types
-        */
-
-        // TODO: try setting up an external server ... "using the Google Maps Web Service client libraries from Google App Engine instances"
-        // thus, requests go from *app* --> server --> directions API
-        //                        *app* <-- server <-- directions API
-        // https://cloud.google.com/blog/products/maps-platform/making-most-of-google-maps-web-service
-
-        // DEBUG
-        Log.d(TAG, "calculateDirections: destination is " + destination.toString());
-
-        // TODO make asynchronous or place in proper try-catch
-        GeocodingResult[] results = GeocodingApi.reverseGeocode(mGeoApiContext, currLatLngDirectionsAPI).awaitIgnoreError();
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Log.i(TAG, gson.toJson(results[0].addressComponents));
-
-        // TODO initiate polyline drawing on actual map
+        directionsFetcher.fetch(currLatLng.latitude, currLatLng.longitude,
+                marker.getPosition().latitude, marker.getPosition().longitude);
     }
 
     /**
