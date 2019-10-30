@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserLog {
+    private String id;
     private Customer owner;
     private List<Order> orders;
     private int totalCaffeineLevel;
@@ -14,6 +15,10 @@ public class UserLog {
         orders = new ArrayList<>();
         totalCaffeineLevel = 0;
         totalMoneySpent = 0.0;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public Customer getOwner() {

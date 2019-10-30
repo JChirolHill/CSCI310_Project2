@@ -3,6 +3,7 @@ package projects.chirolhill.juliette.csci310_project2;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -32,6 +33,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
+import projects.chirolhill.juliette.csci310_project2.model.MapShop;
+import projects.chirolhill.juliette.csci310_project2.model.User;
 import projects.chirolhill.juliette.csci310_project2.model.YelpFetcher;
 
 public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
@@ -160,28 +163,48 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     @Override
     public boolean onMarkerClick (Marker marker) {
-//        currLatLng = marker.getPosition();
         if(marker.getPosition().latitude != currLatLng.latitude
                 && marker.getPosition().longitude != currLatLng.longitude) {
             final String selectedShopName = marker.getTitle();
-            Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_LONG)
-                    .setAction("View Drinks", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // get the clicked shop
-                            BasicShop selectedShop = shopListing.get(selectedShopName);
 
-                            // launch intent to view shop details here
-                            Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
-                            i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
-                            i.putExtra(BasicShop.PREF_BASIC_SHOP_NAME, selectedShop.getName());
-                            i.putExtra(BasicShop.PREF_BASIC_SHOP_PRICE, selectedShop.getPriceRange());
-                            i.putExtra(BasicShop.PREF_BASIC_SHOP_RATING, selectedShop.getRating());
-                            i.putExtra(BasicShop.PREF_BASIC_SHOP_IMAGE, selectedShop.getImgURL());
-                            i.putExtra(BasicShop.PREF_BASIC_SHOP_ADDRESS, selectedShop.getAddress());
-                            startActivity(i);
-                        }
-                    }).show();
+            SharedPreferences prefs = this.getSharedPreferences("Settings", Context.MODE_PRIVATE);
+            boolean isMerchant = prefs.getBoolean(User.PREF_IS_MERCHANT, true);
+
+            if(isMerchant) { // merchant: show option to claim shop
+                Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_LONG)
+                        .setAction("Claim Shop", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // get the clicked shop
+                                BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
+
+                                // launch intent to claim the shop
+                                Intent i = new Intent(getApplicationContext(), ClaimShopActivity.class);
+                                i.putExtra(BasicShop.PREF_BASIC_SHOP, selectedShop);
+                                startActivity(i);
+                            }
+                        }).show();
+            }
+            else { // customer: show option to view drinks
+                Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_LONG)
+                        .setAction("View Drinks", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // get the clicked shop
+                                BasicShop selectedShop = shopListing.get(selectedShopName);
+
+                                // launch intent to view shop details here
+                                Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
+                                i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
+                                i.putExtra(BasicShop.PREF_BASIC_SHOP_NAME, selectedShop.getName());
+                                i.putExtra(BasicShop.PREF_BASIC_SHOP_PRICE, selectedShop.getPriceRange());
+                                i.putExtra(BasicShop.PREF_BASIC_SHOP_RATING, selectedShop.getRating());
+                                i.putExtra(BasicShop.PREF_BASIC_SHOP_IMAGE, selectedShop.getImgURL());
+                                i.putExtra(BasicShop.PREF_BASIC_SHOP_ADDRESS, selectedShop.getAddress());
+                                startActivity(i);
+                            }
+                        }).show();
+            }
         }
 
         return false; // moves camera to the selected marker
@@ -190,12 +213,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     public void drawUpdatedList() {
         Log.d(TAG, "called drawUpdatedList");
         // add markers for all coffeeshops
-        for(BasicShop bs : yelpFetcher.getShops()) {
-            String snippet = "Rating: " + Double.toString(bs.getRating());
-            shopListing.put(bs.getName(), bs);
+        for(MapShop ms : yelpFetcher.getShops()) {
+            String snippet = "Rating: " + Double.toString(ms.getRating());
+            shopListing.put(ms.getName(), ms);
             mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(bs.getLocation().latitude, bs.getLocation().longitude))
-                    .title(bs.getName())
+                    .position(new LatLng(ms.getLocation().latitude, ms.getLocation().longitude))
+                    .title(ms.getName())
                     .snippet(snippet)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
         }

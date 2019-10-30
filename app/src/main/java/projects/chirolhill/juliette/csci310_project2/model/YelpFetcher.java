@@ -28,7 +28,7 @@ public class YelpFetcher {
     private final String TAG = YelpFetcher.class.getSimpleName();
 
     protected RequestQueue queue;
-    private List<BasicShop> shops;
+    private List<MapShop> shops;
     private final String BASE_URL = "https://api.yelp.com/v3/businesses/search?term=coffee+tea&open_now=true";
     private final String YELP_API_KEY = "Nyt3b2FngNfZvaimvE5glNIOO9aVLdLNTNKQ2jVlC9dReEY9JVKcYcRm8i5EOT2IHP7GDH8jljJ0Mki8fCeBlSFcQhu8st2pJzFjcT9E5qF44nvoi1yI-KAg_jyZXXYx";
     private MapsActivity map;
@@ -39,7 +39,7 @@ public class YelpFetcher {
         this.shops = new ArrayList<>();
     }
 
-    public List<BasicShop> getShops() {
+    public List<MapShop> getShops() {
         return shops;
     }
 
@@ -85,25 +85,26 @@ public class YelpFetcher {
             JSONArray jsonshops = response.getJSONArray("businesses");
             for(int i=0; i<jsonshops.length(); i++) {
                 JSONObject coord = jsonshops.getJSONObject(i).getJSONObject("coordinates");
-                BasicShop bs = null;
+                MapShop ms = null;
                 try {
                     Log.d(TAG, jsonshops.getJSONObject(i).toString());
 
-                    bs = new BasicShop("0", coord.getDouble("latitude"), coord.getDouble("longitude"));
-                    bs.setName(jsonshops.getJSONObject(i).getString("name"));
-                    bs.setRating(jsonshops.getJSONObject(i).getDouble("rating"));
-                    bs.setPriceRange(jsonshops.getJSONObject(i).getString("price"));
-                    bs.setImgURL(jsonshops.getJSONObject(i).getString("image_url"));
+                    String id = jsonshops.getJSONObject(i).getString("id");
+                    ms = new MapShop(id, coord.getDouble("latitude"), coord.getDouble("longitude"));
+                    ms.setName(jsonshops.getJSONObject(i).getString("name"));
+                    ms.setRating(jsonshops.getJSONObject(i).getDouble("rating"));
+                    ms.setPriceRange(jsonshops.getJSONObject(i).getString("price"));
+                    ms.setImgURL(jsonshops.getJSONObject(i).getString("image_url"));
                     String address = jsonshops.getJSONObject(i).getJSONObject("location").getString("address1")
                             + ", " + jsonshops.getJSONObject(i).getJSONObject("location").getString("city");
-                    bs.setAddress(address);
+                    ms.setAddress(address);
                 } catch(JSONException e) {
                     Log.d(TAG, e.getMessage());
                 }
 
                 // only add if have a name, other params optional
-                if(bs != null && bs.getName() != null) {
-                    shops.add(bs);
+                if(ms != null && ms.getName() != null) {
+                    shops.add(ms);
                 }
             }
             map.drawUpdatedList();

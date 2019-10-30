@@ -10,6 +10,11 @@ public class Drink {
     private int timesOrdered;
     private int caffeine; // stored in milligrams
 
+    public Drink(String id, Shop shop) {
+        this.id = id;
+        this.shop = shop;
+    }
+
     public Drink(String id, boolean isCoffee, Shop shop) {
         this.id = id;
         this.isCoffee = isCoffee;

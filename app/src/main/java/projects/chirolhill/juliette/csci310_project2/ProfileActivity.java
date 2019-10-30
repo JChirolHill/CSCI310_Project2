@@ -154,8 +154,6 @@ public class ProfileActivity extends AppCompatActivity {
         radioIsMerchant.setVisibility(View.GONE);
 
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
-        String username = prefs.getString(User.PREF_USERNAME, "Invalid Username");
-        String email = prefs.getString(User.PREF_EMAIL, "Invalid Email");
         textUsername.setText(prefs.getString(User.PREF_USERNAME, "Invalid Username"));
         textEmail.setText(prefs.getString(User.PREF_EMAIL, "Invalid Email"));
         textTypeUser.setText(prefs.getBoolean(User.PREF_IS_MERCHANT, false) ? R.string.merchant : R.string.customer);

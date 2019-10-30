@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="projects.chirolhill.juliette.csci310_project2">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -12,18 +18,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+      
         <activity
             android:name=".OrderActivity"
             android:label="@string/title_activity_order"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-        <!-- <activity android:name=".MainActivity"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.MAIN" /> -->
-        <!-- </intent-filter> -->
-        <!-- </activity> -->
-        <uses-library
-            android:name="org.apache.http.legacy"
-            android:required="false" />
 
         <activity
             android:name=".SignInActivity"
@@ -57,11 +60,15 @@
         <activity
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ShopInfoActivity"
             android:label="@string/title_activity_shop_info"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ClaimShopActivity"
+            android:label="@string/title_activity_claim_shop"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

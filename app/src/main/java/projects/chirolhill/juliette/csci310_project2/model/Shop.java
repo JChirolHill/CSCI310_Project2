@@ -7,26 +7,44 @@ import java.util.Set;
 
 public class Shop extends BasicShop {
     private Set<Drink> drinks;
-    private Merchant owner;
+    private String ownerID;
     private List<String> verificationDocs;
+    private boolean pendingApproval;
 
-    public Shop(String id, Merchant owner, BasicShop basicShop) {
+    public Shop(String ownerID, BasicShop basicShop) {
         super(basicShop);
-        this.owner = owner;
+        this.ownerID = ownerID;
         drinks = new HashSet<>();
         verificationDocs = new ArrayList<>();
+        pendingApproval = true;
     }
 
     public Set<Drink> getDrinks() {
         return drinks;
     }
 
-    public Merchant getOwner() {
-        return owner;
+    public String getOwnerID() {
+        return ownerID;
     }
 
     public List<String> getVerificationDocs() {
         return verificationDocs;
+    }
+
+    public void addVerificationDoc(String doc) {
+        this.verificationDocs.add(doc);
+    }
+
+    public void setVerificationDocs(List<String> verificationDocs) {
+        this.verificationDocs = verificationDocs;
+    }
+
+    public boolean isPendingApproval() {
+        return pendingApproval;
+    }
+
+    public void setPendingApproval(boolean pendingApproval) {
+        this.pendingApproval = pendingApproval;
     }
 
     public void addDrink(Drink d) {
@@ -38,11 +56,11 @@ public class Shop extends BasicShop {
     }
 
     // return true at successful change of ownership
-    public boolean changeOwnership(Merchant m, List<String> verifDocs) {
-        if(m != null && !verifDocs.isEmpty()) {
+    public boolean changeOwnership(String newOwnerID, List<String> verifDocs) {
+        if(newOwnerID != null && !verifDocs.isEmpty()) {
             verificationDocs.clear();
             verificationDocs = verifDocs;
-            owner = m;
+            ownerID = newOwnerID;
             return true;
         }
         return false;
