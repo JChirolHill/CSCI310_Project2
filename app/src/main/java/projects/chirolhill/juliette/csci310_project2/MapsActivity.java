@@ -60,6 +60,7 @@ public class MapsActivity extends FragmentActivity implements
     private DirectionsFetcher directionsFetcher;
     private LatLng currLatLng;
     private Map<String, BasicShop> shopListing;
+    private ArrayList<Polyline> polylines;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +97,8 @@ public class MapsActivity extends FragmentActivity implements
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        polylines = new ArrayList<Polyline>();
     }
 
     /**
@@ -158,6 +161,14 @@ public class MapsActivity extends FragmentActivity implements
 
             // needed for OnInfoWindowClickListener() to work
             mMap.setOnInfoWindowClickListener(this);
+
+            // to remove leftover polylines between clicks
+            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    for (Polyline p : polylines) p.remove();
+                }
+            });
         }
     }
 
@@ -174,6 +185,9 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public boolean onMarkerClick (Marker marker) {
+        // remove old polylines
+        for (Polyline p : polylines) p.remove();
+
 //        currLatLng = marker.getPosition();
         if(marker.getPosition().latitude != currLatLng.latitude
                 && marker.getPosition().longitude != currLatLng.longitude) {
@@ -208,10 +222,12 @@ public class MapsActivity extends FragmentActivity implements
      */
     @Override
     public void onInfoWindowClick(Marker marker) {
+        // remove old polylines
+        for (Polyline p : polylines) p.remove();
+
         // TODO put into actual dialog with options (driving or walking)
         calculateDirections(marker);
     }
-
 
     /**
      * Calculates directions from current location to specified marker.
@@ -246,6 +262,8 @@ public class MapsActivity extends FragmentActivity implements
 
             List<LatLng> latlngs = PolyUtil.decode(routes.get(i).getEncodedPolyline());
             Polyline polyline = mMap.addPolyline(new PolylineOptions().clickable(true).addAll(latlngs));
+            this.polylines.add(polyline);
+            // TODO: remove polylines once you click anywhere else!
         }
     }
 
