@@ -38,6 +38,8 @@ public class DirectionsFetcher {
     private DirectionsResponse mostRecentResponse;
     private String mostRecentRequestURL;
 
+    private Callback cb;
+
     public DirectionsFetcher(Context context, MapsActivity map) {
         queue = Volley.newRequestQueue(context);
         this.map = map;
@@ -53,8 +55,8 @@ public class DirectionsFetcher {
      */
     public void fetch(double originLat, double originLng, double destLat, double destLng, String mode) {
         // CLEAR RESULTS OF PREVIOUS REQUEST
-        this.mostRecentResponse = null;
-        this.mostRecentRequestURL = null;
+         this.mostRecentResponse = null;
+         this.mostRecentRequestURL = null;
 
         //TODO support parameters for mode (either driving or walking) and multiple routes
         this.mostRecentRequestURL = BASE_URL + "origin=" + Double.toString(originLat) + "," + Double.toString(originLng)
@@ -70,9 +72,11 @@ public class DirectionsFetcher {
      * @param reqURL: the prepared Google Directions API URL (see https://developers.google.com/maps/documentation/directions/intro#Introduction_
      */
     public void requestJSONParse(String reqURL) {
+        Log.i(TAG, "entering requestJSONParse");
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, reqURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                Log.i(TAG, "triggering onResponse()");
                 parse(response);
             }
         },
@@ -92,8 +96,14 @@ public class DirectionsFetcher {
         queue.add(req);
     }
 
+    public interface Callback {
+        void directionsCallback(Object o);
+    }
+    public void setCallback(Callback cb) { this.cb = cb; }
+
     /**
      * Parses the JSON response from the Directions API into Java objects.
+     * Uses a callback to set up the polylines.
      * @param response
      */
     public void parse(JSONObject response) {
@@ -104,6 +114,9 @@ public class DirectionsFetcher {
             if (this.mostRecentRequestURL.contains("&mode=walking")) mode = "walking";
         }
 
+        // create the response object
+        this.mostRecentResponse = new DirectionsResponse(mode);
+
         /**
          * JSON Object model: https://developers.google.com/maps/documentation/directions/intro#DirectionsResponseElements
          * NOTE: I may have parsed inefficiently. It seemed that anytime I wanted to get to a nested
@@ -112,9 +125,6 @@ public class DirectionsFetcher {
         JSONArray routes;
         try {
             routes = response.getJSONArray("routes");
-
-            // create the response object
-            this.mostRecentResponse = new DirectionsResponse(mode);
 
             // add each route to the response object
             for (int i = 0; i < routes.length(); i++) {
@@ -170,8 +180,13 @@ public class DirectionsFetcher {
                 // add steps to route object
                 route.setSteps(steps);
 
-                // add route to response object
+                // add newly created route to response object
                 this.mostRecentResponse.addRoute(route);
+
+                Log.i(TAG, "this.mostRecentResponse = " + this.mostRecentResponse.toString());
+
+                // draw polylines via callback
+                cb.directionsCallback(this.mostRecentResponse);
             }
         } catch (JSONException e) {
             e.printStackTrace();

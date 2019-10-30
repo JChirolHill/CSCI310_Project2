@@ -27,13 +27,19 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.PolyUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
 import projects.chirolhill.juliette.csci310_project2.model.DirectionsFetcher;
 import projects.chirolhill.juliette.csci310_project2.model.DirectionsResponse;
+import projects.chirolhill.juliette.csci310_project2.model.DirectionsRoute;
 import projects.chirolhill.juliette.csci310_project2.model.YelpFetcher;
 
 public class MapsActivity extends FragmentActivity implements
@@ -215,22 +221,32 @@ public class MapsActivity extends FragmentActivity implements
         // DEBUG
         Log.d(TAG, "calculateDirections: calculating directions.");
 
+        // to trigger polyline drawing
+        directionsFetcher.setCallback(new DirectionsFetcher.Callback() {
+            @Override
+            public void directionsCallback(Object o) {
+                DirectionsResponse response = (DirectionsResponse) o;
+                drawPolyline(response);
+            }
+        });
+
         // trigger the HTTP GET request
         directionsFetcher.fetch(currLatLng.latitude, currLatLng.longitude,
                 marker.getPosition().latitude, marker.getPosition().longitude, "driving"); // TODO programmatically assign 'mode'
-        // extract the response (kind of weird to separate the two, but I'm not sure how else to
-        // get the response to MapsActivity)
-        DirectionsResponse response = directionsFetcher.getResponse();
-
-        // TODO initiate polyline drawing on actual map
     }
 
     /**
      * Uses supplied route data to draw the appropriate polyline.
      * Currently non-clickable, single line.
      */
-    public void drawPolyline() {
+    public void drawPolyline(DirectionsResponse response) {
+        ArrayList<DirectionsRoute> routes = response.getRoutes();
+        for (int i = 0; i < routes.size(); i++) { // testing on only ONE route/polyline for now
+            // NOTE: may need to override main thread with this thread to get lines to show up quickly
 
+            List<LatLng> latlngs = PolyUtil.decode(routes.get(i).getEncodedPolyline());
+            Polyline polyline = mMap.addPolyline(new PolylineOptions().clickable(true).addAll(latlngs));
+        }
     }
 
     public void drawUpdatedList() {
