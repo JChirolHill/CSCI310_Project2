@@ -27,6 +27,12 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.model.GeocodingResult;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +55,9 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private GoogleMap mMap;
     private YelpFetcher yelpFetcher;
     private LatLng currLatLng;
+    private com.google.maps.model.LatLng currLatLngDirectionsAPI;
     private Map<String, BasicShop> shopListing;
+    private GeoApiContext mGeoApiContext = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,8 +93,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-    }
 
+//        // needed to access the Directions API in calculateDirections()
+//        if (mGeoApiContext == null) {
+//            mGeoApiContext = new GeoApiContext.Builder()
+//                    .apiKey(getString(R.string.google_maps_key))
+//                    .build();
+//        }
+    }
 
     /**
      * Manipulates the map once available.
@@ -123,9 +137,11 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
             if (myLocation != null) {
                 currLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                currLatLngDirectionsAPI = new com.google.maps.model.LatLng(myLocation.getLatitude(), myLocation.getLongitude());
                 Log.d(TAG,"Location Info: Location achieved!");
             } else {
                 currLatLng = new LatLng(34.0224, 118.2851);
+                currLatLngDirectionsAPI = new com.google.maps.model.LatLng(34.0224, 118.2851);
                 Log.d(TAG,"Location Info: No location :(");
             }
             MarkerOptions marker = new MarkerOptions()
@@ -148,8 +164,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
             // needed for OnInfoWindowClickListener() to work
             mMap.setOnInfoWindowClickListener(this);
-
-            // TODO make a "GeoApiContext"
         }
     }
 
@@ -200,7 +214,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
      */
     @Override
     public void onInfoWindowClick(Marker marker) {
-
+        calculateDirections(marker);
     }
 
 
@@ -209,6 +223,14 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
      * Currently only providing one route (the fastest).
      */
     public void calculateDirections(Marker marker) {
+
+        // needed to access the Directions API in calculateDirections()
+        if (mGeoApiContext == null) {
+            mGeoApiContext = new GeoApiContext.Builder()
+                    .apiKey(getString(R.string.google_maps_key))
+                    .build();
+        }
+        // DEBUG
         Log.d(TAG, "calculateDirections: calculating directions.");
 
         LatLng destination = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
@@ -217,9 +239,19 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         //       specifically to prevent people from decompiling your application and taking
         //       advantage of your API key ... but this is a sandboxed app (for now)
 
+        /* METHOD 1: YouTube Tutorial (https://www.youtube.com/watch?v=f47L1SL5S0o&list=PLgCYzUzKIBE-SZUrVOsbYMzH7tPigT3gi&index=19)
+        DirectionsApiRequest directions = new DirectionsApiRequest(mGeoApiContext);
+        directions.alternatives(false); // restrict results to one route (the fastest) for now
+        directions.origin(currLatLngDirectionsAPI); // NOTE: had to create an add'l "currLatLng" for now cuz there are dif LatLng types
+        */
 
+        // DEBUG
+        Log.d(TAG, "calculateDirections: destination is " + destination.toString());
 
-
+        // TODO make asynchronous or place in proper try-catch
+        GeocodingResult[] results = GeocodingApi.reverseGeocode(mGeoApiContext, currLatLngDirectionsAPI).awaitIgnoreError();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Log.i(TAG, gson.toJson(results[0].addressComponents));
     }
 
     /**
