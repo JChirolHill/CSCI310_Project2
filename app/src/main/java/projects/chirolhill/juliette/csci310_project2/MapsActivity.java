@@ -94,12 +94,12 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-//        // needed to access the Directions API in calculateDirections()
-//        if (mGeoApiContext == null) {
-//            mGeoApiContext = new GeoApiContext.Builder()
-//                    .apiKey(getString(R.string.google_maps_key))
-//                    .build();
-//        }
+        // needed to access the Directions API in calculateDirections()
+        if (mGeoApiContext == null) {
+            mGeoApiContext = new GeoApiContext.Builder()
+                    .apiKey(getString(R.string.google_maps_key))
+                    .build();
+        }
     }
 
     /**
@@ -223,13 +223,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
      * Currently only providing one route (the fastest).
      */
     public void calculateDirections(Marker marker) {
-
-        // needed to access the Directions API in calculateDirections()
-        if (mGeoApiContext == null) {
-            mGeoApiContext = new GeoApiContext.Builder()
-                    .apiKey(getString(R.string.google_maps_key))
-                    .build();
-        }
         // DEBUG
         Log.d(TAG, "calculateDirections: calculating directions.");
 
