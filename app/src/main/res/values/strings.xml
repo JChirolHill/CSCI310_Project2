@@ -6,7 +6,7 @@
     <string name="signin">Begin</string>
     <string name="onemoment">One moment please&#8230;</string>
     <string name="signinfail">Sign in was unsuccessful, try again?</string>
-  
+
     <!-- Profile activity -->
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="createAccountTitle">Welcome</string>
@@ -32,4 +32,5 @@
     <string name="rating">Rating</string>
     <string name="price">Price</string>
     <string name="itemsListed">Available Drinks</string>
+    <string name="title_activity_order">OrderActivity</string>
 </resources>
