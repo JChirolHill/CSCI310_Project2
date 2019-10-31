@@ -9,7 +9,7 @@
 
     <!-- Profile activity -->
     <string name="title_activity_profile">ProfileActivity</string>
-    <string name="createAccountTitle">Welcome</string>
+    <string name="createAccountTitle">Profile Details</string>
     <string name="viewAccountTitle">View Profile</string>
     <string name="createAccountSubtitle">Please fill in your account details</string>
     <string name="usernamePrompt">Username:</string>
