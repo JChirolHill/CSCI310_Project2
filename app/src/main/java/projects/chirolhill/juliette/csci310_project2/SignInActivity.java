@@ -94,6 +94,7 @@ public class SignInActivity extends AppCompatActivity {
                             i.putExtra(User.PREF_USER_ID, user.getUid());
                             i.putExtra(User.PREF_USERNAME, user.getDisplayName());
                             i.putExtra(User.PREF_EMAIL, user.getEmail());
+                            i.putExtra(ProfileActivity.EXTRA_CREATE_PROFILE, true);
                             startActivity(i);
                         }
                         else { // user already in database
