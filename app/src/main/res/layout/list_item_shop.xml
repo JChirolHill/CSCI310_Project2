@@ -30,7 +30,6 @@
                 android:id="@+id/listShopName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Shop Name"
                 android:textSize="24sp"
                 app:layout_constraintTop_toBottomOf="@id/listShopImage"
                 app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +39,6 @@
                 android:id="@+id/listShopAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="shop address"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/listShopName"/>
@@ -57,7 +55,6 @@
                 android:id="@+id/listShopRating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="4.5"
                 android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="@id/listShopName"
                 app:layout_constraintTop_toBottomOf="@id/listHorizLine"/>
@@ -66,7 +63,6 @@
                 android:id="@+id/listShopPrice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$$$"
                 android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="@id/listShopName"
                 app:layout_constraintTop_toBottomOf="@id/listHorizLine"/>

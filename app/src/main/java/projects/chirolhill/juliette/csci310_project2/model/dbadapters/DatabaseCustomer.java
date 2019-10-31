@@ -19,7 +19,9 @@ public class DatabaseCustomer implements DatabaseAdapter {
         this.username = u.getUsername();
         this.email = u.getEmail();
         this.isMerchant = u.isMerchant();
-        this.logID = u.getLog().getId();
+        if(u.getLog() != null) {
+            this.logID = u.getLog().getId();
+        }
     }
 
     @Override

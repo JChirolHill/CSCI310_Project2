@@ -41,6 +41,7 @@ import projects.chirolhill.juliette.csci310_project2.model.User;
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = ProfileActivity.class.getSimpleName();
     public static final String EXTRA_READONLY = "profile_extra_view"; // display as view or update
+    public static final String EXTRA_CREATE_PROFILE = "profile_create_profile"; // called from signin activity
 
     private TextView textTitle;
     private TextView textSubtitle;
@@ -61,6 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private boolean readonly;
     private boolean origReadonly;
+    private boolean createProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // fetch intent and decide whether readonly or editable
         final Intent i = getIntent();
+        createProfile = i.getBooleanExtra(EXTRA_CREATE_PROFILE, false);
         if(i.getBooleanExtra(EXTRA_READONLY, true)) { // readonly: called from maps activity when click on profile icon
             readonly = true;
             origReadonly = true;
@@ -113,8 +116,15 @@ public class ProfileActivity extends AppCompatActivity {
         btnDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), ShopListing.class);
-                startActivity(i);
+                SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+                if(prefs.getBoolean(User.PREF_IS_MERCHANT, true)) { // merchant clicks on myshops btn
+                    Intent i = new Intent(getApplicationContext(), ShopListing.class);
+                    startActivity(i);
+                }
+                else { // customer clicks on myorders btn
+//                    Intent i = new Intent(getApplicationContext(), Log.class);
+//                    startActivity(i);
+                }
             }
         });
 
@@ -176,6 +186,7 @@ public class ProfileActivity extends AppCompatActivity {
         textUsername.setVisibility(View.VISIBLE);
         textTypeUserDescr.setVisibility(View.VISIBLE);
         textTypeUser.setVisibility(View.VISIBLE);
+        btnDetails.setVisibility(View.VISIBLE);
         textSubtitle.setVisibility(View.GONE);
         editUsername.setVisibility(View.GONE);
         textIsMerchantPrompt.setVisibility(View.GONE);
@@ -183,10 +194,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         if(prefs.getBoolean(User.PREF_IS_MERCHANT, true)) {
-            btnDetails.setVisibility(View.VISIBLE);
+            btnDetails.setText(getResources().getString(R.string.myshops));
         }
         else {
-            btnDetails.setVisibility(View.GONE);
+            btnDetails.setText(getResources().getString(R.string.myorders));
         }
         textUsername.setText(prefs.getString(User.PREF_USERNAME, "Invalid Username"));
         textEmail.setText(prefs.getString(User.PREF_EMAIL, "Invalid Email"));
@@ -202,8 +213,12 @@ public class ProfileActivity extends AppCompatActivity {
         btnDetails.setVisibility(View.GONE);
         textSubtitle.setVisibility(View.VISIBLE);
         editUsername.setVisibility(View.VISIBLE);
-        textIsMerchantPrompt.setVisibility(View.VISIBLE);
-        radioIsMerchant.setVisibility(View.VISIBLE);
+
+        // don't allow change of user status (merchant/customer) after create profile
+        if(createProfile) {
+            textIsMerchantPrompt.setVisibility(View.VISIBLE);
+            radioIsMerchant.setVisibility(View.VISIBLE);
+        }
 
         textTitle.setText(R.string.createAccountTitle);
         editUsername.setText(u.getUsername());
