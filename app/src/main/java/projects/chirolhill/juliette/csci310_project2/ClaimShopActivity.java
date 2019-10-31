@@ -127,6 +127,21 @@ public class ClaimShopActivity extends AppCompatActivity {
                                 textError.setText(addShopResult);
                                 textError.setVisibility(View.VISIBLE);
                             }
+
+                            // add this shop to owner (shows as pending)
+                            Database.getInstance().setCallback(new Database.Callback() {
+                                @Override
+                                public void dbCallback(Object o) {
+                                    Merchant m = (Merchant)o;
+                                    m.addShop(new Shop(ownerID, new BasicShop(basicShop)));
+                                    String addUser = Database.getInstance().addUser(m);
+                                    if(addUser != null) {
+                                        textError.setText(addUser);
+                                        textError.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            });
+                            Database.getInstance().getUser(ownerID);
                         }
                         else if(o.equals(FAIL)) {
                             textError.setText(R.string.failedImgUpload);

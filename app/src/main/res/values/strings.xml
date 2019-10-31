@@ -22,6 +22,12 @@
     <string name="typeUser">Type of User:</string>
     <string name="merchant">Merchant</string>
     <string name="customer">Customer</string>
+    <string name="myshops">My Shops</string>
+    <string name="myorders">My Orders</string>
+
+    <!-- ShopList activity -->
+    <string name="shopsown">Shops You Own</string>
+    <string name="viewShopDetails">Details</string>
 
     <!-- Map activity -->
     <string name="title_activity_maps">Map</string>
@@ -32,7 +38,7 @@
     <string name="rating">Rating</string>
     <string name="price">Price</string>
     <string name="itemsListed">Available Drinks</string>
-  
+
     <!-- Claim shop activity -->
     <string name="title_activity_claim_shop">ClaimShopActivity</string>
     <string name="verificationDocsPrompt">Please take a picture of the documents as proof of ownership.</string>
@@ -51,4 +57,5 @@
     <string name="totalMoneySpent">Total Money Spent:</string>
     <string name="itemsOrdered">Items you ordered:</string>
     <string name="caffeineLevel">Current Caffeine Level For Today:</string>
+    <string name="title_activity_shop_listing">ShopListing</string>
 </resources>
