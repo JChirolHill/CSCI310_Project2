@@ -39,6 +39,10 @@ public class Order implements Serializable {
         return user;
     }
 
+    public Map<String, Pair<Drink, Integer>> getDrinks(){
+        return drinks;
+    }
+
     public int getNumItemsOrdered() {
         int numItems = 0;
         for(Map.Entry<String, Pair<Drink, Integer>> entry : drinks.entrySet()) {
