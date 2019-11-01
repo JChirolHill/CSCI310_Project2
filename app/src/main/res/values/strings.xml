@@ -58,4 +58,7 @@
     <string name="itemsOrdered">Items you ordered:</string>
     <string name="caffeineLevel">Current Caffeine Level For Today:</string>
     <string name="title_activity_shop_listing">ShopListing</string>
+    <string name="quantityPrompt">Quantity:</string>
+    <string name="pricePrompt">Price:</string>
+    <string name="caffeinePrompt">Caffeine:</string>
 </resources>

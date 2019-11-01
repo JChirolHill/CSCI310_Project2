@@ -7,10 +7,11 @@
 
     <TextView
         android:id="@+id/DrinkView"
-        android:layout_width="443dp"
-        android:layout_height="55dp"
+        android:layout_width="515dp"
+        android:layout_height="60dp"
         android:layout_gravity="clip_horizontal|center_horizontal"
         android:layout_weight="1"
+        android:background="@drawable/order_view_list_border"
         android:text="abc" />
 
     <LinearLayout
@@ -22,20 +23,23 @@
         <TextView
             android:id="@+id/QuantityView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:layout_height="20dp"
+            android:background="@drawable/order_view_list_border"
+            android:text="@string/quantityPrompt" />
 
         <TextView
             android:id="@+id/PriceView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:layout_height="20dp"
+            android:background="@drawable/order_view_list_border"
+            android:text="@string/pricePrompt" />
 
         <TextView
             android:id="@+id/CaffeineView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:layout_height="20dp"
+            android:background="@drawable/order_view_list_border"
+            android:text="@string/caffeinePrompt" />
 
     </LinearLayout>
 </LinearLayout>
