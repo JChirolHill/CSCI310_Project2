@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 public class Shop extends BasicShop {
+    public static final String PREF_SHOP = "pref_shop";
+
     private Set<Drink> drinks;
     private String ownerID;
     private List<String> verificationDocs;

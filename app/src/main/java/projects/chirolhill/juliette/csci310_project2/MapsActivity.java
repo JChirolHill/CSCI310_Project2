@@ -34,6 +34,7 @@ import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
 import projects.chirolhill.juliette.csci310_project2.model.MapShop;
+import projects.chirolhill.juliette.csci310_project2.model.Shop;
 import projects.chirolhill.juliette.csci310_project2.model.User;
 import projects.chirolhill.juliette.csci310_project2.model.YelpFetcher;
 
@@ -191,16 +192,17 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             @Override
                             public void onClick(View v) {
                                 // get the clicked shop
-                                BasicShop selectedShop = shopListing.get(selectedShopName);
+                                BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
 
                                 // launch intent to view shop details here
                                 Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
                                 i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
-                                i.putExtra(BasicShop.PREF_BASIC_SHOP_NAME, selectedShop.getName());
-                                i.putExtra(BasicShop.PREF_BASIC_SHOP_PRICE, selectedShop.getPriceRange());
-                                i.putExtra(BasicShop.PREF_BASIC_SHOP_RATING, selectedShop.getRating());
-                                i.putExtra(BasicShop.PREF_BASIC_SHOP_IMAGE, selectedShop.getImgURL());
-                                i.putExtra(BasicShop.PREF_BASIC_SHOP_ADDRESS, selectedShop.getAddress());
+                                i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
+//                                i.putExtra(BasicShop.PREF_BASIC_SHOP_NAME, selectedShop.getName());
+//                                i.putExtra(BasicShop.PREF_BASIC_SHOP_PRICE, selectedShop.getPriceRange());
+//                                i.putExtra(BasicShop.PREF_BASIC_SHOP_RATING, selectedShop.getRating());
+//                                i.putExtra(BasicShop.PREF_BASIC_SHOP_IMAGE, selectedShop.getImgURL());
+//                                i.putExtra(BasicShop.PREF_BASIC_SHOP_ADDRESS, selectedShop.getAddress());
                                 startActivity(i);
                             }
                         }).show();
