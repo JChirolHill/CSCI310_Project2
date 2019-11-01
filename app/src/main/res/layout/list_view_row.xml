@@ -6,13 +6,12 @@
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/DrinkView"
+        android:id="@+id/DrinkTextView"
         android:layout_width="515dp"
         android:layout_height="60dp"
         android:layout_gravity="clip_horizontal|center_horizontal"
         android:layout_weight="1"
-        android:background="@drawable/order_view_list_border"
-        android:text="abc" />
+        android:background="@drawable/order_view_list_border" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,25 +20,22 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/QuantityView"
+            android:id="@+id/QuantityTextView"
             android:layout_width="match_parent"
             android:layout_height="20dp"
-            android:background="@drawable/order_view_list_border"
-            android:text="@string/quantityPrompt" />
+            android:background="@drawable/order_view_list_border" />
 
         <TextView
-            android:id="@+id/PriceView"
+            android:id="@+id/PriceTextView"
             android:layout_width="match_parent"
             android:layout_height="20dp"
-            android:background="@drawable/order_view_list_border"
-            android:text="@string/pricePrompt" />
+            android:background="@drawable/order_view_list_border" />
 
         <TextView
-            android:id="@+id/CaffeineView"
+            android:id="@+id/CaffeineTextView"
             android:layout_width="match_parent"
             android:layout_height="20dp"
-            android:background="@drawable/order_view_list_border"
-            android:text="@string/caffeinePrompt" />
+            android:background="@drawable/order_view_list_border" />
 
     </LinearLayout>
 </LinearLayout>
