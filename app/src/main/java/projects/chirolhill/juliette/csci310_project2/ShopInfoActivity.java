@@ -116,13 +116,44 @@ public class ShopInfoActivity extends AppCompatActivity {
         listDrinks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                // launch intent to view edit drink
-                Intent i = new Intent(getApplicationContext(), DrinkActivity.class);
-                i.putExtra(DrinkActivity.EXTRA_CREATE_DRINK, false);
-                i.putExtra(BasicShop.PREF_BASIC_SHOP_ID, currShop.getId());
-                i.putExtra(BasicShop.PREF_BASIC_SHOP_NAME, currShop.getName());
-                i.putExtra(Drink.EXTRA_DRINK, drinks.get(position));
-                startActivityForResult(i, REQUEST_CODE_ADD_DRINK);
+                if(isMerchant) {
+                    // launch intent to view edit drink
+                    Intent i = new Intent(getApplicationContext(), DrinkActivity.class);
+                    i.putExtra(DrinkActivity.EXTRA_CREATE_DRINK, false);
+                    i.putExtra(BasicShop.PREF_BASIC_SHOP_ID, currShop.getId());
+                    i.putExtra(BasicShop.PREF_BASIC_SHOP_NAME, currShop.getName());
+                    i.putExtra(Drink.EXTRA_DRINK, drinks.get(position));
+                    startActivityForResult(i, REQUEST_CODE_ADD_DRINK);
+                }
+            }
+        });
+
+        listDrinks.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                if(isMerchant) {
+                    final Drink removed = drinks.remove(position);
+                    drinkAdapter.notifyDataSetChanged();
+
+                    // remove from database
+                    Database.getInstance().removeDrink(removed);
+
+                    // undo snackbar
+                    Snackbar.make(findViewById(R.id.list), "Drink Deleted", Snackbar.LENGTH_LONG)
+                            .setAction("Undo", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    // add back to database
+                                    Database.getInstance().addDrink(removed);
+
+                                    // update adapter
+                                    drinks.add(removed);
+                                    drinkAdapter.notifyDataSetChanged();
+                                }
+                            }).show();
+                }
+
+                return true;
             }
         });
     }
@@ -155,13 +186,16 @@ public class ShopInfoActivity extends AppCompatActivity {
                             }
                         });
 
-                        for(Drink d : ((Shop) currShop).getDrinks()) {
-                            Database.getInstance().getDrink(d.getId());
+                        if(((Shop) currShop).getDrinks().size() == 0) { // no drinks
+                            textItems.setText(getResources().getString(R.string.noDrinks));
+                        }
+                        else { // display all drinks
+                            textItems.setText(getResources().getString(R.string.itemsListed));
+                            for(Drink d : ((Shop) currShop).getDrinks()) {
+                                Database.getInstance().getDrink(d.getId());
+                            }
                         }
                     }
-
-                    // display drinks
-                    textItems.setText(getResources().getString(R.string.itemsListed));
                 }
             }
         });
@@ -190,8 +224,8 @@ public class ShopInfoActivity extends AppCompatActivity {
             // copy/map the data from the current item (model) to the curr row (view)
             textName.setText(d.getName());
             textType.setText(d.isCoffee() ? getResources().getString(R.string.coffee) : getResources().getString(R.string.tea));
-            textCaffeine.setText(d.getCaffeine() + getResources().getString(R.string.milligrams));
-            textPrice.setText(Float.toString(d.getPrice()));
+            textCaffeine.setText(d.getCaffeine() + " " + getResources().getString(R.string.milligrams));
+            textPrice.setText("$" + Float.toString(d.getPrice()));
 //            Picasso.get().load(s.getImgURL()).into(image);
 
             return convertView;

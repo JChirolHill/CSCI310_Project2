@@ -43,6 +43,7 @@
     <string name="tea">Tea</string>
     <string name="milligrams"> mg</string>
     <string name="addDrink">Add Drink</string>
+    <string name="noDrinks">This shop does not have any drinks listed</string>
 
     <!-- Claim shop activity -->
     <string name="title_activity_claim_shop">ClaimShopActivity</string>

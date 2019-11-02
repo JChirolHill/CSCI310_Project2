@@ -196,6 +196,16 @@ public class Database {
         return d.getId();
     }
 
+    public String removeDrink(Drink d) {
+        try {
+            dbDrinksRef.child(d.getId()).removeValue();
+        }
+        catch(DatabaseException de) {
+            return de.getMessage();
+        }
+        return null;
+    }
+
     // returns order if exists, null if does not exist
     public void getOrder(String id) {
         Log.d(TAG, id);
