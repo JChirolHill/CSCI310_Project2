@@ -44,6 +44,7 @@
     <string name="milligrams"> mg</string>
     <string name="addDrink">Add Drink</string>
     <string name="noDrinks">This shop does not have any drinks listed</string>
+    <string name="logOrder">Log Order</string>
 
     <!-- Claim shop activity -->
     <string name="title_activity_claim_shop">ClaimShopActivity</string>
@@ -72,4 +73,13 @@
     <string name="caffeineContent">Caffeine Content (mg):</string>
     <string name="typeDrink">Type of Drink</string>
     <string name="drinkName">Drink Name:</string>
+
+    <!-- Create order activity -->
+    <string name="title_activity_create_order">CreateOrderActivity</string>
+    <string name="plus">+</string>
+    <string name="createOrder">Create Order</string>
+    <string name="items">%1$d Items</string>
+    <string name="totalCaffeineOrder">Total Caffeine in Order: %1$d mg</string>
+    <string name="totalCaffeineToday">Total Caffeine Today: %1$d mg</string>
+    <string name="totalCost">Total Cost: %1$.2f</string>
 </resources>

@@ -43,6 +43,7 @@ public class ShopInfoActivity extends AppCompatActivity {
     private TextView textAddress;
     private ListView listDrinks;
     private Button btnAddDrink;
+    private Button btnLogOrder;
 
     private BasicShop currShop;
     private boolean showStats;
@@ -66,11 +67,12 @@ public class ShopInfoActivity extends AppCompatActivity {
         textAddress = findViewById(R.id.textAddress);
         listDrinks = findViewById(R.id.list);
         btnAddDrink = findViewById(R.id.btnAddDrink);
+        btnLogOrder = findViewById(R.id.btnLogOrder);
 
         drinks = new ArrayList<>();
 
         // set up adapter
-        drinkAdapter = new DrinkListAdapter(this, R.layout.list_item_drink, drinks); // put in the XML custom row we created
+        drinkAdapter = new DrinkListAdapter(this, R.layout.list_item_drink, drinks);
         listDrinks.setAdapter(drinkAdapter);
 
         // get whether merchant or not
@@ -110,6 +112,20 @@ public class ShopInfoActivity extends AppCompatActivity {
                 i.putExtra(BasicShop.PREF_BASIC_SHOP_ID, currShop.getId());
                 i.putExtra(BasicShop.PREF_BASIC_SHOP_NAME, currShop.getName());
                 startActivityForResult(i, REQUEST_CODE_ADD_DRINK);
+            }
+        });
+
+        btnLogOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Shop shop = new Shop(((Shop)currShop).getOwnerID(), currShop);
+                for(Drink d : drinks) {
+                    shop.addDrink(d);
+                }
+
+                Intent i = new Intent(getApplicationContext(), CreateOrderActivity.class);
+                i.putExtra(Shop.PREF_SHOP, shop);
+                startActivity(i);
             }
         });
 
@@ -187,9 +203,11 @@ public class ShopInfoActivity extends AppCompatActivity {
                         });
 
                         if(((Shop) currShop).getDrinks().size() == 0) { // no drinks
+                            btnLogOrder.setVisibility(View.GONE);
                             textItems.setText(getResources().getString(R.string.noDrinks));
                         }
                         else { // display all drinks
+                            btnLogOrder.setVisibility(View.VISIBLE);
                             textItems.setText(getResources().getString(R.string.itemsListed));
                             for(Drink d : ((Shop) currShop).getDrinks()) {
                                 Database.getInstance().getDrink(d.getId());

@@ -74,6 +74,10 @@
         <activity
             android:name=".DrinkActivity"
             android:label="@string/title_activity_drink"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateOrderActivity"
+            android:label="@string/title_activity_create_order"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
