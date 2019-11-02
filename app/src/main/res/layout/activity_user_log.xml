@@ -31,6 +31,7 @@
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
+
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_user_log" />
@@ -43,5 +44,29 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
         app:srcCompat="@android:drawable/ic_dialog_email" />
+
+    <com.androidplot.xy.XYPlot
+        android:id="@+id/caffeineChart"
+        style="@style/APDefacto.Light"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+
+        app:graphAnchor="center"
+        app:graphHorizontalPositioning="absolute_from_center"
+        app:graphHorizontalPosition="2dp"
+        app:graphVerticalPositioning="absolute_from_center"
+        app:graphVerticalPosition="2dp"
+
+        app:graphHeightMode="absolute"
+        app:graphHeight="250dp"
+        app:graphWidthMode="fill"
+        app:graphWidth="40dp"
+
+        app:domainTitle="Day"
+        app:lineLabelRotationBottom="-45"
+        app:lineLabels="left|bottom"
+        app:rangeTitle="Caffeine"
+        app:title="Caffeine Levels" />
+    />
 
 </android.support.design.widget.CoordinatorLayout>
