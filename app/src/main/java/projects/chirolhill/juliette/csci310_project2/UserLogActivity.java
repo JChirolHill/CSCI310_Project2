@@ -11,6 +11,7 @@ import android.view.View;
 import com.androidplot.util.PixelUtils;
 import com.androidplot.xy.BarFormatter;
 import com.androidplot.xy.BarRenderer;
+import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
@@ -43,6 +44,7 @@ public class UserLogActivity extends AppCompatActivity {
         });
 
         caffeineChart = findViewById(R.id.caffeineChart);
+        caffeineChart.setRangeBoundaries((Number) new Integer(0), (Number) new Integer(800), BoundaryMode.GROW);
 
         // dummy values
         final Number[] domainLabels = {1, 2, 3, 4, 5, 6, 7};
