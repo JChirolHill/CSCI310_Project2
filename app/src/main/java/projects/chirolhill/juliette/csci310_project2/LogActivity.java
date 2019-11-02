@@ -26,8 +26,6 @@ public class LogActivity extends AppCompatActivity {
         listOrders = findViewById(R.id.listOrders);
         moneyChart = findViewById(R.id.imageMoneyBarChart);
         caffeineChart = findViewById(R.id.imageCaffeineBarChart);
-
-        // do this for the remaining other views that are dynamic
     }
 }
 
