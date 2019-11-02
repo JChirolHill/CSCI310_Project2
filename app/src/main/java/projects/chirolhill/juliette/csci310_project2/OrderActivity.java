@@ -27,7 +27,7 @@ import projects.chirolhill.juliette.csci310_project2.model.Order;
 public class OrderActivity extends AppCompatActivity {
     private static final String TAG = OrderActivity.class.getSimpleName();
 
-    public static final String EXTRA_READONLY = "order_extra_view"; // display as view or update
+    public static final String EXTRA_READONLY = "extra_order_readonly"; // display as view or update
 
     private TextView textOrderTitle;
     private TextView totalMoneySpentPrompt;
