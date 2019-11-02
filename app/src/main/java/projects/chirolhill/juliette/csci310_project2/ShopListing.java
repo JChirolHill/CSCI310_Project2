@@ -82,9 +82,8 @@ public class ShopListing extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 // launch intent to view Shop details
-                Log.d(TAG, "clicked on item at position: " + position);
                 Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
-//                i.putExtra()
+                i.putExtra(Shop.PREF_SHOP, shops.get(position));
                 startActivity(i);
             }
         });

@@ -72,6 +72,12 @@
             android:name=".ShopListing"
             android:label="@string/title_activity_shop_listing"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".DrinkActivity"
+            android:label="@string/title_activity_drink"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+      
     </application>
 
 </manifest>
