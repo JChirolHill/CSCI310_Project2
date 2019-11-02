@@ -87,7 +87,7 @@ public class Database {
                     currUser = null;
                 }
                 else { // existing user in database
-                    if((boolean)dataSnapshot.child("merchant").getValue() == true) {
+                    if((boolean)dataSnapshot.child("isMerchant").getValue() == true) {
                         currUser = (Merchant)dataSnapshot.getValue(DatabaseMerchant.class).revertToOriginal();
                     }
                     else {
