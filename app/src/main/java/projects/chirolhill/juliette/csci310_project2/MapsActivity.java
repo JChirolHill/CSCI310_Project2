@@ -198,11 +198,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                                 Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
                                 i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
                                 i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
-//                                i.putExtra(BasicShop.PREF_BASIC_SHOP_NAME, selectedShop.getName());
-//                                i.putExtra(BasicShop.PREF_BASIC_SHOP_PRICE, selectedShop.getPriceRange());
-//                                i.putExtra(BasicShop.PREF_BASIC_SHOP_RATING, selectedShop.getRating());
-//                                i.putExtra(BasicShop.PREF_BASIC_SHOP_IMAGE, selectedShop.getImgURL());
-//                                i.putExtra(BasicShop.PREF_BASIC_SHOP_ADDRESS, selectedShop.getAddress());
                                 startActivity(i);
                             }
                         }).show();

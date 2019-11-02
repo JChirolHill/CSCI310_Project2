@@ -22,7 +22,9 @@ import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.ClaimShopActivity;
 import projects.chirolhill.juliette.csci310_project2.model.dbadapters.DatabaseCustomer;
+import projects.chirolhill.juliette.csci310_project2.model.dbadapters.DatabaseDrink;
 import projects.chirolhill.juliette.csci310_project2.model.dbadapters.DatabaseMerchant;
+import projects.chirolhill.juliette.csci310_project2.model.dbadapters.DatabaseOrder;
 import projects.chirolhill.juliette.csci310_project2.model.dbadapters.DatabaseShop;
 
 public class Database {
@@ -154,6 +156,82 @@ public class Database {
             return de.getMessage();
         }
         return null;
+    }
+
+    // returns drink if exists, null if does not exist
+    public void getDrink(String id) {
+        Log.d(TAG, id);
+        dbDrinksRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Drink currDrink;
+                if(dataSnapshot.getValue() == null) { // new drink, not in database
+                    currDrink = null;
+                }
+                else { // existing shop in database
+                    currDrink = (Drink)dataSnapshot.getValue(DatabaseDrink.class).revertToOriginal();
+                }
+                cb.dbCallback(currDrink);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG, databaseError.getMessage());
+            }
+        });
+    }
+
+    // returns the key at which drink was added
+    public String addDrink(Drink d) {
+        try {
+            if(d.getId() == null) {
+                DatabaseReference newDrinkRef = dbDrinksRef.push();
+                d.setId(newDrinkRef.getKey());
+            }
+            dbDrinksRef.child(d.getId()).setValue(new DatabaseDrink(d));
+        } catch(DatabaseException de) {
+            Log.d(TAG, de.getMessage());
+            return de.getMessage();
+        }
+        return d.getId();
+    }
+
+    // returns order if exists, null if does not exist
+    public void getOrder(String id) {
+        Log.d(TAG, id);
+        dbOrdersRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Order currOrder;
+                if(dataSnapshot.getValue() == null) { // new order, not in database
+                    currOrder = null;
+                }
+                else { // existing shop in database
+                    currOrder = (Order)dataSnapshot.getValue(DatabaseOrder.class).revertToOriginal();
+                }
+                cb.dbCallback(currOrder);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG, databaseError.getMessage());
+            }
+        });
+    }
+
+    // returns the key at which drink was added
+    public String addOrder(Order order) {
+        try {
+            if(order.getId() == null) {
+                DatabaseReference newDrinkRef = dbOrdersRef.push();
+                order.setId(newDrinkRef.getKey());
+            }
+            dbOrdersRef.child(order.getId()).setValue(new DatabaseOrder(order));
+        } catch(DatabaseException de) {
+            Log.d(TAG, de.getMessage());
+            return de.getMessage();
+        }
+        return order.getId();
     }
 
     // uploads images to firestore

@@ -2,6 +2,7 @@ package projects.chirolhill.juliette.csci310_project2;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,7 +11,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,8 +27,11 @@ import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.Drink;
 import projects.chirolhill.juliette.csci310_project2.model.Shop;
+import projects.chirolhill.juliette.csci310_project2.model.User;
 
 public class ShopInfoActivity extends AppCompatActivity {
+    public static final int REQUEST_CODE_ADD_DRINK = 0;
+
     private final String TAG = ShopInfoActivity.class.getSimpleName();
     public static final String PREF_READ_ONLY = "pref_read_only";
 
@@ -36,12 +42,14 @@ public class ShopInfoActivity extends AppCompatActivity {
     private TextView textItems;
     private TextView textAddress;
     private ListView listDrinks;
+    private Button btnAddDrink;
 
     private BasicShop currShop;
     private boolean showStats;
 
     private DrinkListAdapter drinkAdapter;
     private List<Drink> drinks;
+    private boolean isMerchant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +65,20 @@ public class ShopInfoActivity extends AppCompatActivity {
         textItems = findViewById(R.id.textItems);
         textAddress = findViewById(R.id.textAddress);
         listDrinks = findViewById(R.id.list);
+        btnAddDrink = findViewById(R.id.btnAddDrink);
 
         drinks = new ArrayList<>();
 
+        // set up adapter
         drinkAdapter = new DrinkListAdapter(this, R.layout.list_item_drink, drinks); // put in the XML custom row we created
         listDrinks.setAdapter(drinkAdapter);
 
-        Intent i = getIntent();
+        // get whether merchant or not
+        SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        isMerchant = prefs.getBoolean(User.PREF_IS_MERCHANT, false);
 
+        // fetch intent
+        Intent i = getIntent();
         if(i.getSerializableExtra(BasicShop.PREF_BASIC_SHOP) != null) { // comes from map activity when click view drinks
             currShop = (BasicShop)i.getSerializableExtra(BasicShop.PREF_BASIC_SHOP);
             showStats = false;
@@ -74,24 +88,75 @@ public class ShopInfoActivity extends AppCompatActivity {
             showStats = true;
         }
 
+        // load content onto layout
         textShopName.setText(currShop.getName());
         textRating.setText(Double.toString(currShop.getRating()));
         textPrice.setText(currShop.getPriceRange());
         textAddress.setText(currShop.getAddress());
-
-        // load image
         Picasso.get().load(currShop.getImgURL()).into(imageShop);
+        if(isMerchant) {
+            btnAddDrink.setVisibility(View.VISIBLE);
+            textItems.setVisibility(View.GONE);
+        }
 
         // fetch shop from database if exists
+        populateDrinks();
+
+        btnAddDrink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), DrinkActivity.class);
+                i.putExtra(DrinkActivity.EXTRA_CREATE_DRINK, true);
+                i.putExtra(BasicShop.PREF_BASIC_SHOP_ID, currShop.getId());
+                i.putExtra(BasicShop.PREF_BASIC_SHOP_NAME, currShop.getName());
+                startActivityForResult(i, REQUEST_CODE_ADD_DRINK);
+            }
+        });
+
+        listDrinks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                // launch intent to view edit drink
+                Intent i = new Intent(getApplicationContext(), DrinkActivity.class);
+                i.putExtra(DrinkActivity.EXTRA_CREATE_DRINK, false);
+                i.putExtra(BasicShop.PREF_BASIC_SHOP_ID, currShop.getId());
+                i.putExtra(BasicShop.PREF_BASIC_SHOP_NAME, currShop.getName());
+                i.putExtra(Drink.EXTRA_DRINK, drinks.get(position));
+                startActivityForResult(i, REQUEST_CODE_ADD_DRINK);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_ADD_DRINK) {
+            if (resultCode == RESULT_OK) {
+                // update the list of drinks when return from adding a drink
+                populateDrinks();
+            }
+        }
+    }
+
+    private void populateDrinks() {
+        // clear adapter before populate again
+        drinkAdapter.clear();
+
         Database.getInstance().setCallback(new Database.Callback() {
             @Override
             public void dbCallback(Object o) {
                 if(o != null) {
                     currShop = (Shop)o;
                     if(((Shop) currShop).getDrinks() != null) {
+                        Database.getInstance().setCallback(new Database.Callback() {
+                            @Override
+                            public void dbCallback(Object o) {
+                                drinkAdapter.add((Drink)o);
+                                drinkAdapter.notifyDataSetChanged();
+                            }
+                        });
+
                         for(Drink d : ((Shop) currShop).getDrinks()) {
-                            drinkAdapter.add(d);
-                            drinkAdapter.notifyDataSetChanged();
+                            Database.getInstance().getDrink(d.getId());
                         }
                     }
 

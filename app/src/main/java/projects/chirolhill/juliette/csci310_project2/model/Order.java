@@ -9,17 +9,21 @@ import java.util.Map;
 public class Order implements Serializable {
     private String id;
     private Map<String, Pair<Drink, Integer>> drinks; // store drinks and number of orders
-    private Shop shop;
-    private Trip trip;
-    private Customer user;
+    private String shopID;
+    private String tripID;
+    private String userID;
 
     public static final String PREF_ORDER = "pref_order";
 
-    public Order(String id, Shop shop, Trip trip, Customer user) {
+    public Order(String id) {
         this.id = id;
-        this.shop = shop;
-        this.trip = trip;
-        this.user = user;
+    }
+
+    public Order(String id, String shopID, String tripID, String userID) {
+        this.id = id;
+        this.shopID = shopID;
+        this.tripID = tripID;
+        this.userID = userID;
         drinks = new HashMap<>();
     }
 
@@ -27,16 +31,36 @@ public class Order implements Serializable {
         return id;
     }
 
-    public Shop getShop() {
-        return shop;
+    public String getShop() {
+        return shopID;
     }
 
-    public Trip getTrip() {
-        return trip;
+    public String getTrip() {
+        return tripID;
     }
 
-    public Customer getUser() {
-        return user;
+    public String getUser() {
+        return userID;
+    }
+
+    public Map<String, Pair<Drink, Integer>> getDrinks() {
+        return drinks;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setShop(String shopID) {
+        this.shopID = shopID;
+    }
+
+    public void setTrip(String tripID) {
+        this.tripID = tripID;
+    }
+
+    public void setUser(String userID) {
+        this.userID = userID;
     }
 
     public int getNumItemsOrdered() {

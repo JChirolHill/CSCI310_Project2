@@ -42,6 +42,7 @@
     <string name="coffee">Coffee</string>
     <string name="tea">Tea</string>
     <string name="milligrams"> mg</string>
+    <string name="addDrink">Add Drink</string>
 
     <!-- Claim shop activity -->
     <string name="title_activity_claim_shop">ClaimShopActivity</string>
@@ -62,4 +63,12 @@
     <string name="itemsOrdered">Items you ordered:</string>
     <string name="caffeineLevel">Current Caffeine Level For Today:</string>
     <string name="title_activity_shop_listing">ShopListing</string>
+
+    <!-- Drink activity -->
+    <string name="title_activity_drink">DrinkActivity</string>
+    <string name="addDrinkTitle">Add a Drink</string>
+    <string name="toshop">To Shop:</string>
+    <string name="caffeineContent">Caffeine Content (mg):</string>
+    <string name="typeDrink">Type of Drink</string>
+    <string name="drinkName">Drink Name:</string>
 </resources>

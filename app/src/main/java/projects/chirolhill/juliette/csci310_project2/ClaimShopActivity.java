@@ -179,6 +179,7 @@ public class ClaimShopActivity extends AppCompatActivity {
     private void renderPendingApproval() {
         layoutClaimShop.setVisibility(View.GONE);
         layoutPending.setVisibility(View.VISIBLE);
+        btnSubmit.setVisibility(View.GONE);
     }
 
     private void renderApproved() {
