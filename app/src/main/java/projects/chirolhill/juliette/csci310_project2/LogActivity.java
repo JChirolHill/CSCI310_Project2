@@ -1,4 +1,4 @@
-package projects.chirolhill.juliette.csci310_project2.model;
+package projects.chirolhill.juliette.csci310_project2;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
