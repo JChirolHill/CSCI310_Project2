@@ -11,6 +11,8 @@
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="createAccountTitle">Profile Details</string>
     <string name="viewAccountTitle">View Profile</string>
+    <string name="viewLogTitle">Log</string>
+    <string name="viewLogOrders">Your Orders</string>
     <string name="createAccountSubtitle">Please fill in your account details</string>
     <string name="usernamePrompt">Username:</string>
     <string name="emailPrompt">Email:</string>
@@ -24,6 +26,7 @@
     <string name="customer">Customer</string>
     <string name="myshops">My Shops</string>
     <string name="myorders">My Orders</string>
+
 
     <!-- ShopList activity -->
     <string name="shopsown">Shops You Own</string>
@@ -72,4 +75,5 @@
     <string name="caffeineContent">Caffeine Content (mg):</string>
     <string name="typeDrink">Type of Drink</string>
     <string name="drinkName">Drink Name:</string>
+    <string name="title_activity_log">LogActivity</string>
 </resources>
