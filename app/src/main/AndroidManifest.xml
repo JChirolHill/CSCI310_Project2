@@ -18,6 +18,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".UserLogActivity"
+            android:label="@string/title_activity_user_log"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -70,7 +75,7 @@
         <activity
             android:name=".ShopListing"
             android:label="@string/title_activity_shop_listing"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
