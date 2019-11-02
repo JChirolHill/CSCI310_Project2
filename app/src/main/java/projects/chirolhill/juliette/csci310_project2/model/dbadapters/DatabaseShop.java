@@ -49,7 +49,7 @@ public class DatabaseShop implements DatabaseAdapter {
         s.setVerificationDocs(this.verificationDocs);
         if(this.drinks != null) {
             for(String drinkID : this.drinks) {
-                s.addDrink(new Drink(drinkID, s));
+                s.addDrink(new Drink(drinkID, s.getId()));
             }
         }
         return s;

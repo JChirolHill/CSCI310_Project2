@@ -38,6 +38,12 @@
     <string name="rating">Rating</string>
     <string name="price">Price</string>
     <string name="itemsListed">Available Drinks</string>
+    <string name="notClaimedNoDrinks">This shop has not been claimed, so does not have any drinks currently.</string>
+    <string name="coffee">Coffee</string>
+    <string name="tea">Tea</string>
+    <string name="milligrams"> mg</string>
+    <string name="addDrink">Add Drink</string>
+    <string name="noDrinks">This shop does not have any drinks listed</string>
 
     <!-- Claim shop activity -->
     <string name="title_activity_claim_shop">ClaimShopActivity</string>
@@ -58,4 +64,12 @@
     <string name="itemsOrdered">Items you ordered:</string>
     <string name="caffeineLevel">Current Caffeine Level For Today:</string>
     <string name="title_activity_shop_listing">ShopListing</string>
+
+    <!-- Drink activity -->
+    <string name="title_activity_drink">DrinkActivity</string>
+    <string name="addDrinkTitle">Add a Drink</string>
+    <string name="toshop">To Shop:</string>
+    <string name="caffeineContent">Caffeine Content (mg):</string>
+    <string name="typeDrink">Type of Drink</string>
+    <string name="drinkName">Drink Name:</string>
 </resources>
