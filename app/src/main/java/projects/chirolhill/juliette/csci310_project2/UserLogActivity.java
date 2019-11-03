@@ -47,7 +47,11 @@ public class UserLogActivity extends AppCompatActivity {
         caffeineChart.setRangeBoundaries((Number) new Integer(0), (Number) new Integer(800), BoundaryMode.GROW);
 
         // dummy values
-        final Number[] domainLabels = {1, 2, 3, 4, 5, 6, 7};
+        // IDEAL GRAPH
+        // Y-AXIS (Daily Caffeine Level, in mg)
+        // X-AXIS (Date, e.g. "10/27", previous 7 days)
+        // final Number[] domainLabels = {1, 2, 3, 4, 5, 6, 7};
+        final Number[] domainLabels = {10_21_2019, 10_22_2019, 10_23_2019, 10_24_2019, 10_25_2019, 10_26_2019, 10_27_2019};
         Number[] coffeeLevels = {100, 200, 230, 260, 270, 180, 90};
         Number[] teaLevels = {100, 200, 230, 260, 270, 180, 90};
 
