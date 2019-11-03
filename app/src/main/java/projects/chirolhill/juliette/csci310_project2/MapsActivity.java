@@ -249,20 +249,20 @@ public class MapsActivity extends FragmentActivity implements
         return false; // moves camera to the selected marker
     }
 
-//    /**
-//     * Allows a click of a given marker's info window to trigger a directions query.
-//     * @param marker
-//     *
-//     * CURRENTLY COMMENTED OUT BECAUSE WE MIGHT SWITCH TO CLICKING WITHIN A DRAWER
-//     */
-//    @Override
-//    public void onInfoWindowClick(Marker marker) {
-//        // remove old polylines
-//        for (Polyline p : polylines) p.remove();
-//
-//        // TODO put into actual dialog with options (driving or walking)
-//        calculateDirections(marker);
-//    }
+    /**
+     * Allows a click of a given marker's info window to trigger a directions query.
+     * @param marker
+     *
+     * POTENTIALLY REMOVE BECAUSE WE MIGHT SWITCH TO CLICKING WITHIN A DRAWER
+     */
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        // remove old polylines
+        for (Polyline p : polylines) p.remove();
+
+        // TODO put into actual dialog with options (driving or walking)
+        calculateDirections(marker);
+    }
 
     /**
      * Calculates directions from current location to specified marker.
@@ -298,7 +298,8 @@ public class MapsActivity extends FragmentActivity implements
             List<LatLng> latlngs = PolyUtil.decode(routes.get(i).getEncodedPolyline());
             Polyline polyline = mMap.addPolyline(new PolylineOptions().clickable(true).addAll(latlngs));
             this.polylines.add(polyline);
-            // TODO: remove polylines once you click anywhere else!
+
+            // TODO: create two types of polylines: solid for driving, dotted for walking
         }
     }
 
