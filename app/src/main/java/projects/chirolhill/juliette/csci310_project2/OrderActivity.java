@@ -36,7 +36,7 @@ public class OrderActivity extends AppCompatActivity {
     private TextView caffeineLevelPrompt;
     private TextView caffeineLevel;
     private EditText editCaffeineLevel;
-    private ListView listOrders;
+    private ListView listDrinks;
 
     private boolean readonly;
 
@@ -54,7 +54,7 @@ public class OrderActivity extends AppCompatActivity {
         caffeineLevelPrompt = findViewById(R.id.textCaffeineLevelPrompt);
         caffeineLevel = findViewById(R.id.textCaffeineLevel);
         editCaffeineLevel = findViewById(R.id.editCaffeineLevel);
-        listOrders = findViewById(R.id.listOrders);
+        listDrinks = findViewById(R.id.listDrinks);
 
         // either from shopinfoactivity -> readonly (review order)
         // or from profileactivity -> readonly (view/edit past orders)
@@ -69,7 +69,7 @@ public class OrderActivity extends AppCompatActivity {
             renderEditable();
         }
 
-        listOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listDrinks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 if(!readonly) {
