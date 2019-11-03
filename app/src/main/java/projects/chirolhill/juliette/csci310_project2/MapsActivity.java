@@ -185,32 +185,16 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             }
                         }).show();
             } else { // customer: show option to view drinks
-//                Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_INDEFINITE)
-//                        .setAction("Drinks", new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                // get the clicked shop
-//                                BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
-//
-//                                // launch intent to view shop details here
-//                                Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
-//                                i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
-//                                i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
-//                                startActivity(i);
-//                            }
-//                        }).show();
-
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle(marker.getTitle());
                 // Add the buttons
-                builder.setPositiveButton("Directions", new DialogInterface.OnClickListener() {
+                builder.setPositiveButton("Get Directions", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
                         // launch intent to view directions to shop here
 
                     }
                 });
-                builder.setNeutralButton("Drinks", new DialogInterface.OnClickListener() {
+                builder.setNeutralButton("View Drinks", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
 
