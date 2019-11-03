@@ -7,13 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Order implements Serializable {
+    public static final String PREF_ORDER = "pref_order";
+
     private String id;
     private Map<String, Pair<Drink, Integer>> drinks; // store drinks and number of orders
     private String shopID;
     private String tripID;
     private String userID;
-
-    public static final String PREF_ORDER = "pref_order";
 
     public Order(String id) {
         this.id = id;

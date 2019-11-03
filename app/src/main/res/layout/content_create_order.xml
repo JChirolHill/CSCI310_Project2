@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".CreateOrderActivity"
+    tools:showIn="@layout/activity_create_order"
+    android:id="@+id/layoutCreateOrder">
+
+    <TextView
+        android:id="@+id/textCreateOrderTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="32sp"
+        android:text="@string/createOrder"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/textNumItems"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:text="5 items"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/textCreateOrderTitle"/>
+
+    <TextView
+        android:id="@+id/textCaffeineOrder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total Caffeine in Order: 500mg"
+        app:layout_constraintTop_toBottomOf="@id/textNumItems"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/textCaffeineToday"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Total Caffeine Today: 4000mg"
+        android:textAlignment="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textCaffeineOrder"/>
+
+    <TextView
+        android:id="@+id/textTotalCost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Total Cost: $39"
+        android:textAlignment="center"
+        app:layout_constraintTop_toBottomOf="@id/textCaffeineToday"/>
+
+    <ListView
+        android:id="@+id/listItems"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
+        android:divider="@null"
+        app:layout_constraintTop_toBottomOf="@id/textTotalCost"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnSubmitOrder"/>
+
+    <Button
+        android:id="@+id/btnSubmitOrder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/submit"
+        android:textColor="#fff"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/button_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</android.support.constraint.ConstraintLayout>

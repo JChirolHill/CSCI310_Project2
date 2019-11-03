@@ -21,13 +21,13 @@
             android:layout_margin="8dp">
 
             <!--<ImageView-->
-                <!--android:id="@+id/listDrinkImage"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="160dp"-->
-                <!--android:scaleType="centerCrop"-->
-                <!--app:layout_constraintStart_toStartOf="parent"-->
-                <!--app:layout_constraintEnd_toEndOf="parent"-->
-                <!--app:layout_constraintTop_toTopOf="parent"/>-->
+            <!--android:id="@+id/listDrinkImage"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="160dp"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintTop_toTopOf="parent"/>-->
 
             <TextView
                 android:id="@+id/listDrinkName"
@@ -35,8 +35,27 @@
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/textNumOrdered"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBaseline_toBaselineOf="@id/listDrinkName"
                 app:layout_constraintEnd_toEndOf="parent"/>
+
+            <!--<Button-->
+                <!--android:id="@+id/btnAddDrink"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:background="@color/fui_transparent"-->
+                <!--android:text="@string/plus"-->
+                <!--android:textColor="@color/colorPrimaryDark"-->
+                <!--android:textSize="36sp"-->
+                <!--android:padding="0dp"-->
+                <!--app:layout_constraintEnd_toEndOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="@id/listDrinkName"-->
+                <!--app:layout_constraintBottom_toBottomOf="@id/listDrinkName"/>-->
 
             <View
                 android:id="@+id/listHorizLine"
