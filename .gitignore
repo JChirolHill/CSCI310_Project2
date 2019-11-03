@@ -1,4 +1,5 @@
 .gradle/
 .idea/
-*.iml
+*.iml*
 *.properties
+*.DS_Store

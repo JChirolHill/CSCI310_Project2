@@ -3,28 +3,45 @@ package projects.chirolhill.juliette.csci310_project2;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
 import projects.chirolhill.juliette.csci310_project2.model.Customer;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.Merchant;
+import projects.chirolhill.juliette.csci310_project2.model.Shop;
 import projects.chirolhill.juliette.csci310_project2.model.User;
 
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = ProfileActivity.class.getSimpleName();
     public static final String EXTRA_READONLY = "profile_extra_view"; // display as view or update
+    public static final String EXTRA_CREATE_PROFILE = "profile_create_profile"; // called from signin activity
 
     private TextView textTitle;
     private TextView textSubtitle;
@@ -36,13 +53,16 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView textEmail;
     private RadioGroup radioIsMerchant;
     private RadioButton radioBtnNo;
+    private RadioButton radioBtnYes;
     private TextView textTypeUserDescr;
     private TextView textTypeUser;
     private TextView textError;
+    private Button btnDetails;
     private Button btnSave;
 
     private boolean readonly;
     private boolean origReadonly;
+    private boolean createProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,19 +81,22 @@ public class ProfileActivity extends AppCompatActivity {
         editUsername = findViewById(R.id.editUsername);
         radioIsMerchant = findViewById(R.id.radioIsMerchant);
         radioBtnNo = findViewById(R.id.radio_no);
+        radioBtnYes = findViewById(R.id.radio_yes);
         textTypeUserDescr = findViewById(R.id.textTypeUserDescr);
         textTypeUser = findViewById(R.id.textTypeUser);
         textError = findViewById(R.id.textError);
+        btnDetails = findViewById(R.id.btnDetails);
         btnSave = findViewById(R.id.btnSave);
 
         // fetch intent and decide whether readonly or editable
         final Intent i = getIntent();
-        if(i.getBooleanExtra(EXTRA_READONLY, true)) { // readonly
+        createProfile = i.getBooleanExtra(EXTRA_CREATE_PROFILE, false);
+        if(i.getBooleanExtra(EXTRA_READONLY, true)) { // readonly: called from maps activity when click on profile icon
             readonly = true;
             origReadonly = true;
             renderReadOnly();
         }
-        else { // editable
+        else { // editable: called when create profile first time from the signin activity
             readonly = false;
             origReadonly = false;
             User u = new Customer();
@@ -85,8 +108,23 @@ public class ProfileActivity extends AppCompatActivity {
         editUsername.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                textTitle.setText(R.string.createAccountTitle + ", " + v.getText().toString());
+                textTitle.setText(getResources().getString(R.string.createAccountTitle) + ", " + v.getText().toString());
                 return false;
+            }
+        });
+
+        btnDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+                if(prefs.getBoolean(User.PREF_IS_MERCHANT, true)) { // merchant clicks on myshops btn
+                    Intent i = new Intent(getApplicationContext(), ShopListing.class);
+                    startActivity(i);
+                }
+                else { // customer clicks on myorders btn
+                    Intent i = new Intent(getApplicationContext(), LogActivity.class);
+                    startActivity(i);
+                }
             }
         });
 
@@ -106,7 +144,7 @@ public class ProfileActivity extends AppCompatActivity {
                     u.setEmail(prefs.getString(User.PREF_EMAIL, "Invalid Email"));
                     renderEditable(u);
                 }
-                else { // save to db
+                else { // save to db and switch to view mode
                     User u;
                     if(radioIsMerchant.getCheckedRadioButtonId() == R.id.radio_yes) {
                         u = new Merchant();
@@ -148,14 +186,19 @@ public class ProfileActivity extends AppCompatActivity {
         textUsername.setVisibility(View.VISIBLE);
         textTypeUserDescr.setVisibility(View.VISIBLE);
         textTypeUser.setVisibility(View.VISIBLE);
+        btnDetails.setVisibility(View.VISIBLE);
         textSubtitle.setVisibility(View.GONE);
         editUsername.setVisibility(View.GONE);
         textIsMerchantPrompt.setVisibility(View.GONE);
         radioIsMerchant.setVisibility(View.GONE);
 
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
-        String username = prefs.getString(User.PREF_USERNAME, "Invalid Username");
-        String email = prefs.getString(User.PREF_EMAIL, "Invalid Email");
+        if(prefs.getBoolean(User.PREF_IS_MERCHANT, true)) {
+            btnDetails.setText(getResources().getString(R.string.myshops));
+        }
+        else {
+            btnDetails.setText(getResources().getString(R.string.myorders));
+        }
         textUsername.setText(prefs.getString(User.PREF_USERNAME, "Invalid Username"));
         textEmail.setText(prefs.getString(User.PREF_EMAIL, "Invalid Email"));
         textTypeUser.setText(prefs.getBoolean(User.PREF_IS_MERCHANT, false) ? R.string.merchant : R.string.customer);
@@ -167,15 +210,21 @@ public class ProfileActivity extends AppCompatActivity {
         textUsername.setVisibility(View.GONE);
         textTypeUserDescr.setVisibility(View.GONE);
         textTypeUser.setVisibility(View.GONE);
+        btnDetails.setVisibility(View.GONE);
         textSubtitle.setVisibility(View.VISIBLE);
         editUsername.setVisibility(View.VISIBLE);
-        textIsMerchantPrompt.setVisibility(View.VISIBLE);
-        radioIsMerchant.setVisibility(View.VISIBLE);
+
+        // don't allow change of user status (merchant/customer) after create profile
+        if(createProfile) {
+            textIsMerchantPrompt.setVisibility(View.VISIBLE);
+            radioIsMerchant.setVisibility(View.VISIBLE);
+        }
 
         textTitle.setText(R.string.createAccountTitle);
         editUsername.setText(u.getUsername());
         textEmail.setText(u.getEmail());
         radioBtnNo.setChecked(!u.isMerchant());
+        radioBtnYes.setChecked(u.isMerchant());
         textTitle.setText(R.string.createAccountTitle);
         btnSave.setText(R.string.save);
     }

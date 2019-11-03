@@ -2,20 +2,21 @@ package projects.chirolhill.juliette.csci310_project2;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,9 +38,9 @@ import java.util.List;
 import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
-import projects.chirolhill.juliette.csci310_project2.model.DirectionsFetcher;
-import projects.chirolhill.juliette.csci310_project2.model.DirectionsResponse;
-import projects.chirolhill.juliette.csci310_project2.model.DirectionsRoute;
+import projects.chirolhill.juliette.csci310_project2.model.MapShop;
+import projects.chirolhill.juliette.csci310_project2.model.Shop;
+import projects.chirolhill.juliette.csci310_project2.model.User;
 import projects.chirolhill.juliette.csci310_project2.model.YelpFetcher;
 
 public class MapsActivity extends FragmentActivity implements
@@ -50,7 +51,7 @@ public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback {
     private final String TAG = MapsActivity.class.getSimpleName();
 
-//    private Button btnFindShops;
+    //    private Button btnFindShops;
     private ImageButton imgProfile;
 
     private LocationManager locationManager;
@@ -121,8 +122,7 @@ public class MapsActivity extends FragmentActivity implements
         if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
-        }
-        else{
+        } else {
             // Write you code here if permission already given.
             mMap.setMyLocationEnabled(true);
             mMap.setOnMyLocationButtonClickListener(this);
@@ -136,10 +136,10 @@ public class MapsActivity extends FragmentActivity implements
 
             if (myLocation != null) {
                 currLatLng = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-                Log.d(TAG,"Location Info: Location achieved!");
+                Log.d(TAG, "Location Info: Location achieved!");
             } else {
                 currLatLng = new LatLng(34.0224, 118.2851);
-                Log.d(TAG,"Location Info: No location :(");
+                Log.d(TAG, "Location Info: No location :(");
             }
             MarkerOptions marker = new MarkerOptions()
                     .position(currLatLng)
@@ -174,7 +174,7 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
+//        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -193,24 +193,51 @@ public class MapsActivity extends FragmentActivity implements
                 && marker.getPosition().longitude != currLatLng.longitude) {
 
             final String selectedShopName = marker.getTitle();
-            Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_LONG)
-                    .setAction("View Drinks", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            // get the clicked shop
-                            BasicShop selectedShop = shopListing.get(selectedShopName);
 
-                            // launch intent to view shop details here
-                            Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
-                            i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
-                            i.putExtra(BasicShop.PREF_BASIC_SHOP_NAME, selectedShop.getName());
-                            i.putExtra(BasicShop.PREF_BASIC_SHOP_PRICE, selectedShop.getPriceRange());
-                            i.putExtra(BasicShop.PREF_BASIC_SHOP_RATING, selectedShop.getRating());
-                            i.putExtra(BasicShop.PREF_BASIC_SHOP_IMAGE, selectedShop.getImgURL());
-                            i.putExtra(BasicShop.PREF_BASIC_SHOP_ADDRESS, selectedShop.getAddress());
-                            startActivity(i);
-                        }
-                    }).show();
+            SharedPreferences prefs = this.getSharedPreferences("Settings", Context.MODE_PRIVATE);
+            boolean isMerchant = prefs.getBoolean(User.PREF_IS_MERCHANT, true);
+
+            if (isMerchant) { // merchant: show option to claim shop
+                Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Claim Shop", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                // get the clicked shop
+                                BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
+
+                                // launch intent to claim the shop
+                                Intent i = new Intent(getApplicationContext(), ClaimShopActivity.class);
+                                i.putExtra(BasicShop.PREF_BASIC_SHOP, selectedShop);
+                                startActivity(i);
+                            }
+                        }).show();
+            } else { // customer: show option to view drinks
+                AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle(marker.getTitle());
+                // Add the buttons
+                builder.setPositiveButton("Get Directions", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
+                        // launch intent to view directions to shop here
+
+                    }
+                });
+                builder.setNeutralButton("View Drinks", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
+
+                        // launch intent to view shop details here
+                        Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
+                        i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
+                        i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
+                        startActivity(i);
+                    }
+                });
+
+
+                // Create the AlertDialog
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
         }
 
         return false; // moves camera to the selected marker
@@ -270,12 +297,12 @@ public class MapsActivity extends FragmentActivity implements
     public void drawUpdatedList() {
         Log.d(TAG, "called drawUpdatedList");
         // add markers for all coffeeshops
-        for(BasicShop bs : yelpFetcher.getShops()) {
-            String snippet = "Rating: " + Double.toString(bs.getRating());
-            shopListing.put(bs.getName(), bs);
+        for (MapShop ms : yelpFetcher.getShops()) {
+            String snippet = "Rating: " + Double.toString(ms.getRating());
+            shopListing.put(ms.getName(), ms);
             mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(bs.getLocation().latitude, bs.getLocation().longitude))
-                    .title(bs.getName())
+                    .position(new LatLng(ms.getLocation().latitude, ms.getLocation().longitude))
+                    .title(ms.getName())
                     .snippet(snippet)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
         }

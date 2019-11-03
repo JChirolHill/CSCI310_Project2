@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -22,12 +23,14 @@ import java.util.List;
 import projects.chirolhill.juliette.csci310_project2.model.Customer;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.User;
+import projects.chirolhill.juliette.csci310_project2.model.UserLog;
 
 public class SignInActivity extends AppCompatActivity {
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 0;
 
     private Button btnSignIn;
+    private ImageView imageLogo;
     private TextView textMoment;
 
     @Override
@@ -37,6 +40,7 @@ public class SignInActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        imageLogo = findViewById(R.id.imageLogo);
         btnSignIn = findViewById(R.id.btnSignIn);
         textMoment = findViewById(R.id.textMoment);
 
@@ -44,6 +48,7 @@ public class SignInActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 btnSignIn.setVisibility(View.GONE);
+                imageLogo.setVisibility(View.GONE);
                 textMoment.setVisibility(View.VISIBLE);
 
                 List<AuthUI.IdpConfig> providers = Arrays.asList(
@@ -66,6 +71,8 @@ public class SignInActivity extends AppCompatActivity {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             if(resultCode == RESULT_OK) {
+                btnSignIn.setVisibility(View.GONE);
+
                 // Successfully signed in
                 final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -88,6 +95,7 @@ public class SignInActivity extends AppCompatActivity {
                             i.putExtra(User.PREF_USER_ID, user.getUid());
                             i.putExtra(User.PREF_USERNAME, user.getDisplayName());
                             i.putExtra(User.PREF_EMAIL, user.getEmail());
+                            i.putExtra(ProfileActivity.EXTRA_CREATE_PROFILE, true);
                             startActivity(i);
                         }
                         else { // user already in database
@@ -96,6 +104,9 @@ public class SignInActivity extends AppCompatActivity {
                             SharedPreferences.Editor prefEditor = prefs.edit();
                             prefEditor.putString(User.PREF_USERNAME, u.getUsername());
                             prefEditor.putBoolean(User.PREF_IS_MERCHANT, u.isMerchant());
+//                            if(!u.isMerchant() && ((Customer)u).getLog() != null) {
+//                                prefEditor.putInt(UserLog.PREF_TOTAL_CAFFEINE, ((Customer)u).getLog().getTotalCaffeineLevel());
+//                            }
                             prefEditor.commit();
 
                             // launch main activity
@@ -111,6 +122,7 @@ public class SignInActivity extends AppCompatActivity {
             else {
                 textMoment.setText(R.string.signinfail);
                 btnSignIn.setVisibility(View.VISIBLE);
+                imageLogo.setVisibility(View.VISIBLE);
             }
         }
     }

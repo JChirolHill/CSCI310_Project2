@@ -2,21 +2,28 @@ package projects.chirolhill.juliette.csci310_project2.model;
 
 import android.util.Pair;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Order {
+public class Order implements Serializable {
+    public static final String PREF_ORDER = "pref_order";
+
     private String id;
     private Map<String, Pair<Drink, Integer>> drinks; // store drinks and number of orders
-    private Shop shop;
-    private Trip trip;
-    private Customer user;
+    private String shopID;
+    private String tripID;
+    private String userID;
 
-    public Order(String id, Shop shop, Trip trip, Customer user) {
+    public Order(String id) {
         this.id = id;
-        this.shop = shop;
-        this.trip = trip;
-        this.user = user;
+    }
+
+    public Order(String id, String shopID, String tripID, String userID) {
+        this.id = id;
+        this.shopID = shopID;
+        this.tripID = tripID;
+        this.userID = userID;
         drinks = new HashMap<>();
     }
 
@@ -24,16 +31,36 @@ public class Order {
         return id;
     }
 
-    public Shop getShop() {
-        return shop;
+    public String getShop() {
+        return shopID;
     }
 
-    public Trip getTrip() {
-        return trip;
+    public String getTrip() {
+        return tripID;
     }
 
-    public Customer getUser() {
-        return user;
+    public String getUser() {
+        return userID;
+    }
+
+    public Map<String, Pair<Drink, Integer>> getDrinks() {
+        return drinks;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setShop(String shopID) {
+        this.shopID = shopID;
+    }
+
+    public void setTrip(String tripID) {
+        this.tripID = tripID;
+    }
+
+    public void setUser(String userID) {
+        this.userID = userID;
     }
 
     public int getNumItemsOrdered() {
