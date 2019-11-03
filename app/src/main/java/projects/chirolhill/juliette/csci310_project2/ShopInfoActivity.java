@@ -155,8 +155,8 @@ public class ShopInfoActivity extends AppCompatActivity {
                     Database.getInstance().removeDrink(removed);
 
                     // undo snackbar
-                    Snackbar.make(findViewById(R.id.list), "Drink Deleted", Snackbar.LENGTH_LONG)
-                            .setAction("Undo", new View.OnClickListener() {
+                    Snackbar.make(findViewById(R.id.list), getResources().getString(R.string.drinkDeleted), Snackbar.LENGTH_LONG)
+                            .setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     // add back to database

@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
@@ -32,12 +34,15 @@ import projects.chirolhill.juliette.csci310_project2.model.User;
 import projects.chirolhill.juliette.csci310_project2.model.UserLog;
 
 public class CreateOrderActivity extends AppCompatActivity {
+    public static final int REQUEST_CODE_ORDER_CONFIRMATION = 1;
+
     private Order order;
     private Shop currShop;
     private UserLog log;
     private Customer customer;
     private DrinkListAdapter drinkAdapter;
     private List<Drink> drinks;
+    private int totalCaffeineToday;
 
     private TextView textNumItems;
     private TextView textTotalCaffeineOrder;
@@ -84,6 +89,13 @@ public class CreateOrderActivity extends AppCompatActivity {
             public void dbCallback(Object o) {
                 customer = (Customer)o;
 
+                if(customer.getLog() != null) {
+                    totalCaffeineToday = customer.getLog().getTotalCaffeineLevel();
+                }
+                else {
+                    totalCaffeineToday = 0;
+                }
+
                 displayInfo();
             }
         });
@@ -112,18 +124,60 @@ public class CreateOrderActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        btnSubmitOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(totalCaffeineToday < User.CAFFEINE_LIMIT) { // did not pass caffeine limit
+                    Intent i = new Intent(getApplicationContext(), OrderActivity.class);
+//                    i.putExtra(Order.PREF_ORDER, order);
+                    startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
+                }
+                else { // above caffeine threshold\
+                    Snackbar.make(findViewById(R.id.layoutCreateOrder), getResources().getString(R.string.overCaffeineLevel), Snackbar.LENGTH_LONG)
+                            .setAction(getResources().getString(R.string.proceed), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent i = new Intent(getApplicationContext(), OrderActivity.class);
+//                                    i.putExtra(Order.PREF_ORDER, order);
+                                    startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
+                                }
+                            }).show();
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_ORDER_CONFIRMATION) {
+            if (resultCode == RESULT_OK) {
+                finish();
+            }
+        }
     }
 
     private void displayInfo() {
-        textNumItems.setText(getResources().getString(R.string.items, order.getNumItemsOrdered()));
-        textTotalCaffeineOrder.setText(getResources().getString(R.string.totalCaffeineOrder, order.getTotalCaffeine()));
+        // update total caffeine
         if(customer.getLog() != null) {
-            textTotalCaffeineToday.setText(getResources().getString(R.string.totalCaffeineToday, customer.getLog().getTotalCaffeineLevel()));
+            totalCaffeineToday = customer.getLog().getTotalCaffeineLevel() + order.getTotalCaffeine();
         }
         else {
-            textTotalCaffeineToday.setText(getResources().getString(R.string.totalCaffeineToday, 0));
+            totalCaffeineToday = order.getTotalCaffeine();
         }
+
+        // update views
+        textNumItems.setText(getResources().getString(R.string.items, order.getNumItemsOrdered()));
+        textTotalCaffeineOrder.setText(getResources().getString(R.string.totalCaffeineOrder, order.getTotalCaffeine()));
+        textTotalCaffeineToday.setText(getResources().getString(R.string.totalCaffeineToday, totalCaffeineToday));
         textTotalCost.setText(getResources().getString(R.string.totalCost, order.getTotalCost()));
+
+        if(totalCaffeineToday > User.CAFFEINE_LIMIT) {
+            textTotalCaffeineToday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.danger));
+        }
+        else {
+            textTotalCaffeineToday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+        }
     }
 
     private class DrinkListAdapter extends ArrayAdapter<Drink> {
