@@ -11,6 +11,8 @@
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="createAccountTitle">Profile Details</string>
     <string name="viewAccountTitle">View Profile</string>
+    <string name="viewLogTitle">Log</string>
+    <string name="viewLogOrders">Your Orders</string>
     <string name="createAccountSubtitle">Please fill in your account details</string>
     <string name="usernamePrompt">Username:</string>
     <string name="emailPrompt">Email:</string>
@@ -25,6 +27,7 @@
     <string name="myshops">My Shops</string>
     <string name="myorders">My Orders</string>
 
+
     <!-- ShopList activity -->
     <string name="shopsown">Shops You Own</string>
     <string name="viewShopDetails">Details</string>
@@ -38,6 +41,15 @@
     <string name="rating">Rating</string>
     <string name="price">Price</string>
     <string name="itemsListed">Available Drinks</string>
+    <string name="notClaimedNoDrinks">This shop has not been claimed, so does not have any drinks currently.</string>
+    <string name="coffee">Coffee</string>
+    <string name="tea">Tea</string>
+    <string name="milligrams"> mg</string>
+    <string name="addDrink">Add Drink</string>
+    <string name="noDrinks">This shop does not have any drinks listed</string>
+    <string name="logOrder">Log Order</string>
+    <string name="undo">Undo</string>
+    <string name="drinkDeleted">Drink Deleted</string>
 
     <!-- Claim shop activity -->
     <string name="title_activity_claim_shop">ClaimShopActivity</string>
@@ -60,7 +72,26 @@
     <string name="itemsOrdered">Items Ordered:</string>
     <string name="caffeineLevel">Total Caffeine (mg):</string>
     <string name="title_activity_shop_listing">ShopListing</string>
-    <string name="quantityPrompt">Quantity:</string>
-    <string name="pricePrompt">Price:</string>
-    <string name="caffeinePrompt">Caffeine:</string>
+
+    <!-- Drink activity -->
+    <string name="title_activity_drink">DrinkActivity</string>
+    <string name="addDrinkTitle">Add a Drink</string>
+    <string name="toshop">To Shop:</string>
+    <string name="caffeineContent">Caffeine Content (mg):</string>
+    <string name="typeDrink">Type of Drink</string>
+    <string name="drinkName">Drink Name:</string>
+  
+    <!-- Create order activity -->
+    <string name="title_activity_create_order">CreateOrderActivity</string>
+    <string name="plus">+</string>
+    <string name="createOrder">Create Order</string>
+    <string name="items">%1$d Items</string>
+    <string name="totalCaffeineOrder">Total Caffeine in Order: %1$d mg</string>
+    <string name="totalCaffeineToday">Total Caffeine Today: %1$d mg</string>
+    <string name="totalCost">Total Cost: %1$.2f</string>
+    <string name="overCaffeineLevel">This order would put your caffeine level above the recommended 400mg.</string>
+    <string name="proceed">Proceed</string>
+  
+    <!-- Log activity -->
+    <string name="title_activity_log">LogActivity</string>
 </resources>

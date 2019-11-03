@@ -1,9 +1,12 @@
 package projects.chirolhill.juliette.csci310_project2.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserLog {
+public class UserLog implements Serializable {
+    public static final String PREF_TOTAL_CAFFEINE = "pref_total_caffeine";
+
     private String id;
     private Customer owner;
     private List<Order> orders;
