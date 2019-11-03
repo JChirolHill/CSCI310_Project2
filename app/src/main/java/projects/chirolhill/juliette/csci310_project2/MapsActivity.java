@@ -42,6 +42,9 @@ import projects.chirolhill.juliette.csci310_project2.model.MapShop;
 import projects.chirolhill.juliette.csci310_project2.model.Shop;
 import projects.chirolhill.juliette.csci310_project2.model.User;
 import projects.chirolhill.juliette.csci310_project2.model.YelpFetcher;
+import projects.chirolhill.juliette.csci310_project2.model.DirectionsFetcher;
+import projects.chirolhill.juliette.csci310_project2.model.DirectionsResponse;
+import projects.chirolhill.juliette.csci310_project2.model.DirectionsRoute;
 
 public class MapsActivity extends FragmentActivity implements
         GoogleMap.OnMyLocationButtonClickListener,
@@ -188,7 +191,9 @@ public class MapsActivity extends FragmentActivity implements
         // remove old polylines
         for (Polyline p : polylines) p.remove();
 
-//        currLatLng = marker.getPosition();
+        // needed to allow inner-class button listeners to access marker
+        final Marker passableMarker = marker;
+
         if(marker.getPosition().latitude != currLatLng.latitude
                 && marker.getPosition().longitude != currLatLng.longitude) {
 
@@ -217,8 +222,9 @@ public class MapsActivity extends FragmentActivity implements
                 builder.setPositiveButton("Get Directions", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
-                        // launch intent to view directions to shop here
 
+                        // launch intent to view directions to shop here
+                        calculateDirections(passableMarker);
                     }
                 });
                 builder.setNeutralButton("View Drinks", new DialogInterface.OnClickListener() {
@@ -243,18 +249,20 @@ public class MapsActivity extends FragmentActivity implements
         return false; // moves camera to the selected marker
     }
 
-    /**
-     * Allows a click of a given marker's info window to trigger a directions query.
-     * @param marker
-     */
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        // remove old polylines
-        for (Polyline p : polylines) p.remove();
-
-        // TODO put into actual dialog with options (driving or walking)
-        calculateDirections(marker);
-    }
+//    /**
+//     * Allows a click of a given marker's info window to trigger a directions query.
+//     * @param marker
+//     *
+//     * CURRENTLY COMMENTED OUT BECAUSE WE MIGHT SWITCH TO CLICKING WITHIN A DRAWER
+//     */
+//    @Override
+//    public void onInfoWindowClick(Marker marker) {
+//        // remove old polylines
+//        for (Polyline p : polylines) p.remove();
+//
+//        // TODO put into actual dialog with options (driving or walking)
+//        calculateDirections(marker);
+//    }
 
     /**
      * Calculates directions from current location to specified marker.
