@@ -41,7 +41,7 @@
     <string name="rating">Rating</string>
     <string name="price">Price</string>
     <string name="itemsListed">Available Drinks</string>
-    <string name="notClaimedNoDrinks">This shop has not been claimed, so does not have any drinks currently.</string>
+    <string name="notClaimedNoDrinks">This shop has not been claimed, so it does not have any drinks currently.</string>
     <string name="coffee">Coffee</string>
     <string name="tea">Tea</string>
     <string name="milligrams"> mg</string>
