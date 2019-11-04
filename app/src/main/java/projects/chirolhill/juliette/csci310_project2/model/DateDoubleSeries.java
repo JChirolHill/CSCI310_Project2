@@ -5,27 +5,26 @@ import com.androidplot.xy.XYSeries;
 import java.util.ArrayList;
 
 /**
- * This is a custom XYSeries class to represent our user caffeine level data.
- *
- * TODO: verify there won't be any concurrency issues (i.e. x/y become dif length arrays)
+ * This is a custom XYSeries class in which:
+ * X values = dates in milliseconds
+ * Y values = doubles
  */
-public class CaffeineLevelSeries implements XYSeries {
+public class DateDoubleSeries implements XYSeries {
 
-    private ArrayList<Long> xSeries; // dates, stored as unsigned longs
-    private ArrayList<Integer> ySeries; // caffeine levels, stored as doubles in mgs
+    protected ArrayList<Long> xSeries; // dates, stored as unsigned longs
+    protected ArrayList<Number> ySeries;
     private String title;
 
     // TODO: some sort of data "default" logic for when we have incomplete weeks of data for a user
-
-    public CaffeineLevelSeries(String title) {
+    public DateDoubleSeries(String title) {
         this.title = title;
         this.xSeries = new ArrayList<Long>();
-        this.ySeries = new ArrayList<Integer>();
+        this.ySeries = new ArrayList<Number>();
     }
 
-    public void add(Long date, Integer caffeineLevel) {
+    public void add(Long date, Number value) {
         this.xSeries.add(date);
-        this.ySeries.add(caffeineLevel);
+        this.ySeries.add(value);
     }
 
     public String getTitle() {
@@ -36,7 +35,7 @@ public class CaffeineLevelSeries implements XYSeries {
         return xSeries.get(index);
     }
 
-    public Integer getY(int index) {
+    public Number getY(int index) {
         return ySeries.get(index);
     }
 
