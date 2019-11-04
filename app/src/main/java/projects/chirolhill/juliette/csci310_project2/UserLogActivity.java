@@ -46,10 +46,22 @@ public class UserLogActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // get all orders executed within the past week for the given user
+
+
+        // extract dates and caffeine levels from orders
+
+
+        // convert to custom XYSeries, CaffeineLevelSeries
+
+
+        // begin creating chart
         caffeineChart = findViewById(R.id.caffeineChart);
-        caffeineChart.setRangeBoundaries(new Integer(0), new Integer(500), BoundaryMode.FIXED);
-        caffeineChart.setRangeStep(StepMode.INCREMENT_BY_VAL, 100);
-        // break up into 7 days = one week, plus one blank spot at front and back to fix a formatting bug
+
+        // formatting: set y-axis increments from 0 to 1000 in increments of 200, and add extra
+        // vals at beg/end to create a margin for the bars
+        caffeineChart.setRangeBoundaries(new Integer(0), new Integer(1000), BoundaryMode.FIXED);
+        caffeineChart.setRangeStep(StepMode.INCREMENT_BY_VAL, 200);
         caffeineChart.setDomainStep(StepMode.SUBDIVIDE, 9);
 
         // Y-AXIS (Daily Caffeine Level, in mg)
@@ -57,14 +69,9 @@ public class UserLogActivity extends AppCompatActivity {
         final Long[] domainLabels = {1571554800000L, 1571641200000L, 1571727600000L,
                 1571814000000L, 1571900400000L, 1571986800000L, 1572073200000L,
                 1572159600000L, 1572246000000L};
-        // final Integer[] domainLabels = {10_21_2019, 10_22_2019, 10_23_2019, 10_24_2019, 10_25_2019, 10_26_2019, 10_27_2019};
-        Integer[] coffeeLevels = {0, 100, 200, 230, 260, 70, 80, 90, 0};
-        Integer[] teaLevels = {0, 100, 100, 130, 160, 170, 180, 90, 0};
+        Integer[] coffeeLevels = {0, 100, 200, 230, 260, 70, 180, 90, 0};
+        Integer[] teaLevels = {0, 100, 100, 330, 260, 270, 180, 190, 0};
 
-//        XYSeries coffeeSeries = new SimpleXYSeries(
-//                Arrays.asList(coffeeLevels), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Coffee");
-//        XYSeries teaSeries = new SimpleXYSeries(
-//                Arrays.asList(teaLevels), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Tea");
         CaffeineLevelSeries coffeeSeries = new CaffeineLevelSeries("Coffee");
         for (int i = 0; i < coffeeLevels.length; i++) {
             coffeeSeries.add(domainLabels[i], coffeeLevels[i]);
@@ -85,30 +92,7 @@ public class UserLogActivity extends AppCompatActivity {
         // initialize bar renderer (must be done after set formatter and add series to the plot)
         renderer = caffeineChart.getRenderer(BarRenderer.class);
         renderer.setBarGroupWidth(BarRenderer.BarGroupWidthMode.FIXED_WIDTH, PixelUtils.dpToPix(25));
-        // renderer.setBarGroupWidth(BarRenderer.BarGroupWidthMode.FIXED_GAP, PixelUtils.dpToPix(25));
         renderer.setBarOrientation(BarRenderer.BarOrientation.STACKED);
-
-//        caffeineChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new NumberFormat() {
-//            @Override
-//            public StringBuffer format(double value, StringBuffer toAppendTo, FieldPosition pos) {
-//                throw new UnsupportedOperationException("Not yet implemented.");
-//            }
-//
-//            @Override
-//            public StringBuffer format(long value, StringBuffer buffer, FieldPosition field) {
-//                if (value == 0 || value == 8) return new StringBuffer();
-//
-//                Date date = new Date(value);
-//                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd");
-//
-//                return new StringBuffer(formatter.format(date));
-//            }
-//
-//            @Override
-//            public Number parse(String string, ParsePosition position) {
-//                throw new UnsupportedOperationException("Not yet implemented.");
-//            }
-//        });
 
         caffeineChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new Format() {
             // converts the Long received from the X-axis value into a date, and then neatly formats it
@@ -129,21 +113,17 @@ public class UserLogActivity extends AppCompatActivity {
             }
         });
 
-        caffeineChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new NumberFormat() {
+        caffeineChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new Format() {
+            // converts the Long received from the X-axis value into a date, and then neatly formats it
             @Override
-            public StringBuffer format(double number, StringBuffer toAppendTo, FieldPosition pos) {
-                int intNumber = (int) number;
-                if (intNumber == 200) return new StringBuffer("[" + intNumber + "]");
+            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+                int intNumber = ((Number) obj).intValue();
+                if (intNumber == 400) return new StringBuffer("[" + intNumber + "]");
                 else return new StringBuffer(Integer.toString(intNumber));
             }
 
             @Override
-            public StringBuffer format(long number, StringBuffer toAppendTo, FieldPosition pos) {
-                throw new UnsupportedOperationException("Not yet implemented.");
-            }
-
-            @Override
-            public Number parse(String source, ParsePosition parsePosition) {
+            public Number parseObject(String string, ParsePosition position) {
                 throw new UnsupportedOperationException("Not yet implemented.");
             }
         });
