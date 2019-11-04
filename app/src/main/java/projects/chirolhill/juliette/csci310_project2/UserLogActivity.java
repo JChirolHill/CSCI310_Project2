@@ -2,6 +2,7 @@ package projects.chirolhill.juliette.csci310_project2;
 
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -45,7 +46,6 @@ public class UserLogActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_log);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ordersList = findViewById(R.id.ordersList);
 
         // get all orders for user (up to past 50)
 
@@ -57,25 +57,23 @@ public class UserLogActivity extends AppCompatActivity {
 
         // moneyXYPlot: convert data to SimpleXYSeries
 
-        // create charts
+        // create charts and order list
         caffeineBarChart = findViewById(R.id.caffeineBarChart);
         moneyXYPlot = findViewById(R.id.moneyXYPlot);
+        ordersList = findViewById(R.id.ordersList);
 
-        // setup charts
-        // TODO: pass in the data extracted from DB
-        this.onCreateCaffeineChart(caffeineBarChart);
-        this.onCreateMoneyXYPlot(moneyXYPlot);
-
-        // TODO: set up the money chart
+        // setup charts and order list
+        // TODO: pass in the data extracted from DB as an argument, e.g. DateIntegerSeries
+        this.onCreateCaffeineChart();
+        this.onCreateMoneyXYPlot();
 
         // TODO: set up the list of logs
     }
 
     /**
      * Setup code for the caffeine chart (formatting, incorporating data)
-     * @param caffeineBarChart
      */
-    public void onCreateCaffeineChart(XYPlot caffeineBarChart) {
+    private void onCreateCaffeineChart() {
         // formatting: set y-axis increments from 0 to 1000 in increments of 200, and add extra
         // vals at beg/end to create a margin for the bars
         caffeineBarChart.setRangeBoundaries(new Integer(0), new Integer(1000), BoundaryMode.FIXED);
@@ -101,27 +99,25 @@ public class UserLogActivity extends AppCompatActivity {
 
         // had to hard code the colors because they're apparently translated into ints in the backend,
         // but the ints DON'T properly translate back into the original hex string ...
-        BarFormatter bfCoffee = new BarFormatter(Color.parseColor("#ac9782"), Color.WHITE);
-        BarFormatter bfTea = new BarFormatter(Color.parseColor("#4d7d55"), Color.WHITE);
+        BarFormatter coffeeBarFormatter = new BarFormatter(Color.parseColor("#ac9782"), Color.WHITE);
+        BarFormatter teaBarFormatter = new BarFormatter(Color.parseColor("#4d7d55"), Color.WHITE);
 
-        caffeineBarChart.addSeries(coffeeSeries, bfCoffee);
-        caffeineBarChart.addSeries(teaSeries, bfTea);
+        caffeineBarChart.addSeries(coffeeSeries, coffeeBarFormatter);
+        caffeineBarChart.addSeries(teaSeries, teaBarFormatter);
 
         // initialize bar caffineBarChartRenderer (must be done after set formatter and add series to the plot)
         caffineBarChartRenderer = caffeineBarChart.getRenderer(BarRenderer.class);
         caffineBarChartRenderer.setBarGroupWidth(BarRenderer.BarGroupWidthMode.FIXED_WIDTH, PixelUtils.dpToPix(25));
         caffineBarChartRenderer.setBarOrientation(BarRenderer.BarOrientation.STACKED);
 
+        // TODO: define this as a real class since the other graph also uses it
+        // X-AXIS = date values, formatted as "10/27"
         caffeineBarChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new Format() {
-            // converts the Long received from the X-axis value into a date, and then neatly formats it
             @Override
             public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
                 long value = ((Number) obj).longValue();
-                if (value == 0 || value == 8) return new StringBuffer();
-
-                Date date = new Date(value);
-
-                return new StringBuffer(formatter.format(date) + " ");
+                // TODO: detect edge values and render them empty
+                return new StringBuffer(formatter.format(new Date(value)) + " ");
             }
 
             @Override
@@ -130,8 +126,8 @@ public class UserLogActivity extends AppCompatActivity {
             }
         });
 
+        // Y-AXIS = caffeine values, formatted as "800"
         caffeineBarChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new Format() {
-            // converts the Long received from the X-axis value into a date, and then neatly formats it
             @Override
             public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
                 int intNumber = ((Number) obj).intValue();
@@ -148,13 +144,13 @@ public class UserLogActivity extends AppCompatActivity {
 
     /**
      * Setup code for the money chart (formatting, incorporating data)
-     * @param moneyXYPlot
      */
-    public void onCreateMoneyXYPlot(XYPlot moneyXYPlot) {
+    private void onCreateMoneyXYPlot() {
         // formatting: add extra vals at beg/end (7 days +1 on each end = 9) to create a margin for the bars
+        moneyXYPlot.setRangeStep(StepMode.INCREMENT_BY_VAL, 5.0);
         moneyXYPlot.setDomainStep(StepMode.SUBDIVIDE, 9);
 
-        // Y-AXIS (Daily Caffeine Level, in mg)
+        // Y-AXIS (Daily Expenditures, in dollars)
         // X-AXIS (Date, e.g. "10/27", previous 7 days)
         final Long[] domainLabels = {1571554800000L, 1571641200000L, 1571727600000L,
                 1571814000000L, 1571900400000L, 1571986800000L, 1572073200000L,
@@ -171,30 +167,48 @@ public class UserLogActivity extends AppCompatActivity {
             teaSeries.add(domainLabels[i], teaExpenditures[i]);
         }
 
-        // TODO: color code the lines
-        LineAndPointFormatter lfCoffee = new LineAndPointFormatter();
-        lfCoffee.setInterpolationParams(new CatmullRomInterpolator.Params(20,
+        // format the lines (color, smoothing, removing fill)
+        LineAndPointFormatter coffeeLineFormatter = new LineAndPointFormatter(Color.parseColor("#ac9782"),
+                null, null, null);
+        coffeeLineFormatter.getLinePaint().setStrokeWidth(8);
+        coffeeLineFormatter.setInterpolationParams(new CatmullRomInterpolator.Params(20,
                 CatmullRomInterpolator.Type.Centripetal)); // smooths out the lines
-        LineAndPointFormatter lfTea = new LineAndPointFormatter();
-        lfTea.setInterpolationParams(new CatmullRomInterpolator.Params(20,
+        coffeeLineFormatter.setFillPaint(null); // to prevent lines from filling .. may break in the future?
+        LineAndPointFormatter teaLineFormatter = new LineAndPointFormatter(Color.parseColor("#4d7d55"),
+                null, null, null);
+        teaLineFormatter.getLinePaint().setStrokeWidth(8);
+        teaLineFormatter.setInterpolationParams(new CatmullRomInterpolator.Params(20,
                 CatmullRomInterpolator.Type.Centripetal)); // smooths out the lines
+        teaLineFormatter.setFillPaint(null);
 
-        moneyXYPlot.addSeries(coffeeSeries, lfCoffee);
-        moneyXYPlot.addSeries(teaSeries, lfTea);
+        moneyXYPlot.addSeries(coffeeSeries, coffeeLineFormatter);
+        moneyXYPlot.addSeries(teaSeries, teaLineFormatter);
 
         // initialize line and point renderer (must be done after set formatter and add series to the plot)
         moneyXYPlotRenderer = moneyXYPlot.getRenderer(LineAndPointRenderer.class);
 
+        // X-AXIS = date values, formatted as "10/27"
         moneyXYPlot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new Format() {
-            // converts the Long received from the X-axis value into a date, and then neatly formats it
             @Override
             public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
                 long value = ((Number) obj).longValue();
-                if (value == 0 || value == 8) return new StringBuffer();
+                return new StringBuffer(formatter.format(new Date(value)) + " ");
+            }
 
-                Date date = new Date(value);
+            @Override
+            public Number parseObject(String string, ParsePosition position) {
+                throw new UnsupportedOperationException("Not yet implemented.");
+            }
+        });
 
-                return new StringBuffer(formatter.format(date) + " ");
+        // Y-AXIS = dollar values, formatted as "$50"
+        moneyXYPlot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new Format() {
+            @Override
+            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+                // trying to format #'s like $13.50, but doesn't work for numbers ending in .0
+                // double number = Double.parseDouble(String.format("%.2f", ((Number) obj).doubleValue()));
+                int number = ((Number) obj).intValue();
+                return new StringBuffer("$" + number);
             }
 
             @Override
@@ -204,7 +218,10 @@ public class UserLogActivity extends AppCompatActivity {
         });
     }
 
-    public void onCreateOrderLog(ListView ordersList) {
+    /**
+     * Setup code for the list of orders (formatting, incorporating data)
+     */
+    public void onCreateOrderLog() {
 
     }
 }
