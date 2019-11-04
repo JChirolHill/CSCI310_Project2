@@ -19,6 +19,7 @@ public class Order {
 
     public Order(String id) {
         this.id = id;
+        drinks = new HashMap<>();
     }
 
     public Order(String id, String shopID, String tripID, String userID, Date date) {

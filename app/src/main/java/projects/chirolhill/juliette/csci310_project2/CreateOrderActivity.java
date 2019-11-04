@@ -169,13 +169,13 @@ public class CreateOrderActivity extends AppCompatActivity {
 
                 // add this user back to database
                 Database.getInstance().addUser(customer);
+
+                Intent i = new Intent(getApplicationContext(), OrderActivity.class);
+                i.putExtra(Order.PREF_ORDER_ID, order.getId());
+                startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
             }
         });
         Database.getInstance().getUser(userID);
-
-        Intent i = new Intent(getApplicationContext(), OrderActivity.class);
-        i.putExtra(Order.PREF_ORDER_ID, order.getId());
-        startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
     }
 
     private void displayInfo() {
