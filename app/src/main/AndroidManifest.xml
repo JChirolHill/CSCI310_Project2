@@ -81,7 +81,11 @@
             android:name=".CreateOrderActivity"
             android:label="@string/title_activity_create_order"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-      
+
+        <activity
+            android:name=".LogActivity"
+            android:label="@string/title_activity_log"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

@@ -14,10 +14,13 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import projects.chirolhill.juliette.csci310_project2.R;
+import projects.chirolhill.juliette.csci310_project2.model.Customer;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.Drink;
 import projects.chirolhill.juliette.csci310_project2.model.Order;
@@ -48,24 +51,27 @@ public class LogActivity extends AppCompatActivity {
         orderAdapter = new OrderListAdapter(this, R.layout.list_item_order, orders);
         listOrders.setAdapter(orderAdapter);
 
-//        // get user's orders
-//        SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
-//        Database.getInstance().setCallback(new Database.Callback() {
-//            @Override
-//            public void dbCallback(Object o) {
-////                orders.
-//            }
-//        });
-//        Database.getInstance().getUser(prefs.getString(User.PREF_USER_ID, "invalid userid"));
-//
-//        // populate orders from database
-//        Database.getInstance().setCallback(new Database.Callback() {
-//            @Override
-//            public void dbCallback(Object o) {
-//
-//            }
-//        });
-//        Database.getInstance().getOrder();
+        // get user's orders
+        SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
+        Database.getInstance().setCallback(new Database.Callback() {
+            @Override
+            public void dbCallback(Object o) {
+                Customer tempCustomer = (Customer)o;
+                orders = tempCustomer.getLog().getOrders();
+
+                // get all orders from database
+                for(Order order : orders) {
+                    Database.getInstance().setCallback(new Database.Callback() {
+                        @Override
+                        public void dbCallback(Object o) {
+
+                        }
+                    });
+                    Database.getInstance().getOrder(order.getId());
+                }
+            }
+        });
+        Database.getInstance().getUser(prefs.getString(User.PREF_USER_ID, "invalid userid"));
     }
 
     private class OrderListAdapter extends ArrayAdapter<Order> {
@@ -79,18 +85,18 @@ public class LogActivity extends AppCompatActivity {
                 convertView = getLayoutInflater().inflate(R.layout.list_item_order, null);
             }
 
-            TextView textShopName = convertView.findViewById(R.id.listShopName);
+            TextView textDate = convertView.findViewById(R.id.listDate);
             TextView textTotalCost = convertView.findViewById(R.id.listTotalCost);
             TextView textTotalCaffeine = convertView.findViewById(R.id.listTotalCaffeine);
-            TextView textTripDuration = convertView.findViewById(R.id.listTripDuration);
+//            TextView textTripDuration = convertView.findViewById(R.id.listTripDuration);
 
             Order order = getItem(position);
 
             // copy/map the data from the current item (model) to the curr row (view)
-//            textShopName.setText(order.getShop());
-//            textTotalCost.setText(d.isCoffee() ? getResources().getString(R.string.coffee) : getResources().getString(R.string.tea));
-//            textTotalCaffeine.setText(d.getCaffeine() + " " + getResources().getString(R.string.milligrams));
-//            textTripDuration.setText("$" + Float.toString(d.getPrice()));
+            DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
+            textDate.setText(dateFormat.format(order.getDate()));
+            textTotalCost.setText(getResources().getString(R.string.dollarCost, order.getTotalCost(false)));
+            textTotalCaffeine.setText(order.getTotalCaffeine(false) + " " + getResources().getString(R.string.milligrams));
 
             return convertView;
         }

@@ -91,8 +91,10 @@ public class OrderActivity extends AppCompatActivity {
                 currOrder = (Order)o;
 
                 // set values in layout based on order
-                DateFormat dateFormat = new SimpleDateFormat("M d, yyyy");
+                DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
                 textDate.setText(dateFormat.format(currOrder.getDate()));
+                totalMoneySpent.setText(getResources().getString(R.string.dollarCost, currOrder.getTotalCost(false)));
+                textCaffeineLevel.setText(currOrder.getTotalCaffeine(false) + " " + getResources().getString(R.string.milligrams));
 
                 // load in all the drinks
                 for(Map.Entry<String, Pair<Drink, Integer>> entry : currOrder.getDrinks().entrySet()) {
@@ -105,9 +107,6 @@ public class OrderActivity extends AppCompatActivity {
                                 currOrder.addDrink(tempDrink);
                                 drinks.add(tempDrink);
                                 drinkAdapter.notifyDataSetChanged();
-
-                                totalMoneySpent.setText(String.format("%.2f", currOrder.getTotalCost()));
-                                textCaffeineLevel.setText(currOrder.getTotalCaffeine() + " " + getResources().getString(R.string.milligrams));
                             }
                         }
                     });

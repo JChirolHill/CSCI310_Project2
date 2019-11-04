@@ -181,17 +181,17 @@ public class CreateOrderActivity extends AppCompatActivity {
     private void displayInfo() {
         // update total caffeine
         if(customer.getLog() != null) {
-            totalCaffeineToday = customer.getLog().getTotalCaffeineLevel() + order.getTotalCaffeine();
+            totalCaffeineToday = customer.getLog().getTotalCaffeineLevel() + order.getTotalCaffeine(true);
         }
         else {
-            totalCaffeineToday = order.getTotalCaffeine();
+            totalCaffeineToday = order.getTotalCaffeine(true);
         }
 
         // update views
         textNumItems.setText(getResources().getString(R.string.items, order.getNumItemsOrdered()));
-        textTotalCaffeineOrder.setText(getResources().getString(R.string.totalCaffeineOrder, order.getTotalCaffeine()));
+        textTotalCaffeineOrder.setText(getResources().getString(R.string.totalCaffeineOrder, order.getTotalCaffeine(true)));
         textTotalCaffeineToday.setText(getResources().getString(R.string.totalCaffeineToday, totalCaffeineToday));
-        textTotalCost.setText(getResources().getString(R.string.totalCost, order.getTotalCost()));
+        textTotalCost.setText(getResources().getString(R.string.totalCost, order.getTotalCost(true)));
 
         if(totalCaffeineToday > User.CAFFEINE_LIMIT) {
             textTotalCaffeineToday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.danger));
