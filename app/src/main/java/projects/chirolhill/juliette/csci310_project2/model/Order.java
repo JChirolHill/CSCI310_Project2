@@ -16,9 +16,14 @@ public class Order {
     private String tripID;
     private String userID;
     private Date date;
+    private double totalCost;
+    private int totalCaffeine;
 
     public Order(String id) {
         this.id = id;
+        drinks = new HashMap<>();
+        totalCost = -1;
+        totalCaffeine = -1;
     }
 
     public Order(String id, String shopID, String tripID, String userID, Date date) {
@@ -74,6 +79,14 @@ public class Order {
         this.date = date;
     }
 
+    public void setTotalCost(double totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public void setTotalCaffeine(int totalCaffeine) {
+        this.totalCaffeine = totalCaffeine;
+    }
+
     public int getNumItemsOrdered() {
         int numItems = 0;
         for(Map.Entry<String, Pair<Drink, Integer>> entry : drinks.entrySet()) {
@@ -90,8 +103,9 @@ public class Order {
         return total;
     }
 
-    public double getTotalCost() {
-        return calcTotalCost();
+    // pass in true to calculate from list of drinks, false if just get attribute value
+    public double getTotalCost(boolean calc) {
+        return (calc ? calcTotalCost() : totalCost);
     }
 
     // returns caffeine amount in milligrams
@@ -103,8 +117,9 @@ public class Order {
         return total;
     }
 
-    public int getTotalCaffeine() {
-        return calcTotalCaffeine();
+    // pass in true to calculate from list of drinks, false if just get attribute value4
+    public int getTotalCaffeine(boolean calc) {
+        return (calc ? calcTotalCaffeine() : totalCaffeine);
     }
 
     // returns true if go over caffeine limit

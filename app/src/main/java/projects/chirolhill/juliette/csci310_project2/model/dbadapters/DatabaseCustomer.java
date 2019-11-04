@@ -41,6 +41,14 @@ public class DatabaseCustomer implements DatabaseAdapter {
         c.setEmail(this.email);
         c.setMerchant(this.isMerchant);
 
+        // return all orders
+        if(orders != null) {
+            for(String orderID : orders) {
+                c.getLog().addOrder(new Order(orderID));
+            }
+        }
+
+
         return c;
     }
 }

@@ -43,8 +43,8 @@ public class UserLog implements Serializable {
     // sets totalCaffeineLevel and totalMoneySpent
     private void calcTotals() {
         for(Order o : orders) {
-            totalCaffeineLevel += o.getTotalCaffeine();
-            totalMoneySpent += o.getTotalCost();
+            totalCaffeineLevel += o.getTotalCaffeine(true);
+            totalMoneySpent += o.getTotalCost(true);
         }
     }
 

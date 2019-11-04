@@ -139,6 +139,9 @@ public class ShopInfoActivity extends AppCompatActivity {
                     i.putExtra(Drink.EXTRA_DRINK, drinks.get(position));
                     startActivityForResult(i, REQUEST_CODE_ADD_DRINK);
                 }
+                else { // log an order
+                    // TODO log order if click on item, can then remove the log order button that is kind of in the way
+                }
             }
         });
 

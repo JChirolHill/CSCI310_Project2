@@ -6,9 +6,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ProfileActivity"
-    tools:showIn="@layout/activity_order"
-    android:layout_marginStart="24dp"
-    android:layout_marginEnd="24dp">
+    tools:showIn="@layout/activity_order">
 
     <TextView
         android:id="@+id/textOrderTitle"
@@ -21,53 +19,57 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/datePrompt"
+        android:id="@+id/textDatePrompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="@string/date"
+        android:layout_marginStart="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textOrderTitle" />
     <TextView
-        android:id="@+id/date"
+        android:id="@+id/textDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBaseline_toBaselineOf="@id/datePrompt"
-        app:layout_constraintStart_toEndOf="@id/datePrompt"
+        app:layout_constraintBaseline_toBaselineOf="@id/textDatePrompt"
+        app:layout_constraintStart_toEndOf="@id/textDatePrompt"
         android:layout_marginStart="24dp"/>
     <EditText
         android:id="@+id/editDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBaseline_toBaselineOf="@id/datePrompt"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintBaseline_toBaselineOf="@id/textDatePrompt"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/datePrompt">
+        app:layout_constraintStart_toEndOf="@id/textDate">
     </EditText>
 
     <TextView
-        android:id="@+id/totalMoneySpentPrompt"
+        android:id="@+id/textTotalMoneySpentPrompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="@string/totalMoneySpent"
+        android:layout_marginStart="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/datePrompt" />
+        app:layout_constraintTop_toBottomOf="@id/textDatePrompt" />
     <TextView
         android:id="@+id/textTotalMoneySpent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBaseline_toBaselineOf="@id/totalMoneySpentPrompt"
-        app:layout_constraintStart_toEndOf="@id/totalMoneySpentPrompt"
+        app:layout_constraintBaseline_toBaselineOf="@id/textTotalMoneySpentPrompt"
+        app:layout_constraintStart_toEndOf="@id/textTotalMoneySpentPrompt"
         android:layout_marginStart="24dp"/>
     <EditText
         android:id="@+id/editTotalMoneySpent"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintBaseline_toBaselineOf="@id/totalMoneySpentPrompt"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintBaseline_toBaselineOf="@id/textTotalMoneySpentPrompt"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/totalMoneySpentPrompt">
+        app:layout_constraintStart_toEndOf="@id/textTotalMoneySpentPrompt">
     </EditText>
 
     <TextView
@@ -76,8 +78,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="@string/caffeineLevel"
+        android:layout_marginStart="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/totalMoneySpentPrompt" />
+        app:layout_constraintTop_toBottomOf="@id/textTotalMoneySpentPrompt" />
     <TextView
         android:id="@+id/textCaffeineLevel"
         android:layout_width="wrap_content"
@@ -90,6 +93,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:layout_marginEnd="24dp"
         app:layout_constraintBaseline_toBaselineOf="@+id/textCaffeineLevelPrompt"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/textCaffeineLevelPrompt">
@@ -108,11 +112,35 @@
 
     <ListView
         android:id="@+id/listDrinks"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:divider="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textItemsOrderedPrompt" />
+        app:layout_constraintTop_toBottomOf="@id/textItemsOrderedPrompt"
+        app:layout_constraintBottom_toTopOf="@id/btnOk"/>
 
+    <Button
+        android:id="@+id/btnOk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:textColor="@color/colorBackground"
+        android:layout_margin="8dp"
+        android:text="@string/ok"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
+    <Button
+        android:id="@+id/btnEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_background"
+        android:textColor="@color/colorBackground"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 </android.support.constraint.ConstraintLayout>

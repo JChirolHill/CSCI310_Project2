@@ -169,29 +169,30 @@ public class CreateOrderActivity extends AppCompatActivity {
 
                 // add this user back to database
                 Database.getInstance().addUser(customer);
+
+                Intent i = new Intent(getApplicationContext(), OrderActivity.class);
+                i.putExtra(OrderActivity.EXTRA_READONLY, true);
+                i.putExtra(Order.PREF_ORDER_ID, order.getId());
+                startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
             }
         });
         Database.getInstance().getUser(userID);
-
-        Intent i = new Intent(getApplicationContext(), OrderActivity.class);
-        i.putExtra(Order.PREF_ORDER_ID, order.getId());
-        startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
     }
 
     private void displayInfo() {
         // update total caffeine
         if(customer.getLog() != null) {
-            totalCaffeineToday = customer.getLog().getTotalCaffeineLevel() + order.getTotalCaffeine();
+            totalCaffeineToday = customer.getLog().getTotalCaffeineLevel() + order.getTotalCaffeine(true);
         }
         else {
-            totalCaffeineToday = order.getTotalCaffeine();
+            totalCaffeineToday = order.getTotalCaffeine(true);
         }
 
         // update views
         textNumItems.setText(getResources().getString(R.string.items, order.getNumItemsOrdered()));
-        textTotalCaffeineOrder.setText(getResources().getString(R.string.totalCaffeineOrder, order.getTotalCaffeine()));
+        textTotalCaffeineOrder.setText(getResources().getString(R.string.totalCaffeineOrder, order.getTotalCaffeine(true)));
         textTotalCaffeineToday.setText(getResources().getString(R.string.totalCaffeineToday, totalCaffeineToday));
-        textTotalCost.setText(getResources().getString(R.string.totalCost, order.getTotalCost()));
+        textTotalCost.setText(getResources().getString(R.string.totalCost, order.getTotalCost(true)));
 
         if(totalCaffeineToday > User.CAFFEINE_LIMIT) {
             textTotalCaffeineToday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.danger));

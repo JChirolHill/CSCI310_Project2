@@ -11,7 +11,6 @@ import java.util.Map;
 import projects.chirolhill.juliette.csci310_project2.model.Drink;
 import projects.chirolhill.juliette.csci310_project2.model.Order;
 
-// NEEDS TO BE TESTED THOROUGHLY, JUST WROTE AND NO TESTS SO FAR, PLLLLLLEEEEEEEEEEASEEEEEE TEST WELL!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 public class DatabaseOrder implements DatabaseAdapter {
     public String id;
     public Map<String, Integer> drinks; // store drinks and number of orders
@@ -19,6 +18,8 @@ public class DatabaseOrder implements DatabaseAdapter {
     public String tripID;
     public String customerID;
     public String date;
+    public double totalCost;
+    public int totalCaffeine;
 
     public DatabaseOrder() {}
 
@@ -35,6 +36,8 @@ public class DatabaseOrder implements DatabaseAdapter {
         if(o.getDrinks() != null) {
             for(Map.Entry<String, Pair<Drink, Integer>> entry : o.getDrinks().entrySet()) {
                 drinks.put(entry.getKey(), entry.getValue().second);
+                totalCost += entry.getValue().first.getPrice() * entry.getValue().second;
+                totalCaffeine += entry.getValue().first.getCaffeine() * entry.getValue().second;
             }
         }
     }
@@ -45,6 +48,8 @@ public class DatabaseOrder implements DatabaseAdapter {
         o.setShop(shopID);
         o.setTrip(tripID);
         o.setUser(customerID);
+        o.setTotalCost(totalCost);
+        o.setTotalCaffeine(totalCaffeine);
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         try {
