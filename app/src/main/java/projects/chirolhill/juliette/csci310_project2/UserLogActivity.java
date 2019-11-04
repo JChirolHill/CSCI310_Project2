@@ -128,7 +128,4 @@ public class UserLogActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
 }
