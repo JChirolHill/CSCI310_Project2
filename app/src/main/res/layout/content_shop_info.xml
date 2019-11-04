@@ -88,6 +88,7 @@
         android:layout_height="wrap_content"
         android:text="@string/logOrder"
         android:textColor="#fff"
+        android:visibility="gone"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/button_background"

@@ -129,18 +129,14 @@ public class CreateOrderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(totalCaffeineToday < User.CAFFEINE_LIMIT) { // did not pass caffeine limit
-                    Intent i = new Intent(getApplicationContext(), OrderActivity.class);
-//                    i.putExtra(Order.PREF_ORDER, order);
-                    startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
+                    proceedToOrder();
                 }
                 else { // above caffeine threshold\
                     Snackbar.make(findViewById(R.id.layoutCreateOrder), getResources().getString(R.string.overCaffeineLevel), Snackbar.LENGTH_LONG)
                             .setAction(getResources().getString(R.string.proceed), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Intent i = new Intent(getApplicationContext(), OrderActivity.class);
-//                                    i.putExtra(Order.PREF_ORDER, order);
-                                    startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
+                                    proceedToOrder();
                                 }
                             }).show();
                 }
@@ -155,6 +151,15 @@ public class CreateOrderActivity extends AppCompatActivity {
                 finish();
             }
         }
+    }
+
+    private void proceedToOrder() {
+        // add order to database
+        order.setId(Database.getInstance().addOrder(order));
+
+        Intent i = new Intent(getApplicationContext(), OrderActivity.class);
+        i.putExtra(Order.PREF_ORDER_ID, order.getId());
+        startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
     }
 
     private void displayInfo() {

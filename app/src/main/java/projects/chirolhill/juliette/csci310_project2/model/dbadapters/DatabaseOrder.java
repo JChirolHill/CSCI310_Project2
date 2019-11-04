@@ -2,6 +2,7 @@ package projects.chirolhill.juliette.csci310_project2.model.dbadapters;
 
 import android.util.Pair;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.Drink;
@@ -22,6 +23,7 @@ public class DatabaseOrder implements DatabaseAdapter {
         this.shopID = o.getShop();
         this.customerID = o.getUser();
         this.tripID = o.getTrip();
+        this.drinks = new HashMap<>();
         if(o.getDrinks() != null) {
             for(Map.Entry<String, Pair<Drink, Integer>> entry : o.getDrinks().entrySet()) {
                 drinks.put(entry.getKey(), entry.getValue().second);

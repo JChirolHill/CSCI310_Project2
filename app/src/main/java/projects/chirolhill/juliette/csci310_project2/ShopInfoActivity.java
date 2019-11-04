@@ -203,11 +203,12 @@ public class ShopInfoActivity extends AppCompatActivity {
                         });
 
                         if(((Shop) currShop).getDrinks().size() == 0) { // no drinks
-                            btnLogOrder.setVisibility(View.GONE);
                             textItems.setText(getResources().getString(R.string.noDrinks));
                         }
                         else { // display all drinks
-                            btnLogOrder.setVisibility(View.VISIBLE);
+                            if(!isMerchant) {
+                                btnLogOrder.setVisibility(View.VISIBLE);
+                            }
                             textItems.setText(getResources().getString(R.string.itemsListed));
                             for(Drink d : ((Shop) currShop).getDrinks()) {
                                 Database.getInstance().getDrink(d.getId());

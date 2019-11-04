@@ -6,8 +6,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Order implements Serializable {
-    public static final String PREF_ORDER = "pref_order";
+public class Order {
+    public static final String PREF_ORDER_ID = "pref_order_id";
 
     private String id;
     private Map<String, Pair<Drink, Integer>> drinks; // store drinks and number of orders
