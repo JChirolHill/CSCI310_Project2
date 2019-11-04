@@ -171,6 +171,7 @@ public class CreateOrderActivity extends AppCompatActivity {
                 Database.getInstance().addUser(customer);
 
                 Intent i = new Intent(getApplicationContext(), OrderActivity.class);
+                i.putExtra(OrderActivity.EXTRA_READONLY, true);
                 i.putExtra(Order.PREF_ORDER_ID, order.getId());
                 startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
             }
