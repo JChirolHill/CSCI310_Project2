@@ -1,11 +1,15 @@
 package projects.chirolhill.juliette.csci310_project2;
 
+
+import java.text.NumberFormat;
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.androidplot.util.PixelUtils;
@@ -13,10 +17,12 @@ import com.androidplot.xy.BarFormatter;
 import com.androidplot.xy.BarRenderer;
 import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
 
+import java.text.DateFormatSymbols;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
@@ -25,6 +31,8 @@ import java.util.Arrays;
 import projects.chirolhill.juliette.csci310_project2.model.CaffeineLevelSeries;
 
 public class UserLogActivity extends AppCompatActivity {
+
+    private final String TAG = UserLogActivity.class.getSimpleName();
 
     private XYPlot caffeineChart;
     private BarRenderer renderer;
@@ -36,25 +44,20 @@ public class UserLogActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         caffeineChart = findViewById(R.id.caffeineChart);
+        caffeineChart.setRangeBoundaries(new Integer(0), new Integer(500), BoundaryMode.FIXED);
+        caffeineChart.setRangeStep(StepMode.INCREMENT_BY_VAL, 100);
+        // break up into 7 days = one week, plus one blank spot at front and back to fix a formatting bug
+        caffeineChart.setDomainStep(StepMode.SUBDIVIDE, 9);
 
         // dummy values
         // IDEAL GRAPH
         // Y-AXIS (Daily Caffeine Level, in mg)
         // X-AXIS (Date, e.g. "10/27", previous 7 days)
-        // final Number[] domainLabels = {1, 2, 3, 4, 5, 6, 7};
-        final Integer[] domainLabels = {10_21_2019, 10_22_2019, 10_23_2019, 10_24_2019, 10_25_2019, 10_26_2019, 10_27_2019};
-        Double[] coffeeLevels = {100.0, 200.0, 230.0, 260.0, 270.0, 180.0, 90.0};
-        Double[] teaLevels = {100.0, 200.0, 230.0, 260.0, 270.0, 180.0, 90.0};
+        final Integer[] domainLabels = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+        // final Integer[] domainLabels = {10_21_2019, 10_22_2019, 10_23_2019, 10_24_2019, 10_25_2019, 10_26_2019, 10_27_2019};
+        Integer[] coffeeLevels = {0, 100, 200, 230, 260, 70, 80, 90, 0};
+        Integer[] teaLevels = {0, 100, 100, 130, 160, 170, 180, 90, 0};
 
 //        XYSeries coffeeSeries = new SimpleXYSeries(
 //                Arrays.asList(coffeeLevels), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, "Coffee");
@@ -69,32 +72,62 @@ public class UserLogActivity extends AppCompatActivity {
             teaSeries.add(domainLabels[i], teaLevels[i]);
         }
 
-        // create a bar formatter with a red fill color and a white outline:
-        BarFormatter bfCoffee = new BarFormatter(Color.RED, Color.WHITE);
-        BarFormatter bfTea = new BarFormatter(Color.GREEN, Color.WHITE);
+        // had to hard code the colors because they're apparently translated into ints in the backend,
+        // but the ints DON'T properly translate back into the original hex string ...
+        BarFormatter bfCoffee = new BarFormatter(Color.parseColor("#ac9782"), Color.WHITE);
+        BarFormatter bfTea = new BarFormatter(Color.parseColor("#4d7d55"), Color.WHITE);
 
         caffeineChart.addSeries(coffeeSeries, bfCoffee);
         caffeineChart.addSeries(teaSeries, bfTea);
 
         // initialize bar renderer (must be done after set formatter and add series to the plot)
         renderer = caffeineChart.getRenderer(BarRenderer.class);
-        renderer.setBarGroupWidth(BarRenderer.BarGroupWidthMode.FIXED_WIDTH, PixelUtils.dpToPix(10));
-        renderer.setBarGroupWidth(BarRenderer.BarGroupWidthMode.FIXED_GAP, PixelUtils.dpToPix(5));
+        renderer.setBarGroupWidth(BarRenderer.BarGroupWidthMode.FIXED_WIDTH, PixelUtils.dpToPix(25));
+        // renderer.setBarGroupWidth(BarRenderer.BarGroupWidthMode.FIXED_GAP, PixelUtils.dpToPix(25));
         renderer.setBarOrientation(BarRenderer.BarOrientation.STACKED);
 
-//        caffeineChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new Format() {
-//            @Override
-//            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-//                int i = Math.round(((Number) obj).floatValue());
-//                return toAppendTo.append(domainLabels[i]);
-//            }
-//            @Override
-//            public Object parseObject(String source, ParsePosition pos) {
-//                return null;
-//            }
-//        });
+        caffeineChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new NumberFormat() {
+            @Override
+            public StringBuffer format(double value, StringBuffer toAppendTo, FieldPosition pos) {
+                if (value == 0 || value == 8) return new StringBuffer();
 
-        caffeineChart.setRangeBoundaries(new Integer(0), new Integer(800), BoundaryMode.FIXED);
+                Log.d(TAG, "input to format 'value' is " + value);
+
+                int year = (int) (value + 0.5d / 12);
+                int month = (int) ((value + 0.5d) % 12);
+                return new StringBuffer(DateFormatSymbols.getInstance()
+                        .getShortMonths()[month] + " '0" + year);
+            }
+
+            @Override
+            public StringBuffer format(long value, StringBuffer buffer, FieldPosition field) {
+                throw new UnsupportedOperationException("Not yet implemented.");
+            }
+
+            @Override
+            public Number parse(String string, ParsePosition position) {
+                throw new UnsupportedOperationException("Not yet implemented.");
+            }
+        });
+
+        caffeineChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new NumberFormat() {
+            @Override
+            public StringBuffer format(double number, StringBuffer toAppendTo, FieldPosition pos) {
+                int intNumber = (int) number;
+                if (intNumber == 200) return new StringBuffer("[" + intNumber + "]");
+                else return new StringBuffer(Integer.toString(intNumber));
+            }
+
+            @Override
+            public StringBuffer format(long number, StringBuffer toAppendTo, FieldPosition pos) {
+                throw new UnsupportedOperationException("Not yet implemented.");
+            }
+
+            @Override
+            public Number parse(String source, ParsePosition parsePosition) {
+                throw new UnsupportedOperationException("Not yet implemented.");
+            }
+        });
     }
 
 

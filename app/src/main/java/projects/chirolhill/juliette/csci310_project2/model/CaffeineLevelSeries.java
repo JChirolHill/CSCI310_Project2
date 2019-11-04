@@ -13,7 +13,7 @@ public class CaffeineLevelSeries implements XYSeries {
 
     // private ArrayList<Long> xSeries; // dates, stored as unsigned longs
     private ArrayList<Integer> xSeries; // NOTE: may be better to use specially formatted ints, i.e. "12252018" to represent 12-25-2018
-    private ArrayList<Double> ySeries; // caffeine levels, stored as doubles in mgs
+    private ArrayList<Integer> ySeries; // caffeine levels, stored as doubles in mgs
     private String title;
 
     // TODO: some sort of data "default" logic for when we have incomplete weeks of data for a user
@@ -22,10 +22,10 @@ public class CaffeineLevelSeries implements XYSeries {
         this.title = title;
         // this.xSeries = new ArrayList<Long>();
         this.xSeries = new ArrayList<Integer>();
-        this.ySeries = new ArrayList<Double>();
+        this.ySeries = new ArrayList<Integer>();
     }
 
-    public void add(Integer date, Double caffeineLevel) {
+    public void add(Integer date, Integer caffeineLevel) {
         this.xSeries.add(date);
         this.ySeries.add(caffeineLevel);
     }
@@ -38,7 +38,7 @@ public class CaffeineLevelSeries implements XYSeries {
         return xSeries.get(index);
     }
 
-    public Double getY(int index) {
+    public Integer getY(int index) {
         return ySeries.get(index);
     }
 

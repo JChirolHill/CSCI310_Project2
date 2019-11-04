@@ -53,7 +53,7 @@
 
         app:graphAnchor="center"
         app:graphHorizontalPositioning="absolute_from_center"
-        app:graphHorizontalPosition="2dp"
+        app:graphHorizontalPosition="8dp"
         app:graphVerticalPositioning="absolute_from_center"
         app:graphVerticalPosition="2dp"
 
@@ -62,10 +62,10 @@
         app:graphWidthMode="fill"
         app:graphWidth="40dp"
 
-        app:domainTitle="Day"
+        app:domainTitle="Date"
         app:lineLabelRotationBottom="-45"
         app:lineLabels="left|bottom"
-        app:rangeTitle="Caffeine"
+        app:rangeTitle="Daily Caffeine Level (mg)"
         app:title="Caffeine Levels" />
     />
 
