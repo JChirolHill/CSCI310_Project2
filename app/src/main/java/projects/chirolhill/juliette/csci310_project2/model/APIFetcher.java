@@ -14,8 +14,6 @@ public class APIFetcher {
         queue = Volley.newRequestQueue(context);
     }
 
-
-
     public String fetch() {
         return "";
     }

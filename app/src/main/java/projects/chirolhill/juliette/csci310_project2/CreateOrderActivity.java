@@ -22,6 +22,7 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
@@ -43,6 +44,7 @@ public class CreateOrderActivity extends AppCompatActivity {
     private DrinkListAdapter drinkAdapter;
     private List<Drink> drinks;
     private int totalCaffeineToday;
+    private String userID;
 
     private TextView textNumItems;
     private TextView textTotalCaffeineOrder;
@@ -76,7 +78,8 @@ public class CreateOrderActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
 
-        order = new Order(null, currShop.getId(), null, prefs.getString(User.PREF_USER_ID, "Invalid ID"));
+        userID = prefs.getString(User.PREF_USER_ID, "Invalid ID");
+        order = new Order(null, currShop.getId(), null, prefs.getString(User.PREF_USER_ID, "Invalid ID"), new Date());
 
         // set up adapter
         drinkAdapter = new DrinkListAdapter(this, R.layout.list_item_drink_order, drinks);
@@ -129,18 +132,14 @@ public class CreateOrderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(totalCaffeineToday < User.CAFFEINE_LIMIT) { // did not pass caffeine limit
-                    Intent i = new Intent(getApplicationContext(), OrderActivity.class);
-//                    i.putExtra(Order.PREF_ORDER, order);
-                    startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
+                    proceedToOrder();
                 }
                 else { // above caffeine threshold\
                     Snackbar.make(findViewById(R.id.layoutCreateOrder), getResources().getString(R.string.overCaffeineLevel), Snackbar.LENGTH_LONG)
                             .setAction(getResources().getString(R.string.proceed), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Intent i = new Intent(getApplicationContext(), OrderActivity.class);
-//                                    i.putExtra(Order.PREF_ORDER, order);
-                                    startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
+                                    proceedToOrder();
                                 }
                             }).show();
                 }
@@ -155,6 +154,28 @@ public class CreateOrderActivity extends AppCompatActivity {
                 finish();
             }
         }
+    }
+
+    private void proceedToOrder() {
+        // add order to database
+        order.setId(Database.getInstance().addOrder(order));
+
+        // get user from database
+        Database.getInstance().setCallback(new Database.Callback() {
+            @Override
+            public void dbCallback(Object o) {
+                Customer customer = (Customer)o;
+                customer.getLog().addOrder(order);
+
+                // add this user back to database
+                Database.getInstance().addUser(customer);
+            }
+        });
+        Database.getInstance().getUser(userID);
+
+        Intent i = new Intent(getApplicationContext(), OrderActivity.class);
+        i.putExtra(Order.PREF_ORDER_ID, order.getId());
+        startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
     }
 
     private void displayInfo() {
