@@ -11,8 +11,7 @@ import java.util.ArrayList;
  */
 public class CaffeineLevelSeries implements XYSeries {
 
-    // private ArrayList<Long> xSeries; // dates, stored as unsigned longs
-    private ArrayList<Integer> xSeries; // NOTE: may be better to use specially formatted ints, i.e. "12252018" to represent 12-25-2018
+    private ArrayList<Long> xSeries; // dates, stored as unsigned longs
     private ArrayList<Integer> ySeries; // caffeine levels, stored as doubles in mgs
     private String title;
 
@@ -20,12 +19,11 @@ public class CaffeineLevelSeries implements XYSeries {
 
     public CaffeineLevelSeries(String title) {
         this.title = title;
-        // this.xSeries = new ArrayList<Long>();
-        this.xSeries = new ArrayList<Integer>();
+        this.xSeries = new ArrayList<Long>();
         this.ySeries = new ArrayList<Integer>();
     }
 
-    public void add(Integer date, Integer caffeineLevel) {
+    public void add(Long date, Integer caffeineLevel) {
         this.xSeries.add(date);
         this.ySeries.add(caffeineLevel);
     }
@@ -34,7 +32,7 @@ public class CaffeineLevelSeries implements XYSeries {
         return this.title;
     }
 
-    public Integer getX(int index) {
+    public Long getX(int index) {
         return xSeries.get(index);
     }
 

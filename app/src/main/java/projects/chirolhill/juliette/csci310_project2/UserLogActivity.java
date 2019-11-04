@@ -27,6 +27,8 @@ import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
 import java.util.Arrays;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import projects.chirolhill.juliette.csci310_project2.model.CaffeineLevelSeries;
 
@@ -50,11 +52,11 @@ public class UserLogActivity extends AppCompatActivity {
         // break up into 7 days = one week, plus one blank spot at front and back to fix a formatting bug
         caffeineChart.setDomainStep(StepMode.SUBDIVIDE, 9);
 
-        // dummy values
-        // IDEAL GRAPH
         // Y-AXIS (Daily Caffeine Level, in mg)
         // X-AXIS (Date, e.g. "10/27", previous 7 days)
-        final Integer[] domainLabels = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+        final Long[] domainLabels = {1571554800000L, 1571641200000L, 1571727600000L,
+                1571814000000L, 1571900400000L, 1571986800000L, 1572073200000L,
+                1572159600000L, 1572246000000L};
         // final Integer[] domainLabels = {10_21_2019, 10_22_2019, 10_23_2019, 10_24_2019, 10_25_2019, 10_26_2019, 10_27_2019};
         Integer[] coffeeLevels = {0, 100, 200, 230, 260, 70, 80, 90, 0};
         Integer[] teaLevels = {0, 100, 100, 130, 160, 170, 180, 90, 0};
@@ -86,26 +88,43 @@ public class UserLogActivity extends AppCompatActivity {
         // renderer.setBarGroupWidth(BarRenderer.BarGroupWidthMode.FIXED_GAP, PixelUtils.dpToPix(25));
         renderer.setBarOrientation(BarRenderer.BarOrientation.STACKED);
 
-        caffeineChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new NumberFormat() {
+//        caffeineChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new NumberFormat() {
+//            @Override
+//            public StringBuffer format(double value, StringBuffer toAppendTo, FieldPosition pos) {
+//                throw new UnsupportedOperationException("Not yet implemented.");
+//            }
+//
+//            @Override
+//            public StringBuffer format(long value, StringBuffer buffer, FieldPosition field) {
+//                if (value == 0 || value == 8) return new StringBuffer();
+//
+//                Date date = new Date(value);
+//                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd");
+//
+//                return new StringBuffer(formatter.format(date));
+//            }
+//
+//            @Override
+//            public Number parse(String string, ParsePosition position) {
+//                throw new UnsupportedOperationException("Not yet implemented.");
+//            }
+//        });
+
+        caffeineChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new Format() {
+            // converts the Long received from the X-axis value into a date, and then neatly formats it
             @Override
-            public StringBuffer format(double value, StringBuffer toAppendTo, FieldPosition pos) {
+            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+                long value = ((Number) obj).longValue();
                 if (value == 0 || value == 8) return new StringBuffer();
 
-                Log.d(TAG, "input to format 'value' is " + value);
+                Date date = new Date(value);
+                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd");
 
-                int year = (int) (value + 0.5d / 12);
-                int month = (int) ((value + 0.5d) % 12);
-                return new StringBuffer(DateFormatSymbols.getInstance()
-                        .getShortMonths()[month] + " '0" + year);
+                return new StringBuffer(formatter.format(date) + " ");
             }
 
             @Override
-            public StringBuffer format(long value, StringBuffer buffer, FieldPosition field) {
-                throw new UnsupportedOperationException("Not yet implemented.");
-            }
-
-            @Override
-            public Number parse(String string, ParsePosition position) {
+            public Number parseObject(String string, ParsePosition position) {
                 throw new UnsupportedOperationException("Not yet implemented.");
             }
         });

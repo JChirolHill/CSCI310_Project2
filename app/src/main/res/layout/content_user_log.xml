@@ -8,10 +8,88 @@
     tools:context=".UserLogActivity"
     tools:showIn="@layout/activity_user_log">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
+        <com.androidplot.xy.XYPlot
+            android:id="@+id/caffeineChart"
+            style="@style/APDefacto.Light"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+
+            app:paddingTop="8dp"
+
+            app:graphAnchor="center"
+            app:graphHorizontalPositioning="absolute_from_center"
+            app:graphHorizontalPosition="8dp"
+            app:graphVerticalPositioning="absolute_from_center"
+            app:graphVerticalPosition="2dp"
+
+            app:graphHeightMode="absolute"
+            app:graphHeight="250dp"
+            app:graphWidthMode="fill"
+            app:graphWidth="40dp"
+
+            app:domainTitle="Date"
+            app:lineLabelRotationBottom="-45"
+            app:lineLabels="left|bottom"
+            app:rangeTitle="Daily Caffeine Level (mg)"
+            app:title="Caffeine Levels" />
+
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.v4.widget.NestedScrollView>
+<!--<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
+<!--    app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+<!--    tools:context=".UserLogActivity"-->
+<!--    tools:showIn="@layout/activity_user_log"-->
+<!--    app:layout_goneMarginBottom="24dp">-->
+
+<!--    <ScrollView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent">-->
+
+<!--        <android.support.constraint.ConstraintLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="300dp">-->
+
+<!--            <com.androidplot.xy.XYPlot-->
+<!--                android:id="@+id/caffeineChart"-->
+<!--                style="@style/APDefacto.Light"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="300dp"-->
+
+<!--                app:paddingTop="8dp"-->
+
+<!--                app:graphAnchor="center"-->
+<!--                app:graphHorizontalPositioning="absolute_from_center"-->
+<!--                app:graphHorizontalPosition="8dp"-->
+<!--                app:graphVerticalPositioning="absolute_from_center"-->
+<!--                app:graphVerticalPosition="2dp"-->
+
+<!--                app:graphHeightMode="absolute"-->
+<!--                app:graphHeight="250dp"-->
+<!--                app:graphWidthMode="fill"-->
+<!--                app:graphWidth="40dp"-->
+
+<!--                app:domainTitle="Date"-->
+<!--                app:lineLabelRotationBottom="-45"-->
+<!--                app:lineLabels="left|bottom"-->
+<!--                app:rangeTitle="Daily Caffeine Level (mg)"-->
+<!--                app:title="Caffeine Levels" />-->
+
+<!--        </android.support.constraint.ConstraintLayout>-->
+
+
+<!--    </ScrollView>-->
+
+
+<!--</android.support.constraint.ConstraintLayout>-->
