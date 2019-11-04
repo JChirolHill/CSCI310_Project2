@@ -3,6 +3,8 @@ package projects.chirolhill.juliette.csci310_project2.model;
 import android.util.Pair;
 
 import java.io.Serializable;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,16 +16,18 @@ public class Order implements Serializable {
     private String shopID;
     private String tripID;
     private String userID;
+    private Date date;
 
     public Order(String id) {
         this.id = id;
     }
 
-    public Order(String id, String shopID, String tripID, String userID) {
+    public Order(String id, String shopID, String tripID, String userID, Date date) {
         this.id = id;
         this.shopID = shopID;
         this.tripID = tripID;
         this.userID = userID;
+        this.date = date;
         drinks = new HashMap<>();
     }
 
@@ -41,6 +45,10 @@ public class Order implements Serializable {
 
     public String getUser() {
         return userID;
+    }
+
+    public Date getDate() {
+        return date;
     }
 
     public Map<String, Pair<Drink, Integer>> getDrinks() {
@@ -61,6 +69,10 @@ public class Order implements Serializable {
 
     public void setUser(String userID) {
         this.userID = userID;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public int getNumItemsOrdered() {

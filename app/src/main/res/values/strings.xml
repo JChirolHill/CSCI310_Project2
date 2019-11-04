@@ -72,6 +72,7 @@
     <string name="itemsOrdered">Items Ordered:</string>
     <string name="caffeineLevel">Total Caffeine (mg):</string>
     <string name="title_activity_shop_listing">ShopListing</string>
+    <string name="date">Date:</string>
 
     <!-- Drink activity -->
     <string name="title_activity_drink">DrinkActivity</string>

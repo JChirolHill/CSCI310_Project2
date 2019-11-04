@@ -22,6 +22,7 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
@@ -76,7 +77,7 @@ public class CreateOrderActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
 
-        order = new Order(null, currShop.getId(), null, prefs.getString(User.PREF_USER_ID, "Invalid ID"));
+        order = new Order(null, currShop.getId(), null, prefs.getString(User.PREF_USER_ID, "Invalid ID"), new Date());
 
         // set up adapter
         drinkAdapter = new DrinkListAdapter(this, R.layout.list_item_drink_order, drinks);
