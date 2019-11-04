@@ -11,6 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.widget.ImageView;
+import android.widget.ListView;
 
 import com.androidplot.util.PixelUtils;
 import com.androidplot.xy.BarFormatter;
@@ -38,6 +43,9 @@ public class UserLogActivity extends AppCompatActivity {
 
     private XYPlot caffeineChart;
     private BarRenderer renderer;
+    private ListView listOrders;
+    private ImageView caffeineChartView;
+    private ImageView moneyChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +53,9 @@ public class UserLogActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_log);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        listOrders = findViewById(R.id.listOrders);
+        moneyChart = findViewById(R.id.imageMoneyBarChart);
+        caffeineChartView = findViewById(R.id.imageCaffeineBarChart);
 
         // get all orders executed within the past week for the given user
 
