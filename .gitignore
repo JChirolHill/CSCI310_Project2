@@ -3,3 +3,6 @@
 *.iml*
 *.properties
 *.DS_Store
+CerinaTestActivity.java
+activity_cerina_test.xml
+bottom_sheet.xml
