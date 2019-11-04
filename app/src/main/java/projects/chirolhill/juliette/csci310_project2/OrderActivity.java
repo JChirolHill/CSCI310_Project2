@@ -19,8 +19,11 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
+import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.Drink;
 import projects.chirolhill.juliette.csci310_project2.model.Order;
 
@@ -30,20 +33,20 @@ public class OrderActivity extends AppCompatActivity {
     public static final String EXTRA_READONLY = "extra_order_readonly"; // display as view or update
 
     private TextView textOrderTitle;
-    private TextView totalMoneySpentPrompt;
+//    private TextView totalMoneySpentPrompt;
     private TextView totalMoneySpent;
     private EditText editTotalMoneySpent;
-    private TextView caffeineLevelPrompt;
-    private TextView caffeineLevel;
+//    private TextView textCaffeineLevelPrompt;
+    private TextView textCaffeineLevel;
     private EditText editCaffeineLevel;
+//    private TextView textDatePrompt;
+    private TextView textDate;
+    private EditText editDate;
     private ListView listDrinks;
-    private TextView listShopName;
-    private TextView listTotalCost;
-    private TextView listTotalCaffeine;
-    private TextView listTripDuration;
 
     private boolean readonly;
     private String orderID;
+    private Order currOrder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,23 +56,36 @@ public class OrderActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         textOrderTitle = findViewById(R.id.textOrderTitle);
-        totalMoneySpentPrompt = findViewById(R.id.totalMoneySpentPrompt);
+//        totalMoneySpentPrompt = findViewById(R.id.totalMoneySpentPrompt);
         totalMoneySpent = findViewById(R.id.textTotalMoneySpent);
         editTotalMoneySpent = findViewById(R.id.editTotalMoneySpent);
-        caffeineLevelPrompt = findViewById(R.id.textCaffeineLevelPrompt);
-        caffeineLevel = findViewById(R.id.textCaffeineLevel);
+//        caffeineLevelPrompt = findViewById(R.id.textCaffeineLevelPrompt);
+        textCaffeineLevel = findViewById(R.id.textCaffeineLevel);
         editCaffeineLevel = findViewById(R.id.editCaffeineLevel);
+        textDate = findViewById(R.id.textDate);
+        editDate = findViewById(R.id.editDate);
         listDrinks = findViewById(R.id.listDrinks);
-        listShopName = findViewById(R.id.listShopName);
-        listTotalCost = findViewById(R.id.listTotalCost);
-        listTotalCaffeine = findViewById(R.id.listTotalCaffeine);
-        listTripDuration = findViewById(R.id.listTripDuration);
 
         // either from shopinfoactivity -> readonly (review order)
         // or from profileactivity -> readonly (view/edit past orders)
         Intent i = getIntent();
         readonly = i.getBooleanExtra(EXTRA_READONLY, true);
         orderID = i.getStringExtra(Order.PREF_ORDER_ID);
+
+        // get the order from database
+        Database.getInstance().setCallback(new Database.Callback() {
+            @Override
+            public void dbCallback(Object o) {
+                currOrder = (Order)o;
+
+                // set values in layout based on order
+                DateFormat dateFormat = new SimpleDateFormat("MM dd, yyyy");
+                textDate.setText(dateFormat.format(currOrder.getDate()));
+                totalMoneySpent.setText(String.format(Double.toString(currOrder.getTotalCost())));
+                textCaffeineLevel.setText(currOrder.getTotalCaffeine());
+            }
+        });
+        Database.getInstance().getOrder(orderID);
 
         // render appropriately depending on the readonly state
         if(readonly) {
@@ -83,7 +99,7 @@ public class OrderActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 if(!readonly) {
-                    // do stuff, else do nothing
+
                 }
             }
         });
@@ -93,7 +109,7 @@ public class OrderActivity extends AppCompatActivity {
         textOrderTitle.setText(getResources().getString(R.string.viewOrder));
         totalMoneySpent.setVisibility(View.VISIBLE);
         editTotalMoneySpent.setVisibility(View.GONE);
-        caffeineLevel.setVisibility(View.VISIBLE);
+        textCaffeineLevel.setVisibility(View.VISIBLE);
         editCaffeineLevel.setVisibility(View.GONE);
     }
 
@@ -101,7 +117,7 @@ public class OrderActivity extends AppCompatActivity {
         textOrderTitle.setText(getResources().getString(R.string.editOrder));
         totalMoneySpent.setVisibility(View.GONE);
         editTotalMoneySpent.setVisibility(View.VISIBLE);
-        caffeineLevel.setVisibility(View.GONE);
+        textCaffeineLevel.setVisibility(View.GONE);
         editCaffeineLevel.setVisibility(View.VISIBLE);
     }
 
