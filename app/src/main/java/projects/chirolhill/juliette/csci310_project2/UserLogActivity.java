@@ -2,7 +2,6 @@ package projects.chirolhill.juliette.csci310_project2;
 
 
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -50,12 +49,12 @@ public class UserLogActivity extends AppCompatActivity {
         // get all orders for user (up to past 50)
 
         // caffeineBarChart: extract dates and caffeine levels from orders
-
-        // caffeineBarChart: convert data to custom XYSeries, DateIntegerSeries
+        DateIntegerSeries caffeineSeries = extractCaffeineData();
 
         // moneyXYPlot: extract dates and money levels from orders
+        DateDoubleSeries expenditureSeries = extractExpenditureData();
 
-        // moneyXYPlot: convert data to SimpleXYSeries
+        // ordersList: extract list of orders
 
         // create charts and order list
         caffeineBarChart = findViewById(R.id.caffeineBarChart);
@@ -64,16 +63,33 @@ public class UserLogActivity extends AppCompatActivity {
 
         // setup charts and order list
         // TODO: pass in the data extracted from DB as an argument, e.g. DateIntegerSeries
-        this.onCreateCaffeineChart();
+        this.onCreateCaffeineBarChart();
         this.onCreateMoneyXYPlot();
 
         // TODO: set up the list of logs
     }
 
     /**
+     * Pulls out an androidplot-ready XYSeries for the caffeine bar chart.
+     * @return
+     */
+    private DateIntegerSeries extractCaffeineData() {
+
+        return new DateIntegerSeries("test");
+    }
+
+    /**
+     * Pulls out an androidplot-ready XYSeries for the expenditure line plot.
+     */
+    private DateDoubleSeries extractExpenditureData() {
+
+        return new DateDoubleSeries("test");
+    }
+
+    /**
      * Setup code for the caffeine chart (formatting, incorporating data)
      */
-    private void onCreateCaffeineChart() {
+    private void onCreateCaffeineBarChart() {
         // formatting: set y-axis increments from 0 to 1000 in increments of 200, and add extra
         // vals at beg/end to create a margin for the bars
         caffeineBarChart.setRangeBoundaries(new Integer(0), new Integer(1000), BoundaryMode.FIXED);
@@ -221,7 +237,7 @@ public class UserLogActivity extends AppCompatActivity {
     /**
      * Setup code for the list of orders (formatting, incorporating data)
      */
-    public void onCreateOrderLog() {
+    private void onCreateOrderLog() {
 
     }
 }
