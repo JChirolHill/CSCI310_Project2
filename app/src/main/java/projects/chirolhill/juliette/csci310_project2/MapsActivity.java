@@ -187,14 +187,20 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             } else { // customer: show option to view drinks
                 AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle(marker.getTitle());
                 // Add the buttons
-                builder.setPositiveButton("Get Directions", new DialogInterface.OnClickListener() {
+                builder.setNeutralButton("Driving Directions", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
-                        // launch intent to view directions to shop here
+                        // launch intent to view driving directions to shop here
 
                     }
                 });
-                builder.setNeutralButton("View Drinks", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("Walking Directions", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
+                        // launch intent to view walking directions to shop here
+                    }
+                });
+                builder.setPositiveButton("View Drinks", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
 
