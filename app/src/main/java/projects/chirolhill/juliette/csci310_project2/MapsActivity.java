@@ -157,7 +157,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
     @Override
     public boolean onMyLocationButtonClick() {
-        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
         return false; // (the camera animates to the user's current position).
     }
 

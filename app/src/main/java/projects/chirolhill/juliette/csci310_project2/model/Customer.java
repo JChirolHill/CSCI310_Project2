@@ -5,6 +5,7 @@ public class Customer extends User {
 
     public Customer() {
         this.setMerchant(false);
+        log = new UserLog(this);
     }
 
     public UserLog getLog() {

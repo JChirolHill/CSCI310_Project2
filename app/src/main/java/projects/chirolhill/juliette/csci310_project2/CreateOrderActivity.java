@@ -44,6 +44,7 @@ public class CreateOrderActivity extends AppCompatActivity {
     private DrinkListAdapter drinkAdapter;
     private List<Drink> drinks;
     private int totalCaffeineToday;
+    private String userID;
 
     private TextView textNumItems;
     private TextView textTotalCaffeineOrder;
@@ -77,6 +78,7 @@ public class CreateOrderActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
 
+        userID = prefs.getString(User.PREF_USER_ID, "Invalid ID");
         order = new Order(null, currShop.getId(), null, prefs.getString(User.PREF_USER_ID, "Invalid ID"), new Date());
 
         // set up adapter
@@ -157,6 +159,19 @@ public class CreateOrderActivity extends AppCompatActivity {
     private void proceedToOrder() {
         // add order to database
         order.setId(Database.getInstance().addOrder(order));
+
+        // get user from database
+        Database.getInstance().setCallback(new Database.Callback() {
+            @Override
+            public void dbCallback(Object o) {
+                Customer customer = (Customer)o;
+                customer.getLog().addOrder(order);
+
+                // add this user back to database
+                Database.getInstance().addUser(customer);
+            }
+        });
+        Database.getInstance().getUser(userID);
 
         Intent i = new Intent(getApplicationContext(), OrderActivity.class);
         i.putExtra(Order.PREF_ORDER_ID, order.getId());
