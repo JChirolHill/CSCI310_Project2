@@ -93,10 +93,6 @@ public class OrderActivity extends AppCompatActivity {
         editTotalMoneySpent.setVisibility(View.GONE);
         caffeineLevel.setVisibility(View.VISIBLE);
         editCaffeineLevel.setVisibility(View.GONE);
-        listShopName.setVisibility(View.VISIBLE);
-        listTotalCost.setVisibility(View.VISIBLE);
-        listTotalCaffeine.setVisibility(View.VISIBLE);
-        listTripDuration.setVisibility(View.VISIBLE);
     }
 
     private void renderEditable() {
@@ -105,10 +101,6 @@ public class OrderActivity extends AppCompatActivity {
         editTotalMoneySpent.setVisibility(View.VISIBLE);
         caffeineLevel.setVisibility(View.GONE);
         editCaffeineLevel.setVisibility(View.VISIBLE);
-        listShopName.setVisibility(View.VISIBLE);
-        listTotalCost.setVisibility(View.VISIBLE);
-        listTotalCaffeine.setVisibility(View.VISIBLE);
-        listTripDuration.setVisibility(View.VISIBLE);
     }
 
 //    private class DrinkListAdapter extends ArrayAdapter<Drink> {
