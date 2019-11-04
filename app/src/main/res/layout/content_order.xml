@@ -10,33 +10,40 @@
     android:layout_marginStart="24dp"
     android:layout_marginEnd="24dp">
 
-    <EditText
-        android:id="@+id/editCaffeineLevel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textCaffeineLevelPrompt"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/textCaffeineLevelPrompt">
-    </EditText>
-
-    <EditText
-        android:id="@+id/editTotalMoneySpent"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBaseline_toBaselineOf="@id/totalMoneySpentPrompt"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/totalMoneySpentPrompt">
-    </EditText>
-
     <TextView
         android:id="@+id/textOrderTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/title_activity_order_confirmation"
+        android:text="@string/viewOrder"
         android:textAlignment="center"
         android:textSize="30sp"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/datePrompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/date"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textOrderTitle" />
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBaseline_toBaselineOf="@id/datePrompt"
+        app:layout_constraintStart_toEndOf="@id/datePrompt"
+        android:layout_marginStart="24dp"/>
+    <EditText
+        android:id="@+id/editDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBaseline_toBaselineOf="@id/datePrompt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/datePrompt">
+    </EditText>
 
     <TextView
         android:id="@+id/totalMoneySpentPrompt"
@@ -45,14 +52,23 @@
         android:layout_marginTop="24dp"
         android:text="@string/totalMoneySpent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textOrderTitle" />
+        app:layout_constraintTop_toBottomOf="@id/datePrompt" />
     <TextView
-        android:id="@+id/textUsername"
+        android:id="@+id/textTotalMoneySpent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBaseline_toBaselineOf="@id/totalMoneySpentPrompt"
         app:layout_constraintStart_toEndOf="@id/totalMoneySpentPrompt"
         android:layout_marginStart="24dp"/>
+    <EditText
+        android:id="@+id/editTotalMoneySpent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBaseline_toBaselineOf="@id/totalMoneySpentPrompt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/totalMoneySpentPrompt">
+    </EditText>
 
     <TextView
         android:id="@+id/textCaffeineLevelPrompt"
@@ -63,12 +79,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/totalMoneySpentPrompt" />
     <TextView
-        android:id="@+id/textEmail"
+        android:id="@+id/textCaffeineLevel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         app:layout_constraintStart_toEndOf="@id/textCaffeineLevelPrompt"
         app:layout_constraintBaseline_toBaselineOf="@id/textCaffeineLevelPrompt"/>
+    <EditText
+        android:id="@+id/editCaffeineLevel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textCaffeineLevelPrompt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/textCaffeineLevelPrompt">
+    </EditText>
 
     <TextView
         android:id="@+id/textItemsOrderedPrompt"
@@ -81,15 +106,9 @@
         app:layout_constraintTop_toBottomOf="@id/textCaffeineLevelPrompt" />
 
     <ListView
-        android:id="@+id/sampleListView"
-        android:layout_width="363dp"
-        android:layout_height="438dp"
-        android:background="@android:color/transparent"
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="#CCCCCC"
-        android:dividerHeight="1dp"
-        android:paddingLeft="2dp"
-        tools:layout_editor_absoluteX="0dp"
+        android:id="@+id/listDrinks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textItemsOrderedPrompt" />
