@@ -124,7 +124,7 @@ public class LogActivity extends AppCompatActivity {
             TextView textDate = convertView.findViewById(R.id.listDate);
             TextView textTotalCost = convertView.findViewById(R.id.listTotalCost);
             TextView textTotalCaffeine = convertView.findViewById(R.id.listTotalCaffeine);
-//            TextView textTripDuration = convertView.findViewById(R.id.listTripDuration);
+            TextView textTripDuration = convertView.findViewById(R.id.listTripDuration);
 
             Order order = getItem(position);
 
@@ -133,6 +133,7 @@ public class LogActivity extends AppCompatActivity {
             textDate.setText(dateFormat.format(order.getDate()));
             textTotalCost.setText(getResources().getString(R.string.dollarCost, order.getTotalCost(false)));
             textTotalCaffeine.setText(order.getTotalCaffeine(false) + " " + getResources().getString(R.string.milligrams));
+//            textTripDuration.setText();
 
             return convertView;
         }

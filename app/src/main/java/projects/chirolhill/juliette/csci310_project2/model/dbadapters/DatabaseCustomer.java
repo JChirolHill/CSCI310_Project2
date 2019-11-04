@@ -42,9 +42,12 @@ public class DatabaseCustomer implements DatabaseAdapter {
         c.setMerchant(this.isMerchant);
 
         // return all orders
-        for(String orderID : orders) {
-            c.getLog().addOrder(new Order(orderID));
+        if(orders != null) {
+            for(String orderID : orders) {
+                c.getLog().addOrder(new Order(orderID));
+            }
         }
+
 
         return c;
     }

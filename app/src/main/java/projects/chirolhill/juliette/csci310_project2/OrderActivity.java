@@ -34,13 +34,10 @@ public class OrderActivity extends AppCompatActivity {
     public static final String EXTRA_READONLY = "extra_order_readonly"; // display as view or update
 
     private TextView textOrderTitle;
-//    private TextView totalMoneySpentPrompt;
     private TextView totalMoneySpent;
     private EditText editTotalMoneySpent;
-//    private TextView textCaffeineLevelPrompt;
     private TextView textCaffeineLevel;
     private EditText editCaffeineLevel;
-//    private TextView textDatePrompt;
     private TextView textDate;
     private EditText editDate;
     private ListView listDrinks;
@@ -61,10 +58,8 @@ public class OrderActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         textOrderTitle = findViewById(R.id.textOrderTitle);
-//        totalMoneySpentPrompt = findViewById(R.id.totalMoneySpentPrompt);
         totalMoneySpent = findViewById(R.id.textTotalMoneySpent);
         editTotalMoneySpent = findViewById(R.id.editTotalMoneySpent);
-//        caffeineLevelPrompt = findViewById(R.id.textCaffeineLevelPrompt);
         textCaffeineLevel = findViewById(R.id.textCaffeineLevel);
         editCaffeineLevel = findViewById(R.id.editCaffeineLevel);
         textDate = findViewById(R.id.textDate);
