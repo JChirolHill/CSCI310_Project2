@@ -8,8 +8,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".LogActivity"
-    tools:showIn="@layout/activity_log">
+    tools:context=".UserLogActivity"
+    tools:showIn="@layout/activity_user_log">
 
 <android.support.v4.widget.NestedScrollView
     android:layout_width="match_parent"
