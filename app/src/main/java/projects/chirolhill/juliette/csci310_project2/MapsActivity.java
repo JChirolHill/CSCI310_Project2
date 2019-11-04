@@ -223,7 +223,6 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     }
 
     public void drawUpdatedList() {
-        Log.d(TAG, "called drawUpdatedList");
         // add markers for all coffeeshops
         for (MapShop ms : yelpFetcher.getShops()) {
             String snippet = "Rating: " + Double.toString(ms.getRating());

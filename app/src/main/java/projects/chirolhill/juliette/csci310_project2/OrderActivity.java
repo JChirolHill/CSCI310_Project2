@@ -43,6 +43,7 @@ public class OrderActivity extends AppCompatActivity {
     private TextView listTripDuration;
 
     private boolean readonly;
+    private String orderID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +69,7 @@ public class OrderActivity extends AppCompatActivity {
         // or from profileactivity -> readonly (view/edit past orders)
         Intent i = getIntent();
         readonly = i.getBooleanExtra(EXTRA_READONLY, true);
+        orderID = i.getStringExtra(Order.PREF_ORDER_ID);
 
         // render appropriately depending on the readonly state
         if(readonly) {
