@@ -95,8 +95,6 @@
         android:background="@drawable/button_background"
         app:layout_constraintTop_toBottomOf="@id/textItems"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
-
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
