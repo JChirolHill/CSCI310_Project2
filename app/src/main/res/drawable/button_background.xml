@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle" android:padding="3dp">
-    <!--<solid android:color="@color/colorPrimaryDark"/>-->
+    <solid android:color="@color/colorPrimaryDark"/>
     <corners android:radius="3dp"/>
-    <gradient
-        android:endColor="@color/colorPrimary"
-        android:gradientRadius="30dp"
-        android:type="linear"
-        android:startColor="@color/colorPrimaryDark" />
-    <!-- NOTE: if you don't like the gradient, please remove,
-    just wanted to see what it looked like :) -->
 </shape>

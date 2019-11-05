@@ -2,7 +2,7 @@
     <string name="app_name">Bean and Leaf</string>
 
     <!-- Sign in activity -->
-    <string name="title_activity_sign_in">SignInActivity</string>
+    <string name="title_activity_sign_in">Bean &amp; Leaf</string>
     <string name="signin">Begin</string>
     <string name="onemoment">One moment please&#8230;</string>
     <string name="signinfail">Sign in was unsuccessful, try again?</string>
@@ -66,10 +66,15 @@
     <!-- Order activity -->
     <string name="title_activity_order">OrderActivity</string>
     <string name="title_activity_order_confirmation">Order Confirmation</string>
-    <string name="totalMoneySpent">Total Money Spent:</string>
-    <string name="itemsOrdered">Items you ordered:</string>
-    <string name="caffeineLevel">Current Caffeine Level For Today:</string>
+    <string name="viewOrder">View Order</string>
+    <string name="editOrder">Edit Order</string>
+    <string name="totalMoneySpent">Total Cost:</string>
+    <string name="itemsOrdered">Items Ordered:</string>
+    <string name="caffeineLevel">Total Caffeine (mg):</string>
     <string name="title_activity_shop_listing">ShopListing</string>
+    <string name="date">Date:</string>
+    <string name="ok">Ok</string>
+    <string name="dollarCost">$%1$.2f</string>
 
     <!-- Drink activity -->
     <string name="title_activity_drink">DrinkActivity</string>

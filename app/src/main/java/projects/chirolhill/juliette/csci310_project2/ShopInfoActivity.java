@@ -4,11 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -141,6 +139,9 @@ public class ShopInfoActivity extends AppCompatActivity {
                     i.putExtra(Drink.EXTRA_DRINK, drinks.get(position));
                     startActivityForResult(i, REQUEST_CODE_ADD_DRINK);
                 }
+                else { // log an order
+                    // TODO log order if click on item, can then remove the log order button that is kind of in the way
+                }
             }
         });
 
@@ -203,12 +204,14 @@ public class ShopInfoActivity extends AppCompatActivity {
                         });
 
                         if(((Shop) currShop).getDrinks().size() == 0) { // no drinks
-                            btnLogOrder.setVisibility(View.GONE);
                             textItems.setText(getResources().getString(R.string.noDrinks));
                         }
                         else { // display all drinks
-                            btnLogOrder.setVisibility(View.VISIBLE);
+                            if(!isMerchant) {
+                                btnLogOrder.setVisibility(View.VISIBLE);
+                            }
                             textItems.setText(getResources().getString(R.string.itemsListed));
+                            textItems.setTextSize(getResources().getDimension(R.dimen.textsize));
                             for(Drink d : ((Shop) currShop).getDrinks()) {
                                 Database.getInstance().getDrink(d.getId());
                             }

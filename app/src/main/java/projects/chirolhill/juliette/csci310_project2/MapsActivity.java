@@ -25,14 +25,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -182,7 +185,7 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public boolean onMyLocationButtonClick() {
-        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
         return false; // (the camera animates to the user's current position).
     }
 
@@ -219,15 +222,21 @@ public class MapsActivity extends FragmentActivity implements
             } else { // customer: show option to view drinks
                 AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle(marker.getTitle());
                 // Add the buttons
-                builder.setPositiveButton("Get Directions", new DialogInterface.OnClickListener() {
+                builder.setNeutralButton("Driving Directions", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
-
-                        // launch intent to view directions to shop here
-                        calculateDirections(passableMarker);
+                        // launch intent to view driving directions to shop here
+                        calculateDirections(passableMarker, "driving");
                     }
                 });
-                builder.setNeutralButton("View Drinks", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton("Walking Directions", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
+                        // launch intent to view walking directions to shop here
+                        calculateDirections(passableMarker, "walking");
+                    }
+                });
+                builder.setPositiveButton("View Drinks", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
 
@@ -260,15 +269,14 @@ public class MapsActivity extends FragmentActivity implements
         // remove old polylines
         for (Polyline p : polylines) p.remove();
 
-        // TODO put into actual dialog with options (driving or walking)
-        calculateDirections(marker);
+//        calculateDirections(marker, "driving");
     }
 
     /**
      * Calculates directions from current location to specified marker.
      * Currently only providing one route (the fastest).
      */
-    public void calculateDirections(Marker marker) {
+    public void calculateDirections(Marker marker, String mode) {
         // DEBUG
         Log.d(TAG, "calculateDirections: calculating directions.");
 
@@ -283,7 +291,7 @@ public class MapsActivity extends FragmentActivity implements
 
         // trigger the HTTP GET request
         directionsFetcher.fetch(currLatLng.latitude, currLatLng.longitude,
-                marker.getPosition().latitude, marker.getPosition().longitude, "driving"); // TODO programmatically assign 'mode'
+                marker.getPosition().latitude, marker.getPosition().longitude, mode);
     }
 
     /**
@@ -293,18 +301,26 @@ public class MapsActivity extends FragmentActivity implements
     public void drawPolyline(DirectionsResponse response) {
         ArrayList<DirectionsRoute> routes = response.getRoutes();
         for (int i = 0; i < routes.size(); i++) { // testing on only ONE route/polyline for now
-            // NOTE: may need to override main thread with this thread to get lines to show up quickly
-
             List<LatLng> latlngs = PolyUtil.decode(routes.get(i).getEncodedPolyline());
-            Polyline polyline = mMap.addPolyline(new PolylineOptions().clickable(true).addAll(latlngs));
-            this.polylines.add(polyline);
 
-            // TODO: create two types of polylines: solid for driving, dotted for walking
+            if (response.getMode().equals("driving")) { // driving line
+                Polyline polyline = mMap.addPolyline(new PolylineOptions()
+                        .clickable(true)
+                        .addAll(latlngs));
+                this.polylines.add(polyline);
+            } else { // walking line
+                Polyline polyline = mMap.addPolyline(new PolylineOptions()
+                        .clickable(true)
+                        .addAll(latlngs)
+                        .pattern(Arrays.asList((PatternItem) new Dot())));
+                this.polylines.add(polyline);
+            }
         }
+
+        // TODO: display the route's ETA in an info window besides the polyline
     }
 
     public void drawUpdatedList() {
-        Log.d(TAG, "called drawUpdatedList");
         // add markers for all coffeeshops
         for (MapShop ms : yelpFetcher.getShops()) {
             String snippet = "Rating: " + Double.toString(ms.getRating());
