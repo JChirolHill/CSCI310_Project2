@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,11 +37,12 @@ public class LogActivity extends AppCompatActivity {
     private ListView listOrders;
     private ImageView caffeineChart;
     private ImageView moneyChart;
+    private Button btnViewOrders;
 
     private String userID;
     private UserLog log;
     private List<Order> orders;
-    private OrderListAdapter orderAdapter;
+//    private OrderListAdapter orderAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,29 +50,39 @@ public class LogActivity extends AppCompatActivity {
         setContentView(R.layout.activity_log);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         listOrders = findViewById(R.id.listOrders);
         moneyChart = findViewById(R.id.imageMoneyBarChart);
         caffeineChart = findViewById(R.id.imageCaffeineBarChart);
+        btnViewOrders = findViewById(R.id.btnViewOrders);
 
         orders = new ArrayList<>();
 
-        // set up adapter
-        orderAdapter = new OrderListAdapter(this, R.layout.list_item_order, orders);
-        listOrders.setAdapter(orderAdapter);
+//        // set up adapter
+//        orderAdapter = new OrderListAdapter(this, R.layout.list_item_order, orders);
+//        listOrders.setAdapter(orderAdapter);
 
         // get user's orders
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         userID = prefs.getString(User.PREF_USER_ID, "invalid userid");
         populateOrders();
 
-        listOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//        listOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+//                // launch intent to view order
+//                Intent i = new Intent(getApplicationContext(), OrderActivity.class);
+//                i.putExtra(OrderActivity.EXTRA_READONLY, true);
+//                i.putExtra(Order.PREF_ORDER_ID, orders.get(position).getId());
+//                startActivityForResult(i, REQUEST_CODE_VIEW_ORDER);
+//            }
+//        });
+
+        btnViewOrders.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                // launch intent to view order
-                Intent i = new Intent(getApplicationContext(), OrderActivity.class);
-                i.putExtra(OrderActivity.EXTRA_READONLY, true);
-                i.putExtra(Order.PREF_ORDER_ID, orders.get(position).getId());
-                startActivityForResult(i, REQUEST_CODE_VIEW_ORDER);
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), ViewOrdersActivity.class);
+                startActivity(i);
             }
         });
     }
@@ -86,7 +98,7 @@ public class LogActivity extends AppCompatActivity {
     }
 
     private void populateOrders() {
-        orderAdapter.clear();
+//        orderAdapter.clear();
 
         Database.getInstance().setCallback(new Database.Callback() {
             @Override
@@ -94,13 +106,17 @@ public class LogActivity extends AppCompatActivity {
                 Customer tempCustomer = (Customer)o;
                 log = tempCustomer.getLog();
 
+//                ViewGroup.LayoutParams params = listOrders.getLayoutParams();
+//                params.height = 70 * tempCustomer.getLog().getOrders().size();
+//                listOrders.setLayoutParams(params);
+
                 // get all orders from database
                 for(Order order : log.getOrders()) {
                     Database.getInstance().setCallback(new Database.Callback() {
                         @Override
                         public void dbCallback(Object o) {
                             orders.add((Order)o);
-                            orderAdapter.notifyDataSetChanged();
+//                            orderAdapter.notifyDataSetChanged();
                         }
                     });
                     Database.getInstance().getOrder(order.getId());
@@ -110,35 +126,32 @@ public class LogActivity extends AppCompatActivity {
         Database.getInstance().getUser(userID);
     }
 
-    private class OrderListAdapter extends ArrayAdapter<Order> {
-        public OrderListAdapter(Context context, int resource, List<Order> objects) {
-            super(context, resource, objects);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if(convertView == null) {
-                convertView = getLayoutInflater().inflate(R.layout.list_item_order, null);
-            }
-
-            TextView textDate = convertView.findViewById(R.id.listDate);
-            TextView textTotalCost = convertView.findViewById(R.id.listTotalCost);
-            TextView textTotalCaffeine = convertView.findViewById(R.id.listTotalCaffeine);
-            TextView textTripDuration = convertView.findViewById(R.id.listTripDuration);
-
-            Order order = getItem(position);
-
-            // copy/map the data from the current item (model) to the curr row (view)
-            DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
-            textDate.setText(dateFormat.format(order.getDate()));
-            textTotalCost.setText(getResources().getString(R.string.dollarCost, order.getTotalCost(false)));
-            textTotalCaffeine.setText(order.getTotalCaffeine(false) + " " + getResources().getString(R.string.milligrams));
-//            textTripDuration.setText();
-
-            return convertView;
-        }
-    }
+//    private class OrderListAdapter extends ArrayAdapter<Order> {
+//        public OrderListAdapter(Context context, int resource, List<Order> objects) {
+//            super(context, resource, objects);
+//        }
+//
+//        @Override
+//        public View getView(int position, View convertView, ViewGroup parent) {
+//            if(convertView == null) {
+//                convertView = getLayoutInflater().inflate(R.layout.list_item_order, null);
+//            }
+//
+//            TextView textDate = convertView.findViewById(R.id.listDate);
+//            TextView textTotalCost = convertView.findViewById(R.id.listTotalCost);
+//            TextView textTotalCaffeine = convertView.findViewById(R.id.listTotalCaffeine);
+//            TextView textTripDuration = convertView.findViewById(R.id.listTripDuration);
+//
+//            Order order = getItem(position);
+//
+//            // copy/map the data from the current item (model) to the curr row (view)
+//            DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
+//            textDate.setText(dateFormat.format(order.getDate()));
+//            textTotalCost.setText(getResources().getString(R.string.dollarCost, order.getTotalCost(false)));
+//            textTotalCaffeine.setText(order.getTotalCaffeine(false) + " " + getResources().getString(R.string.milligrams));
+////            textTripDuration.setText();
+//
+//            return convertView;
+//        }
+//    }
 }
-
-
-
