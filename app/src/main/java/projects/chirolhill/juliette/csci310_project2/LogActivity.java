@@ -45,7 +45,7 @@ import projects.chirolhill.juliette.csci310_project2.model.UserLog;
 
 public class LogActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_VIEW_ORDER = 2;
-    private final String TAG = UserLogActivity.class.getSimpleName();
+    private final String TAG = LogActivity.class.getSimpleName();
 
     private String userID;
     private UserLog log;

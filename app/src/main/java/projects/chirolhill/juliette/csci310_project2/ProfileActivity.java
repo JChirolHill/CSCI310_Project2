@@ -103,7 +103,7 @@ public class ProfileActivity extends AppCompatActivity {
                     startActivity(i);
                 }
                 else { // customer clicks on myorders btn
-                    Intent i = new Intent(getApplicationContext(), UserLogActivity.class);
+                    Intent i = new Intent(getApplicationContext(), LogActivity.class);
                     startActivity(i);
                 }
             }
