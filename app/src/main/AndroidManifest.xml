@@ -18,7 +18,6 @@
         android:roundIcon="@drawable/icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -72,7 +71,6 @@
             android:name=".ShopListing"
             android:label="@string/title_activity_shop_listing"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".DrinkActivity"
             android:label="@string/title_activity_drink"
@@ -80,12 +78,15 @@
         <activity
             android:name=".CreateOrderActivity"
             android:label="@string/title_activity_create_order"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".LogActivity"
             android:label="@string/title_activity_log"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ViewOrdersActivity"
+            android:label="@string/title_activity_view_orders"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
