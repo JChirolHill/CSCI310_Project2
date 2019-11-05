@@ -93,9 +93,9 @@ public class OrderActivity extends AppCompatActivity {
                 textDate.setText(dateFormat.format(currOrder.getDate()));
                 editDate.setText(dateFormat.format(currOrder.getDate()));
                 totalMoneySpent.setText(getResources().getString(R.string.dollarCost, currOrder.getTotalCost(false)));
-                editTotalMoneySpent.setText(Double.toString(currOrder.getTotalCost(false)));
+                editTotalMoneySpent.setText(String.format("%1$.2f", currOrder.getTotalCost(false)));
                 textCaffeineLevel.setText(currOrder.getTotalCaffeine(false) + " " + getResources().getString(R.string.milligrams));
-                editCaffeineLevel.setText(currOrder.getTotalCaffeine(false));
+                editCaffeineLevel.setText(Integer.toString(currOrder.getTotalCaffeine(false)));
 
                 // load in all the drinks
                 for(Map.Entry<String, Pair<Drink, Integer>> entry : currOrder.getDrinks().entrySet()) {
@@ -166,6 +166,7 @@ public class OrderActivity extends AppCompatActivity {
 
         totalMoneySpent.setVisibility(View.VISIBLE);
         textCaffeineLevel.setVisibility(View.VISIBLE);
+        textDate.setVisibility(View.VISIBLE);
         editTotalMoneySpent.setVisibility(View.GONE);
         editCaffeineLevel.setVisibility(View.GONE);
         editDate.setVisibility(View.GONE);
@@ -179,6 +180,7 @@ public class OrderActivity extends AppCompatActivity {
 
         totalMoneySpent.setVisibility(View.GONE);
         textCaffeineLevel.setVisibility(View.GONE);
+        textDate.setVisibility(View.GONE);
         editTotalMoneySpent.setVisibility(View.VISIBLE);
         editCaffeineLevel.setVisibility(View.VISIBLE);
         editDate.setVisibility(View.VISIBLE);

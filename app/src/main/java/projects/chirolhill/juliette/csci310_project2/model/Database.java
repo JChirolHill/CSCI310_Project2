@@ -244,6 +244,16 @@ public class Database {
         return order.getId();
     }
 
+    public String removeOrder(Order o) {
+        try {
+            dbOrdersRef.child(o.getId()).removeValue();
+        }
+        catch(DatabaseException de) {
+            return de.getMessage();
+        }
+        return null;
+    }
+
     // uploads images to firestore
     // returns null if no errors, else returns error message
     public void uploadImages(String shopID, List<Bitmap> docs) {

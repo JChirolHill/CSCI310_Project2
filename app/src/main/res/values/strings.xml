@@ -98,5 +98,8 @@
     <!-- Log activity -->
     <string name="title_activity_log">LogActivity</string>
     <string name="viewOrders">View Orders</string>
+
+    <!-- View orders activity -->
     <string name="title_activity_view_orders">ViewOrdersActivity</string>
+    <string name="orderDeleted">Order Deleted</string>
 </resources>

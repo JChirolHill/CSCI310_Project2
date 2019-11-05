@@ -59,9 +59,11 @@ public class DatabaseOrder implements DatabaseAdapter {
         }
 
         // add all the drinks, if more than once type of drink, add it multiple times
-        for(Map.Entry<String, Integer> entry : drinks.entrySet()) {
-            for(int i=0; i<entry.getValue(); ++i) {
-                o.addDrink(new Drink(entry.getKey(), shopID));
+        if(drinks != null) {
+            for(Map.Entry<String, Integer> entry : drinks.entrySet()) {
+                for(int i=0; i<entry.getValue(); ++i) {
+                    o.addDrink(new Drink(entry.getKey(), shopID));
+                }
             }
         }
 

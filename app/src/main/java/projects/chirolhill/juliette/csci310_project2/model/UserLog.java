@@ -52,4 +52,9 @@ public class UserLog implements Serializable {
         orders.add(o);
         calcTotals();
     }
+
+    public void removeOrder(Order o) {
+        orders.remove(o);
+        calcTotals();
+    }
 }
