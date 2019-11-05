@@ -1,9 +1,12 @@
 package projects.chirolhill.juliette.csci310_project2.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserLog {
+public class UserLog implements Serializable {
+    public static final String PREF_TOTAL_CAFFEINE = "pref_total_caffeine";
+
     private String id;
     private Customer owner;
     private List<Order> orders;
@@ -40,8 +43,8 @@ public class UserLog {
     // sets totalCaffeineLevel and totalMoneySpent
     private void calcTotals() {
         for(Order o : orders) {
-            totalCaffeineLevel += o.getTotalCaffeine();
-            totalMoneySpent += o.getTotalCost();
+            totalCaffeineLevel += o.getTotalCaffeine(true);
+            totalMoneySpent += o.getTotalCost(true);
         }
     }
 

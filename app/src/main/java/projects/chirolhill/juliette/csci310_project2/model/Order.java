@@ -3,27 +3,35 @@ package projects.chirolhill.juliette.csci310_project2.model;
 import android.util.Pair;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Order implements Serializable {
+public class Order {
+    public static final String PREF_ORDER_ID = "pref_order_id";
+
     private String id;
     private Map<String, Pair<Drink, Integer>> drinks; // store drinks and number of orders
     private String shopID;
     private String tripID;
     private String userID;
-
-    public static final String PREF_ORDER = "pref_order";
+    private Date date;
+    private double totalCost;
+    private int totalCaffeine;
 
     public Order(String id) {
         this.id = id;
+        drinks = new HashMap<>();
+        totalCost = -1;
+        totalCaffeine = -1;
     }
 
-    public Order(String id, String shopID, String tripID, String userID) {
+    public Order(String id, String shopID, String tripID, String userID, Date date) {
         this.id = id;
         this.shopID = shopID;
         this.tripID = tripID;
         this.userID = userID;
+        this.date = date;
         drinks = new HashMap<>();
     }
 
@@ -41,6 +49,10 @@ public class Order implements Serializable {
 
     public String getUser() {
         return userID;
+    }
+
+    public Date getDate() {
+        return date;
     }
 
     public Map<String, Pair<Drink, Integer>> getDrinks() {
@@ -63,6 +75,18 @@ public class Order implements Serializable {
         this.userID = userID;
     }
 
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void setTotalCost(double totalCost) {
+        this.totalCost = totalCost;
+    }
+
+    public void setTotalCaffeine(int totalCaffeine) {
+        this.totalCaffeine = totalCaffeine;
+    }
+
     public int getNumItemsOrdered() {
         int numItems = 0;
         for(Map.Entry<String, Pair<Drink, Integer>> entry : drinks.entrySet()) {
@@ -79,8 +103,9 @@ public class Order implements Serializable {
         return total;
     }
 
-    public double getTotalCost() {
-        return calcTotalCost();
+    // pass in true to calculate from list of drinks, false if just get attribute value
+    public double getTotalCost(boolean calc) {
+        return (calc ? calcTotalCost() : totalCost);
     }
 
     // returns caffeine amount in milligrams
@@ -92,8 +117,9 @@ public class Order implements Serializable {
         return total;
     }
 
-    public int getTotalCaffeine() {
-        return calcTotalCaffeine();
+    // pass in true to calculate from list of drinks, false if just get attribute value4
+    public int getTotalCaffeine(boolean calc) {
+        return (calc ? calcTotalCaffeine() : totalCaffeine);
     }
 
     // returns true if go over caffeine limit

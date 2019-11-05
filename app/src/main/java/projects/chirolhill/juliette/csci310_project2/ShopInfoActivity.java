@@ -4,11 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -43,6 +41,7 @@ public class ShopInfoActivity extends AppCompatActivity {
     private TextView textAddress;
     private ListView listDrinks;
     private Button btnAddDrink;
+    private Button btnLogOrder;
 
     private BasicShop currShop;
     private boolean showStats;
@@ -66,11 +65,12 @@ public class ShopInfoActivity extends AppCompatActivity {
         textAddress = findViewById(R.id.textAddress);
         listDrinks = findViewById(R.id.list);
         btnAddDrink = findViewById(R.id.btnAddDrink);
+        btnLogOrder = findViewById(R.id.btnLogOrder);
 
         drinks = new ArrayList<>();
 
         // set up adapter
-        drinkAdapter = new DrinkListAdapter(this, R.layout.list_item_drink, drinks); // put in the XML custom row we created
+        drinkAdapter = new DrinkListAdapter(this, R.layout.list_item_drink, drinks);
         listDrinks.setAdapter(drinkAdapter);
 
         // get whether merchant or not
@@ -113,6 +113,20 @@ public class ShopInfoActivity extends AppCompatActivity {
             }
         });
 
+        btnLogOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Shop shop = new Shop(((Shop)currShop).getOwnerID(), currShop);
+                for(Drink d : drinks) {
+                    shop.addDrink(d);
+                }
+
+                Intent i = new Intent(getApplicationContext(), CreateOrderActivity.class);
+                i.putExtra(Shop.PREF_SHOP, shop);
+                startActivity(i);
+            }
+        });
+
         listDrinks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -124,6 +138,9 @@ public class ShopInfoActivity extends AppCompatActivity {
                     i.putExtra(BasicShop.PREF_BASIC_SHOP_NAME, currShop.getName());
                     i.putExtra(Drink.EXTRA_DRINK, drinks.get(position));
                     startActivityForResult(i, REQUEST_CODE_ADD_DRINK);
+                }
+                else { // log an order
+                    // TODO log order if click on item, can then remove the log order button that is kind of in the way
                 }
             }
         });
@@ -139,8 +156,8 @@ public class ShopInfoActivity extends AppCompatActivity {
                     Database.getInstance().removeDrink(removed);
 
                     // undo snackbar
-                    Snackbar.make(findViewById(R.id.list), "Drink Deleted", Snackbar.LENGTH_LONG)
-                            .setAction("Undo", new View.OnClickListener() {
+                    Snackbar.make(findViewById(R.id.list), getResources().getString(R.string.drinkDeleted), Snackbar.LENGTH_LONG)
+                            .setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     // add back to database
@@ -190,7 +207,11 @@ public class ShopInfoActivity extends AppCompatActivity {
                             textItems.setText(getResources().getString(R.string.noDrinks));
                         }
                         else { // display all drinks
+                            if(!isMerchant) {
+                                btnLogOrder.setVisibility(View.VISIBLE);
+                            }
                             textItems.setText(getResources().getString(R.string.itemsListed));
+                            textItems.setTextSize(getResources().getDimension(R.dimen.textsize));
                             for(Drink d : ((Shop) currShop).getDrinks()) {
                                 Database.getInstance().getDrink(d.getId());
                             }

@@ -23,6 +23,7 @@ import java.util.List;
 import projects.chirolhill.juliette.csci310_project2.model.Customer;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.User;
+import projects.chirolhill.juliette.csci310_project2.model.UserLog;
 
 public class SignInActivity extends AppCompatActivity {
     private static final String TAG = "SignInActivity";
@@ -103,6 +104,9 @@ public class SignInActivity extends AppCompatActivity {
                             SharedPreferences.Editor prefEditor = prefs.edit();
                             prefEditor.putString(User.PREF_USERNAME, u.getUsername());
                             prefEditor.putBoolean(User.PREF_IS_MERCHANT, u.isMerchant());
+//                            if(!u.isMerchant() && ((Customer)u).getLog() != null) {
+//                                prefEditor.putInt(UserLog.PREF_TOTAL_CAFFEINE, ((Customer)u).getLog().getTotalCaffeineLevel());
+//                            }
                             prefEditor.commit();
 
                             // launch main activity
