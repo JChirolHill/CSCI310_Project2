@@ -68,6 +68,7 @@ public class LogActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         orders = new ArrayList<>();
+        ordersList = findViewById(R.id.ordersList);
 
         // set up adapter
         orderAdapter = new OrderListAdapter(this, R.layout.list_item_order, orders);
@@ -76,6 +77,8 @@ public class LogActivity extends AppCompatActivity {
         // get user's orders
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         userID = prefs.getString(User.PREF_USER_ID, "invalid userid");
+
+        // NOTE: this is asynchronous, see code below for workaround to populate the orders list
         populateOrders();
 
         ordersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -88,8 +91,6 @@ public class LogActivity extends AppCompatActivity {
                 startActivityForResult(i, REQUEST_CODE_VIEW_ORDER);
             }
         });
-
-        ordersList = findViewById(R.id.ordersList);
 
         // caffeineBarChart: extract dates and caffeine levels from orders
         DateIntegerSeries caffeineSeries = extractCaffeineData();
@@ -131,6 +132,7 @@ public class LogActivity extends AppCompatActivity {
                 Customer tempCustomer = (Customer)o;
                 log = tempCustomer.getLog();
 
+                //TODO: extract final order id from here (via log.orders.getOrders()
                 // get all orders from database
                 for(Order order : log.getOrders()) {
                     Database.getInstance().setCallback(new Database.Callback() {
@@ -138,6 +140,7 @@ public class LogActivity extends AppCompatActivity {
                         public void dbCallback(Object o) {
                             orders.add((Order)o);
                             orderAdapter.notifyDataSetChanged();
+                            // TODO: check if this is final order, if so, trigger extract functions
                         }
                     });
                     Database.getInstance().getOrder(order.getId());
@@ -166,10 +169,10 @@ public class LogActivity extends AppCompatActivity {
             Order order = getItem(position);
 
             // copy/map the data from the current item (model) to the curr row (view)
-            DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
-            textDate.setText(dateFormat.format(order.getDate()));
-            textTotalCost.setText(getResources().getString(R.string.dollarCost, order.getTotalCost(false)));
-            textTotalCaffeine.setText(order.getTotalCaffeine(false) + " " + getResources().getString(R.string.milligrams));
+//            DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
+//            textDate.setText(dateFormat.format(order.getDate()));
+//            textTotalCost.setText(getResources().getString(R.string.dollarCost, order.getTotalCost(false)));
+//            textTotalCaffeine.setText(order.getTotalCaffeine(false) + " " + getResources().getString(R.string.milligrams));
 //            textTripDuration.setText();
 
             return convertView;
@@ -181,6 +184,8 @@ public class LogActivity extends AppCompatActivity {
      * @return
      */
     private DateIntegerSeries extractCaffeineData() {
+        // TODO: given a list of orders, extract an XYSeries of datetimes and caffeine data
+        // use current time -7 to set threshold for 1 week ago
 
         return new DateIntegerSeries("test");
     }
