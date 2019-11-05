@@ -53,8 +53,8 @@ public class UserLog implements Serializable {
         calcTotals();
     }
 
-    public void removeOrder(Order o) {
-        orders.remove(o);
-        calcTotals();
-    }
+//    public void removeOrder(Order o) {
+//        orders.remove(o);
+//        calcTotals();
+//    }
 }

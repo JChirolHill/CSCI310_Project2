@@ -79,37 +79,37 @@ public class ViewOrdersActivity extends AppCompatActivity {
             }
         });
 
-        listOrders.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                // remove the order from adapter
-                final Order removed = orders.remove(position);
-                orderAdapter.notifyDataSetChanged();
-
-                // remove from database list of orders
-                Database.getInstance().removeOrder(removed);
-
-                // remove from database customer list of orders
-                currCustomer.getLog().removeOrder(removed);
-                Database.getInstance().addUser(currCustomer);
-
-                // undo snackbar
-                Snackbar.make(findViewById(R.id.listOrders), getResources().getString(R.string.orderDeleted), Snackbar.LENGTH_LONG)
-                        .setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                // add back to database
-                                Database.getInstance().addOrder(removed);
-
-                                // update adapter
-                                orders.add(removed);
-                                orderAdapter.notifyDataSetChanged();
-                            }
-                        }).show();
-
-                return true;
-            }
-        });
+//        listOrders.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                // remove the order from adapter
+//                final Order removed = orders.remove(position);
+//                orderAdapter.notifyDataSetChanged();
+//
+//                // remove from database list of orders
+//                Database.getInstance().removeOrder(removed);
+//
+//                // remove from database customer list of orders
+//                currCustomer.getLog().removeOrder(removed);
+//                Database.getInstance().addUser(currCustomer);
+//
+//                // undo snackbar
+//                Snackbar.make(findViewById(R.id.listOrders), getResources().getString(R.string.orderDeleted), Snackbar.LENGTH_LONG)
+//                        .setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                // add back to database
+//                                Database.getInstance().addOrder(removed);
+//
+//                                // update adapter
+//                                orders.add(removed);
+//                                orderAdapter.notifyDataSetChanged();
+//                            }
+//                        }).show();
+//
+//                return true;
+//            }
+//        });
     }
 
     @Override
