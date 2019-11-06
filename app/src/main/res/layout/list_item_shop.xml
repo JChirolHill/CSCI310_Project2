@@ -32,6 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="24sp"
+                android:text="Shop name"
                 app:layout_constraintTop_toBottomOf="@id/listShopImage"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
@@ -52,12 +53,25 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintTop_toBottomOf="@id/listShopAddress"/>
 
-            <TextView
+            <!--<TextView-->
+                <!--android:id="@+id/listShopRating"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--app:layout_constraintStart_toStartOf="parent"-->
+                <!--app:layout_constraintEnd_toStartOf="@id/listShopPrice"-->
+                <!--app:layout_constraintTop_toBottomOf="@id/listHorizLine"/>-->
+
+            <RatingBar
                 android:id="@+id/listShopRating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:layout_constraintStart_toStartOf="@id/listShopName"
+                style="?android:attr/ratingBarStyleSmall"
+                android:numStars="5"
+                android:isIndicator="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/listShopPrice"
                 app:layout_constraintTop_toBottomOf="@id/listHorizLine"/>
 
             <TextView
@@ -65,7 +79,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="@id/listShopName"
+                android:text="3.5"
+                app:layout_constraintStart_toEndOf="@id/listShopRating"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/listHorizLine"/>
 
         </android.support.constraint.ConstraintLayout>

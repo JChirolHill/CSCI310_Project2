@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -101,7 +102,8 @@ public class ShopListing extends AppCompatActivity {
             }
 
             TextView textName = convertView.findViewById(R.id.listShopName);
-            TextView textRating = convertView.findViewById(R.id.listShopRating);
+//            TextView textRating = convertView.findViewById(R.id.listShopRating);
+            RatingBar ratingBar = convertView.findViewById(R.id.listShopRating);
             TextView textPrice = convertView.findViewById(R.id.listShopPrice);
             TextView textAddress = convertView.findViewById(R.id.listShopAddress);
             ImageView image = convertView.findViewById(R.id.listShopImage);
@@ -110,7 +112,8 @@ public class ShopListing extends AppCompatActivity {
 
             // copy/map the data from the current item (model) to the curr row (view)
             textName.setText(s.getName());
-            textRating.setText(Double.toString(s.getRating()));
+//            textRating.setText(Double.toString(s.getRating()));
+            ratingBar.setRating((float)s.getRating());
             textPrice.setText(s.getPriceRange());
             textAddress.setText(s.getAddress());
             Picasso.get().load(s.getImgURL()).into(image);
