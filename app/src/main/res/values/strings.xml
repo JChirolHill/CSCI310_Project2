@@ -103,4 +103,6 @@
     <!-- View orders activity -->
     <string name="title_activity_view_orders">ViewOrdersActivity</string>
     <string name="orderDeleted">Order Deleted</string>
+
+    <string name="action_settings">blah</string>
 </resources>
