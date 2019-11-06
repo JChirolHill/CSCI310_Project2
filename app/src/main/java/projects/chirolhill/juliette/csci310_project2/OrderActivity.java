@@ -1,16 +1,19 @@
 package projects.chirolhill.juliette.csci310_project2;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -21,6 +24,7 @@ import com.squareup.picasso.Picasso;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +33,7 @@ import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.Drink;
 import projects.chirolhill.juliette.csci310_project2.model.Order;
 
-public class OrderActivity extends AppCompatActivity {
+public class OrderActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = OrderActivity.class.getSimpleName();
 
     public static final String EXTRA_READONLY = "extra_order_readonly"; // display as view or update
@@ -41,6 +45,8 @@ public class OrderActivity extends AppCompatActivity {
     private EditText editCaffeineLevel;
     private TextView textDate;
     private EditText editDate;
+    private DatePickerDialog datePickerDialog;
+    private DateFormat dateFormat;
     private ListView listDrinks;
     private Button btnOk;
     private Button btnEdit;
@@ -89,7 +95,7 @@ public class OrderActivity extends AppCompatActivity {
                 currOrder = (Order)o;
 
                 // set values in layout based on order
-                DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
+                dateFormat = new SimpleDateFormat("MMM d, yyyy");
                 textDate.setText(dateFormat.format(currOrder.getDate()));
                 editDate.setText(dateFormat.format(currOrder.getDate()));
                 totalMoneySpent.setText(getResources().getString(R.string.dollarCost, currOrder.getTotalCost(false)));
@@ -157,6 +163,30 @@ public class OrderActivity extends AppCompatActivity {
                 renderEditable();
             }
         });
+
+        findViewsById();
+        setDateTimeField();
+    }
+
+    private void findViewsById() {
+        editDate = (EditText) findViewById(R.id.editDate);
+        editDate.setInputType(InputType.TYPE_NULL);
+        //fromDateEtxt.requestFocus();
+    }
+
+    private void setDateTimeField() {
+        editDate.setOnClickListener(this);
+
+        Calendar newCalendar = Calendar.getInstance();
+        datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                editDate.setText(dateFormat.format(newDate.getTime()));
+            }
+
+        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
     }
 
     private void renderReadOnly() {
@@ -213,5 +243,10 @@ public class OrderActivity extends AppCompatActivity {
 
             return convertView;
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        datePickerDialog.show();
     }
 }
