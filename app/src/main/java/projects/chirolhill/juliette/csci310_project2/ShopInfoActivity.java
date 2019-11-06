@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -35,7 +36,7 @@ public class ShopInfoActivity extends AppCompatActivity {
 
     private TextView textShopName;
     private ImageView imageShop;
-    private TextView textRating;
+    private RatingBar ratingBar;
     private TextView textPrice;
     private TextView textItems;
     private TextView textAddress;
@@ -59,7 +60,7 @@ public class ShopInfoActivity extends AppCompatActivity {
 
         textShopName = findViewById(R.id.textShopName);
         imageShop = findViewById(R.id.imageShop);
-        textRating = findViewById(R.id.textRating);
+        ratingBar = findViewById(R.id.ratingBar);
         textPrice = findViewById(R.id.textPrice);
         textItems = findViewById(R.id.textItems);
         textAddress = findViewById(R.id.textAddress);
@@ -90,7 +91,8 @@ public class ShopInfoActivity extends AppCompatActivity {
 
         // load content onto layout
         textShopName.setText(currShop.getName());
-        textRating.setText(Double.toString(currShop.getRating()));
+//        textRating.setText(Double.toString(currShop.getRating()));
+        ratingBar.setRating((float)currShop.getRating());
         textPrice.setText(currShop.getPriceRange());
         textAddress.setText(currShop.getAddress());
         Picasso.get().load(currShop.getImgURL()).into(imageShop);
