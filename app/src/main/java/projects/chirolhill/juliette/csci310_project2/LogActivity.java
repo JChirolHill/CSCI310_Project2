@@ -211,6 +211,12 @@ public class LogActivity extends AppCompatActivity {
         }
 
         // TODO convert contents of hashmap into a series
+        for (HashMap.Entry<LocalDate, Integer> entry : dateToCaffeineMap.entrySet()) {
+            Long entryDate = Date.from(entry.getKey().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime();
+            Integer entryCaffeine = entry.getValue();
+
+            // TODO add to a list or something and eventually turn results into series
+        }
 
         return new DateIntegerSeries("test");
     }
