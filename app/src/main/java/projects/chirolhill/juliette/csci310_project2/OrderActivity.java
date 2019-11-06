@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +43,7 @@ public class OrderActivity extends AppCompatActivity {
     private EditText editDate;
     private ListView listDrinks;
     private Button btnOk;
+    private Button btnEdit;
 
     private boolean readonly;
     private String orderID;
@@ -66,6 +68,7 @@ public class OrderActivity extends AppCompatActivity {
         editDate = findViewById(R.id.editDate);
         listDrinks = findViewById(R.id.listDrinks);
         btnOk = findViewById(R.id.btnOk);
+        btnEdit = findViewById(R.id.btnEdit);
 
         // either from shopinfoactivity -> readonly (review order)
         // or from profileactivity -> readonly (view/edit past orders)
@@ -88,8 +91,11 @@ public class OrderActivity extends AppCompatActivity {
                 // set values in layout based on order
                 DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
                 textDate.setText(dateFormat.format(currOrder.getDate()));
+                editDate.setText(dateFormat.format(currOrder.getDate()));
                 totalMoneySpent.setText(getResources().getString(R.string.dollarCost, currOrder.getTotalCost(false)));
+                editTotalMoneySpent.setText(String.format("%1$.2f", currOrder.getTotalCost(false)));
                 textCaffeineLevel.setText(currOrder.getTotalCaffeine(false) + " " + getResources().getString(R.string.milligrams));
+                editCaffeineLevel.setText(Integer.toString(currOrder.getTotalCaffeine(false)));
 
                 // load in all the drinks
                 for(Map.Entry<String, Pair<Drink, Integer>> entry : currOrder.getDrinks().entrySet()) {
@@ -119,38 +125,66 @@ public class OrderActivity extends AppCompatActivity {
             renderEditable();
         }
 
-        listDrinks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                if(!readonly) {
-
-                }
-            }
-        });
+//        listDrinks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+//                if(!readonly) {
+//
+//                }
+//            }
+//        });
 
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setResult(RESULT_OK);
-                finish();
+                if(readonly) { // return to previous activity
+                    setResult(RESULT_OK);
+                    finish();
+                }
+                else { // save results and display readonly
+                    // create the new order
+                    currOrder = new Order(orderID, currOrder.getShop(), currOrder.getTrip(), currOrder.getTrip(), currOrder.getDate());
+                    Database.getInstance().addOrder(currOrder);
+
+                    renderReadOnly();
+                }
+            }
+        });
+
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                renderEditable();
             }
         });
     }
 
     private void renderReadOnly() {
+        readonly = true;
         textOrderTitle.setText(getResources().getString(R.string.viewOrder));
+        btnOk.setText(getResources().getString(R.string.ok));
+
         totalMoneySpent.setVisibility(View.VISIBLE);
-        editTotalMoneySpent.setVisibility(View.GONE);
         textCaffeineLevel.setVisibility(View.VISIBLE);
+        textDate.setVisibility(View.VISIBLE);
+        editTotalMoneySpent.setVisibility(View.GONE);
         editCaffeineLevel.setVisibility(View.GONE);
+        editDate.setVisibility(View.GONE);
+        btnEdit.setVisibility(View.VISIBLE);
     }
 
     private void renderEditable() {
+        readonly = false;
         textOrderTitle.setText(getResources().getString(R.string.editOrder));
+        btnOk.setText(getResources().getString(R.string.save));
+
         totalMoneySpent.setVisibility(View.GONE);
-        editTotalMoneySpent.setVisibility(View.VISIBLE);
         textCaffeineLevel.setVisibility(View.GONE);
+        textDate.setVisibility(View.GONE);
+        editTotalMoneySpent.setVisibility(View.VISIBLE);
         editCaffeineLevel.setVisibility(View.VISIBLE);
+        editDate.setVisibility(View.VISIBLE);
+        btnEdit.setVisibility(View.GONE);
     }
 
     private class DrinkListAdapter extends ArrayAdapter<Drink> {

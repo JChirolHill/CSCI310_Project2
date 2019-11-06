@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -53,16 +54,16 @@ public class LogActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_VIEW_ORDER = 2;
     private final String TAG = LogActivity.class.getSimpleName();
 
+    private Button btnViewOrders;
+
     private String userID;
     private UserLog log;
     private List<Order> orders;
-    private OrderListAdapter orderAdapter;
 
     private XYPlot caffeineBarChart;
     private BarRenderer caffineBarChartRenderer;
     private XYPlot moneyXYPlot;
     private LineAndPointRenderer moneyXYPlotRenderer;
-    private ListView ordersList;
 
     private SimpleDateFormat formatter = new SimpleDateFormat("MM/dd");
 
@@ -74,11 +75,6 @@ public class LogActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         orders = new ArrayList<Order>();
-        ordersList = findViewById(R.id.ordersList);
-
-        // set up adapter
-        orderAdapter = new OrderListAdapter(this, R.layout.list_item_order, orders);
-        ordersList.setAdapter(orderAdapter);
 
         // get user's orders
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
@@ -87,29 +83,15 @@ public class LogActivity extends AppCompatActivity {
         // NOTE: this is asynchronous, see code below for workaround to populate the orders list
         populateOrders();
 
-        ordersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                // launch intent to view order
-                Intent i = new Intent(getApplicationContext(), OrderActivity.class);
-                i.putExtra(OrderActivity.EXTRA_READONLY, true);
-                i.putExtra(Order.PREF_ORDER_ID, orders.get(position).getId());
-                startActivityForResult(i, REQUEST_CODE_VIEW_ORDER);
-            }
-        });
-
         // caffeineBarChart: extract dates and caffeine levels from orders
         DateIntegerSeries caffeineSeries = extractCaffeineData(orders);
 
         // moneyXYPlot: extract dates and money levels from orders
         DateDoubleSeries expenditureSeries = extractExpenditureData(orders);
 
-        // ordersList: extract list of orders
-
         // create charts and order list
         caffeineBarChart = findViewById(R.id.caffeineBarChart);
         moneyXYPlot = findViewById(R.id.moneyXYPlot);
-        ordersList = findViewById(R.id.ordersList);
 
         // setup charts and order list
         // TODO: pass in the data extracted from DB as an argument, e.g. DateIntegerSeries
@@ -130,8 +112,6 @@ public class LogActivity extends AppCompatActivity {
     }
 
     private void populateOrders() {
-        orderAdapter.clear();
-
         Database.getInstance().setCallback(new Database.Callback() {
             @Override
             public void dbCallback(Object o) {
@@ -145,7 +125,6 @@ public class LogActivity extends AppCompatActivity {
                         @Override
                         public void dbCallback(Object o) {
                             orders.add((Order)o);
-                            orderAdapter.notifyDataSetChanged();
                             // TODO: check if this is final order, if so, trigger extract functions
                         }
                     });
@@ -154,35 +133,6 @@ public class LogActivity extends AppCompatActivity {
             }
         });
         Database.getInstance().getUser(userID);
-    }
-
-    private class OrderListAdapter extends ArrayAdapter<Order> {
-        public OrderListAdapter(Context context, int resource, List<Order> objects) {
-            super(context, resource, objects);
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if(convertView == null) {
-                convertView = getLayoutInflater().inflate(R.layout.list_item_order, null);
-            }
-
-            TextView textDate = convertView.findViewById(R.id.listDate);
-            TextView textTotalCost = convertView.findViewById(R.id.listTotalCost);
-            TextView textTotalCaffeine = convertView.findViewById(R.id.listTotalCaffeine);
-            TextView textTripDuration = convertView.findViewById(R.id.listTripDuration);
-
-            Order order = getItem(position);
-
-            // copy/map the data from the current item (model) to the curr row (view)
-//            DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
-//            textDate.setText(dateFormat.format(order.getDate()));
-//            textTotalCost.setText(getResources().getString(R.string.dollarCost, order.getTotalCost(false)));
-//            textTotalCaffeine.setText(order.getTotalCaffeine(false) + " " + getResources().getString(R.string.milligrams));
-//            textTripDuration.setText();
-
-            return convertView;
-        }
     }
 
     /**
