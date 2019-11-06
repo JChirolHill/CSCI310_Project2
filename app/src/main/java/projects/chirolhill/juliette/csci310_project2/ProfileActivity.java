@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -14,6 +18,17 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
 import projects.chirolhill.juliette.csci310_project2.model.Customer;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.Merchant;
@@ -40,6 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView textError;
     private Button btnDetails;
     private Button btnSave;
+    private Button btnLogout;
 
     private boolean readonly;
     private boolean origReadonly;
@@ -68,6 +84,7 @@ public class ProfileActivity extends AppCompatActivity {
         textError = findViewById(R.id.textError);
         btnDetails = findViewById(R.id.btnDetails);
         btnSave = findViewById(R.id.btnSave);
+        btnLogout = findViewById(R.id.btnLogout);
 
         // fetch intent and decide whether readonly or editable
         final Intent i = getIntent();
@@ -161,6 +178,21 @@ public class ProfileActivity extends AppCompatActivity {
                 readonly = !readonly;
             }
         });
+
+        btnLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AuthUI.getInstance()
+                        .signOut(getApplicationContext())
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            public void onComplete(@NonNull Task<Void> task) {
+                                // return to signin activity
+                                Intent i = new Intent(getApplicationContext(), SignInActivity.class);
+                                startActivity(i);
+                            }
+                        });
+            }
+        });
     }
 
     private void renderReadOnly() {
@@ -168,6 +200,7 @@ public class ProfileActivity extends AppCompatActivity {
         textTypeUserDescr.setVisibility(View.VISIBLE);
         textTypeUser.setVisibility(View.VISIBLE);
         btnDetails.setVisibility(View.VISIBLE);
+        btnLogout.setVisibility(View.VISIBLE);
         textSubtitle.setVisibility(View.GONE);
         editUsername.setVisibility(View.GONE);
         textIsMerchantPrompt.setVisibility(View.GONE);
@@ -192,6 +225,7 @@ public class ProfileActivity extends AppCompatActivity {
         textTypeUserDescr.setVisibility(View.GONE);
         textTypeUser.setVisibility(View.GONE);
         btnDetails.setVisibility(View.GONE);
+        btnLogout.setVisibility(View.GONE);
         textSubtitle.setVisibility(View.VISIBLE);
         editUsername.setVisibility(View.VISIBLE);
 
