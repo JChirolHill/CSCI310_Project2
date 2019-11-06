@@ -14,6 +14,10 @@ We can now relaunch the Bean and Leaf app. Go to the main menu by hitting the ce
 
 You may now log in as either a Customer, or as a Merchant. To log in as a Customer, sign in as: a@a.com, password: aaaaaa. To log in as a Merchant, sign in as z@z.com, password: zzzzzz. As a Customer, you will be able to see a list of shops in your area, and their drinks if the shop has been claimed. As a Merchant, if you click on your profile icon in the upper left hand corner, you will see the stores you have claimed, as well as the drink for those stores. You will also be able to claim another store that is currently unclaimed in the map. If you claim a store, it will need to be verified before the store shows up on your account.
 
+To log out, press the back button a certain number of times (depending on what view of the app you are currently located) until the app is closed. Then you can restart the app and log in again.
+
+As a customer, when you are logging and order, click the drink item in the list to increment the number of drinks added to the log. To make the quantity of that item zero in the log, press and hold the drink item.
+
 
 ### Note:
 Since claiming a store (as a merchant) requires taking a picture of verification documents, the emulator will crash if you try to take a picture with it (by clicking the Capture button on the Claim Shop Activity).  If you would like to test the claiming a shop functionality, we can provide a demo or please use a real Android device to run the app.
