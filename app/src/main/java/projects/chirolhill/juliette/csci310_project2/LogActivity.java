@@ -93,6 +93,8 @@ public class LogActivity extends AppCompatActivity {
         // NOTE: this is asynchronous, see code below for workaround to populate the orders list
         populateOrders();
 
+        // TODO: store the series' as private vars and combine all extraction logic
+        //       into one method
         // caffeineBarChart: extract dates and caffeine levels from orders
         DateIntegerSeries caffeineSeries = extractCaffeineData(orders);
 
@@ -104,11 +106,8 @@ public class LogActivity extends AppCompatActivity {
         moneyXYPlot = findViewById(R.id.moneyXYPlot);
 
         // setup charts and order list
-        // TODO: pass in the data extracted from DB as an argument, e.g. DateIntegerSeries
         this.onCreateCaffeineBarChart(caffeineSeries);
         this.onCreateMoneyXYPlot(expenditureSeries);
-
-        // TODO: set up the list of logs
     }
 
     @Override
