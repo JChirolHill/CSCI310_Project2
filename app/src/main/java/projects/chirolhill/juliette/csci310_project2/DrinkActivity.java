@@ -84,9 +84,9 @@ public class DrinkActivity extends AppCompatActivity {
                     drink = new Drink((radioIsCoffee.getCheckedRadioButtonId() == R.id.radio_coffee), shopID);
                 }
                 drink.setIsCoffee((radioIsCoffee.getCheckedRadioButtonId() == R.id.radio_coffee));
-                drink.setName(editName.getText().toString());
-                drink.setPrice(Float.parseFloat(editPrice.getText().toString()));
-                drink.setCaffeine(Integer.parseInt(editCaffeine.getText().toString()));
+                drink.setName(editName.getText().toString().trim());
+                drink.setPrice(Float.parseFloat(editPrice.getText().toString().trim()));
+                drink.setCaffeine(Integer.parseInt(editCaffeine.getText().toString().trim()));
 
                 // add drink to database
                 drink.setId(Database.getInstance().addDrink(drink));
