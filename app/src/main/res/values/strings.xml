@@ -26,6 +26,7 @@
     <string name="customer">Customer</string>
     <string name="myshops">My Shops</string>
     <string name="myorders">My Orders</string>
+    <string name="logout">Log Out</string>
 
 
     <!-- ShopList activity -->
