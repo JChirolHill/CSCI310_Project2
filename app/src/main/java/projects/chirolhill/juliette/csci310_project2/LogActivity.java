@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -26,13 +27,18 @@ import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import projects.chirolhill.juliette.csci310_project2.model.Customer;
@@ -67,7 +73,7 @@ public class LogActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        orders = new ArrayList<>();
+        orders = new ArrayList<Order>();
         ordersList = findViewById(R.id.ordersList);
 
         // set up adapter
@@ -93,10 +99,10 @@ public class LogActivity extends AppCompatActivity {
         });
 
         // caffeineBarChart: extract dates and caffeine levels from orders
-        DateIntegerSeries caffeineSeries = extractCaffeineData();
+        DateIntegerSeries caffeineSeries = extractCaffeineData(orders);
 
         // moneyXYPlot: extract dates and money levels from orders
-        DateDoubleSeries expenditureSeries = extractExpenditureData();
+        DateDoubleSeries expenditureSeries = extractExpenditureData(orders);
 
         // ordersList: extract list of orders
 
@@ -183,9 +189,28 @@ public class LogActivity extends AppCompatActivity {
      * Pulls out an androidplot-ready XYSeries for the caffeine bar chart.
      * @return
      */
-    private DateIntegerSeries extractCaffeineData() {
+    private DateIntegerSeries extractCaffeineData(List<Order> orders) {
         // TODO: given a list of orders, extract an XYSeries of datetimes and caffeine data
-        // use current time -7 to set threshold for 1 week ago
+        LocalDate ONE_WEEK_AGO = LocalDate.now().minusDays(7);
+
+        Date date = new Date();
+        LocalDate date_ = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Date date__ = Date.from(date_.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+
+        HashMap<LocalDate, Integer> dateToCaffeineMap = new HashMap<LocalDate, Integer>();
+        for (int i = 0; i < 7; i++) {
+            dateToCaffeineMap.put(ONE_WEEK_AGO.plusDays(i), 0);
+        }
+        // loop through orders, comparing their days and adding their caffeine values accordingly
+        // dates from orders are converted to LocalDates, and clocked to the start of day before output
+        for (Order order : orders) {
+                LocalDate tempDate = order.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                Log.d(TAG, "ORDER ON DAY: " + tempDate);
+
+                dateToCaffeineMap.put(tempDate, dateToCaffeineMap.get(tempDate) + order.getTotalCaffeine(false));
+        }
+
+        // TODO convert contents of hashmap into a series
 
         return new DateIntegerSeries("test");
     }
@@ -193,7 +218,7 @@ public class LogActivity extends AppCompatActivity {
     /**
      * Pulls out an androidplot-ready XYSeries for the expenditure line plot.
      */
-    private DateDoubleSeries extractExpenditureData() {
+    private DateDoubleSeries extractExpenditureData(List<Order> orders) {
 
         return new DateDoubleSeries("test");
     }
