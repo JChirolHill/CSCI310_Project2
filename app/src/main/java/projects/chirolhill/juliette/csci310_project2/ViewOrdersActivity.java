@@ -162,7 +162,7 @@ public class ViewOrdersActivity extends AppCompatActivity {
             TextView textDate = convertView.findViewById(R.id.listDate);
             TextView textTotalCost = convertView.findViewById(R.id.listTotalCost);
             TextView textTotalCaffeine = convertView.findViewById(R.id.listTotalCaffeine);
-            TextView textTripDuration = convertView.findViewById(R.id.listTripDuration);
+//            TextView textTripDuration = convertView.findViewById(R.id.listTripDuration);
 
             Order order = getItem(position);
 
