@@ -74,11 +74,20 @@ public class LogActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        orders = new ArrayList<Order>();
+        // "View Orders" button launches intent to ViewOrdersActivity
+        btnViewOrders = findViewById(R.id.btnViewOrders);
+        btnViewOrders.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), ViewOrdersActivity.class);
+                startActivity(i);
+            }
+        });
 
         // get user's orders
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         userID = prefs.getString(User.PREF_USER_ID, "invalid userid");
+        orders = new ArrayList<Order>();
 
         // NOTE: this is asynchronous, see code below for workaround to populate the orders list
         populateOrders();
@@ -95,8 +104,8 @@ public class LogActivity extends AppCompatActivity {
 
         // setup charts and order list
         // TODO: pass in the data extracted from DB as an argument, e.g. DateIntegerSeries
-        this.onCreateCaffeineBarChart();
-        this.onCreateMoneyXYPlot();
+        this.onCreateCaffeineBarChart(caffeineSeries);
+        this.onCreateMoneyXYPlot(expenditureSeries);
 
         // TODO: set up the list of logs
     }
@@ -182,7 +191,7 @@ public class LogActivity extends AppCompatActivity {
     /**
      * Setup code for the caffeine chart (formatting, incorporating data)
      */
-    private void onCreateCaffeineBarChart() {
+    private void onCreateCaffeineBarChart(DateIntegerSeries caffeineSeries) {
         // formatting: set y-axis increments from 0 to 1000 in increments of 200, and add extra
         // vals at beg/end to create a margin for the bars
         caffeineBarChart.setRangeBoundaries(new Integer(0), new Integer(1000), BoundaryMode.FIXED);
@@ -254,7 +263,7 @@ public class LogActivity extends AppCompatActivity {
     /**
      * Setup code for the money chart (formatting, incorporating data)
      */
-    private void onCreateMoneyXYPlot() {
+    private void onCreateMoneyXYPlot(DateDoubleSeries expenditureSeries) {
         // formatting: add extra vals at beg/end (7 days +1 on each end = 9) to create a margin for the bars
         moneyXYPlot.setRangeStep(StepMode.INCREMENT_BY_VAL, 5.0);
         moneyXYPlot.setDomainStep(StepMode.SUBDIVIDE, 9);
