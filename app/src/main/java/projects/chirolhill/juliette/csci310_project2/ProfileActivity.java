@@ -154,8 +154,8 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                     SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
                     u.setuID(prefs.getString(User.PREF_USER_ID, ""));
-                    u.setUsername(editUsername.getText().toString());
-                    u.setEmail(textEmail.getText().toString());
+                    u.setUsername(editUsername.getText().toString().trim());
+                    u.setEmail(textEmail.getText().toString().trim());
 
                     SharedPreferences.Editor prefEditor = prefs.edit();
                     prefEditor.putString(User.PREF_USERNAME, u.getUsername());
