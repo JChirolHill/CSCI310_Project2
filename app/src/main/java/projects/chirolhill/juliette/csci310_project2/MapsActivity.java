@@ -66,7 +66,7 @@ public class MapsActivity extends FragmentActivity implements
     private YelpFetcher yelpFetcher;
     private DirectionsFetcher directionsFetcher;
     private LatLng currLatLng;
-    private Map<String, BasicShop> shopListing;
+    private Map<Marker, BasicShop> shopListing;
     private ArrayList<Polyline> polylines;
 
     @Override
@@ -190,7 +190,7 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     @Override
-    public boolean onMarkerClick (Marker marker) {
+    public boolean onMarkerClick (final Marker marker) {
         // remove old polylines
         for (Polyline p : polylines) p.remove();
 
@@ -199,8 +199,6 @@ public class MapsActivity extends FragmentActivity implements
 
         if(marker.getPosition().latitude != currLatLng.latitude
                 && marker.getPosition().longitude != currLatLng.longitude) {
-
-            final String selectedShopName = marker.getTitle();
 
             SharedPreferences prefs = this.getSharedPreferences("Settings", Context.MODE_PRIVATE);
             boolean isMerchant = prefs.getBoolean(User.PREF_IS_MERCHANT, true);
@@ -211,7 +209,7 @@ public class MapsActivity extends FragmentActivity implements
                             @Override
                             public void onClick(View v) {
                                 // get the clicked shop
-                                BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
+                                BasicShop selectedShop = new BasicShop(shopListing.get(marker));
 
                                 // launch intent to claim the shop
                                 Intent i = new Intent(getApplicationContext(), ClaimShopActivity.class);
@@ -219,26 +217,27 @@ public class MapsActivity extends FragmentActivity implements
                                 startActivity(i);
                             }
                         }).show();
-            } else { // customer: show option to view drinks
+            }
+            else { // customer: show option to view drinks
                 AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle(marker.getTitle());
                 // Add the buttons
                 builder.setNeutralButton("Driving Directions", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
+                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
                         // launch intent to view driving directions to shop here
                         calculateDirections(passableMarker, "driving");
                     }
                 });
                 builder.setNegativeButton("Walking Directions", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
+                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
                         // launch intent to view walking directions to shop here
                         calculateDirections(passableMarker, "walking");
                     }
                 });
                 builder.setPositiveButton("View Drinks", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
+                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
 
                         // launch intent to view shop details here
                         Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
@@ -324,12 +323,14 @@ public class MapsActivity extends FragmentActivity implements
         // add markers for all coffeeshops
         for (MapShop ms : yelpFetcher.getShops()) {
             String snippet = "Rating: " + Double.toString(ms.getRating());
-            shopListing.put(ms.getName(), ms);
-            mMap.addMarker(new MarkerOptions()
+            Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(ms.getLocation().latitude, ms.getLocation().longitude))
                     .title(ms.getName())
                     .snippet(snippet)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
+            // store the marker linked with the map shop
+            shopListing.put(marker, ms);
         }
     }
 
