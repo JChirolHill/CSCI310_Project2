@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.Customer;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
@@ -129,7 +130,7 @@ public class LogActivity extends AppCompatActivity {
 
                 //TODO: extract final order id from here (via log.orders.getOrders()
                 // get all orders from database
-                for(Order order : log.getOrders()) {
+                for(Map.Entry<String, Order> entry : log.getOrders().entrySet()) {
                     Database.getInstance().setCallback(new Database.Callback() {
                         @Override
                         public void dbCallback(Object o) {
@@ -137,7 +138,7 @@ public class LogActivity extends AppCompatActivity {
                             // TODO: check if this is final order, if so, trigger extract functions
                         }
                     });
-                    Database.getInstance().getOrder(order.getId());
+                    Database.getInstance().getOrder(entry.getKey());
                 }
             }
         });
