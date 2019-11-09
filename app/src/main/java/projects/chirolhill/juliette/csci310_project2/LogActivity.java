@@ -121,6 +121,12 @@ public class LogActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+        startActivity(i);
+    }
+
     private void populateOrders() {
         Database.getInstance().setCallback(new Database.Callback() {
             @Override
