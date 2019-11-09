@@ -108,6 +108,25 @@ public class MapsActivity extends FragmentActivity implements
         polylines = new ArrayList<Polyline>();
     }
 
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage(getResources().getString(R.string.suresignout));
+        alertDialogBuilder.setCancelable(true);
+
+        // want to log out, redirect to signin page
+        alertDialogBuilder.setPositiveButton(getResources().getString(R.string.logout), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent i = new Intent(getApplicationContext(), SignInActivity.class);
+                startActivity(i);
+            }
+        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -333,5 +352,4 @@ public class MapsActivity extends FragmentActivity implements
             shopListing.put(marker, ms);
         }
     }
-
 }
