@@ -91,7 +91,6 @@ public class ShopInfoActivity extends AppCompatActivity {
 
         // load content onto layout
         textShopName.setText(currShop.getName());
-//        textRating.setText(Double.toString(currShop.getRating()));
         ratingBar.setRating((float)currShop.getRating());
         textPrice.setText(currShop.getPriceRange());
         textAddress.setText(currShop.getAddress());
@@ -247,8 +246,8 @@ public class ShopInfoActivity extends AppCompatActivity {
             // copy/map the data from the current item (model) to the curr row (view)
             textName.setText(d.getName());
             textType.setText(d.isCoffee() ? getResources().getString(R.string.coffee) : getResources().getString(R.string.tea));
-            textCaffeine.setText(d.getCaffeine() + " " + getResources().getString(R.string.milligrams));
-            textPrice.setText("$" + Float.toString(d.getPrice()));
+            textCaffeine.setText(getResources().getString(R.string.milligrams, d.getCaffeine()));
+            textPrice.setText(getResources().getString(R.string.dollars, d.getPrice()));
 //            Picasso.get().load(s.getImgURL()).into(image);
 
             return convertView;

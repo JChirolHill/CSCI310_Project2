@@ -171,7 +171,7 @@ public class ViewOrdersActivity extends AppCompatActivity {
             DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
             textDate.setText(dateFormat.format(order.getDate()));
             textTotalCost.setText(getResources().getString(R.string.dollarCost, order.getTotalCost(false)));
-            textTotalCaffeine.setText(order.getTotalCaffeine(false) + " " + getResources().getString(R.string.milligrams));
+            textTotalCaffeine.setText(getResources().getString(R.string.milligrams, order.getTotalCaffeine(false)));
 //            textTripDuration.setText();
 
             return convertView;

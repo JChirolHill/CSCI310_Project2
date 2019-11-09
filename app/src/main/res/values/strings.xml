@@ -46,7 +46,8 @@
     <string name="notClaimedNoDrinks">This shop has not been claimed, so it does not have any drinks currently.</string>
     <string name="coffee">Coffee</string>
     <string name="tea">Tea</string>
-    <string name="milligrams"> mg</string>
+    <string name="milligrams">%1$d mg</string>
+    <string name="dollars">$%1$.2f</string>
     <string name="addDrink">Add Drink</string>
     <string name="noDrinks">This shop does not have any drinks listed</string>
     <string name="logOrder">Log Order</string>

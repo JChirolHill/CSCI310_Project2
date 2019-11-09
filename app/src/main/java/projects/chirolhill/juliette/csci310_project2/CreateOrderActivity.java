@@ -239,7 +239,7 @@ public class CreateOrderActivity extends AppCompatActivity {
             // copy/map the data from the current item (model) to the curr row (view)
             textName.setText(d.getName());
             textType.setText(d.isCoffee() ? getResources().getString(R.string.coffee) : getResources().getString(R.string.tea));
-            textCaffeine.setText(d.getCaffeine() + " " + getResources().getString(R.string.milligrams));
+            textCaffeine.setText(getResources().getString(R.string.milligrams, d.getCaffeine()));
             textPrice.setText("$" + Float.toString(d.getPrice()));
             if(order.getDrinks().get(d.getId()) == null) { // none ordered yet
                 textNumOrdered.setText("x0");

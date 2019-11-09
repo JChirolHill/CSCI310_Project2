@@ -94,8 +94,8 @@ public class OrderActivity extends AppCompatActivity {
                 editDate.setText(dateFormat.format(currOrder.getDate()));
                 totalMoneySpent.setText(getResources().getString(R.string.dollarCost, currOrder.getTotalCost(false)));
                 editTotalMoneySpent.setText(String.format("%1$.2f", currOrder.getTotalCost(false)));
-                textCaffeineLevel.setText(currOrder.getTotalCaffeine(false) + " " + getResources().getString(R.string.milligrams));
-                editCaffeineLevel.setText(Integer.toString(currOrder.getTotalCaffeine(false)));
+                textCaffeineLevel.setText(getResources().getString(R.string.milligrams, currOrder.getTotalCaffeine(false)));
+                editCaffeineLevel.setText(getResources().getString(R.string.milligrams, currOrder.getTotalCaffeine(false)));
 
                 // load in all the drinks
                 for(Map.Entry<String, Pair<Drink, Integer>> entry : currOrder.getDrinks().entrySet()) {
@@ -209,7 +209,7 @@ public class OrderActivity extends AppCompatActivity {
             // copy/map the data from the current item (model) to the curr row (view)
             textName.setText(d.getName());
             textType.setText(d.isCoffee() ? getResources().getString(R.string.coffee) : getResources().getString(R.string.tea));
-            textCaffeine.setText(d.getCaffeine() + " " + getResources().getString(R.string.milligrams));
+            textCaffeine.setText(getResources().getString(R.string.milligrams, d.getCaffeine()));
             textPrice.setText("$" + Float.toString(d.getPrice()));
 //            Picasso.get().load(s.getImgURL()).into(image);
 
