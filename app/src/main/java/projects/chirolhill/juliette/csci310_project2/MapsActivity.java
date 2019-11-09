@@ -181,7 +181,6 @@ public class MapsActivity extends FragmentActivity implements
             mMap.addMarker(marker);
 
             // get coffeeshop data from volley
-            Log.d(TAG, "fetching from yelp first time");
             yelpFetcher.fetch(myLocation.getLatitude(), myLocation.getLongitude());
 
             // needed for OnInfoWindowClickListener() to work
