@@ -50,6 +50,7 @@ public class CreateOrderActivity extends AppCompatActivity {
     private TextView textTotalCaffeineOrder;
     private TextView textTotalCaffeineToday;
     private TextView textTotalCost;
+    private TextView textError;
     private ListView listDrinks;
     private Button btnSubmitOrder;
 
@@ -64,6 +65,7 @@ public class CreateOrderActivity extends AppCompatActivity {
         textTotalCaffeineOrder = findViewById(R.id.textCaffeineOrder);
         textTotalCaffeineToday = findViewById(R.id.textCaffeineToday);
         textTotalCost = findViewById(R.id.textTotalCost);
+        textError = findViewById(R.id.textError);
         listDrinks = findViewById(R.id.listItems);
         btnSubmitOrder = findViewById(R.id.btnSubmitOrder);
 
@@ -108,6 +110,8 @@ public class CreateOrderActivity extends AppCompatActivity {
         listDrinks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                textError.setVisibility(View.GONE);
+
                 order.addDrink(drinks.get(position));
                 drinkAdapter.notifyDataSetChanged();
 
@@ -157,26 +161,35 @@ public class CreateOrderActivity extends AppCompatActivity {
     }
 
     private void proceedToOrder() {
-        // add order to database
-        order.setId(Database.getInstance().addOrder(order));
+        // ordered at least one item
+        if(order.getDrinks().size() > 0) {
+            textError.setVisibility(View.GONE);
 
-        // get user from database
-        Database.getInstance().setCallback(new Database.Callback() {
-            @Override
-            public void dbCallback(Object o) {
-                Customer customer = (Customer)o;
-                customer.getLog().addOrder(order);
+            // add order to database
+            order.setId(Database.getInstance().addOrder(order));
 
-                // add this user back to database
-                Database.getInstance().addUser(customer);
+            // get user from database
+            Database.getInstance().setCallback(new Database.Callback() {
+                @Override
+                public void dbCallback(Object o) {
+                    Customer customer = (Customer)o;
+                    customer.getLog().addOrder(order);
 
-                Intent i = new Intent(getApplicationContext(), OrderActivity.class);
-                i.putExtra(OrderActivity.EXTRA_READONLY, true);
-                i.putExtra(Order.PREF_ORDER_ID, order.getId());
-                startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
-            }
-        });
-        Database.getInstance().getUser(userID);
+                    // add this user back to database
+                    Database.getInstance().addUser(customer);
+
+                    Intent i = new Intent(getApplicationContext(), OrderActivity.class);
+                    i.putExtra(OrderActivity.EXTRA_READONLY, true);
+                    i.putExtra(Order.PREF_ORDER_ID, order.getId());
+                    startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
+                }
+            });
+            Database.getInstance().getUser(userID);
+        }
+        else { // empty order
+            textError.setText(getResources().getString(R.string.emptyOrder));
+            textError.setVisibility(View.VISIBLE);
+        }
     }
 
     private void displayInfo() {
@@ -226,7 +239,7 @@ public class CreateOrderActivity extends AppCompatActivity {
             // copy/map the data from the current item (model) to the curr row (view)
             textName.setText(d.getName());
             textType.setText(d.isCoffee() ? getResources().getString(R.string.coffee) : getResources().getString(R.string.tea));
-            textCaffeine.setText(d.getCaffeine() + " " + getResources().getString(R.string.milligrams));
+            textCaffeine.setText(getResources().getString(R.string.milligrams, d.getCaffeine()));
             textPrice.setText("$" + Float.toString(d.getPrice()));
             if(order.getDrinks().get(d.getId()) == null) { // none ordered yet
                 textNumOrdered.setText("x0");
