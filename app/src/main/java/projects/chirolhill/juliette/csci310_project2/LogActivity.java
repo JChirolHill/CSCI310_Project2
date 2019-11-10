@@ -439,6 +439,3 @@ public class LogActivity extends AppCompatActivity {
     }
 
 }
-
-
-

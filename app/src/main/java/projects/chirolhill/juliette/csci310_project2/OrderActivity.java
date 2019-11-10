@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -138,13 +137,9 @@ public class OrderActivity extends AppCompatActivity {
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(readonly) {
-                    // return to previous activity
-//                    setResult(RESULT_OK);
-//                    finish();
-                    // go to log activity
-                    Intent i = new Intent(getApplicationContext(), LogActivity.class);
-                    startActivity(i);
+                if(readonly) { // return to previous activity
+                    setResult(RESULT_OK);
+                    finish();
                 }
                 else { // save results and display readonly
                     // create the new order
@@ -162,13 +157,6 @@ public class OrderActivity extends AppCompatActivity {
                 renderEditable();
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        // when press on back arrow, go to list or orders
-        Intent i = new Intent(getApplicationContext(), LogActivity.class);
-        startActivity(i);
     }
 
     private void renderReadOnly() {

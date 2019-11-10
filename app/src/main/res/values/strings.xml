@@ -94,7 +94,7 @@
     <string name="items">%1$d Items</string>
     <string name="totalCaffeineOrder">Total Caffeine in Order: %1$d mg</string>
     <string name="totalCaffeineToday">Total Caffeine Today: %1$d mg</string>
-    <string name="totalCost">Total Cost: $%1$.2f</string>
+    <string name="totalCost">Total Cost: %1$.2f</string>
     <string name="overCaffeineLevel">This order would put your caffeine level above the recommended 400mg.</string>
     <string name="proceed">Proceed</string>
     <string name="emptyOrder">Your order appears to be empty</string>
