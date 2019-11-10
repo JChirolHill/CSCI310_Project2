@@ -1,16 +1,19 @@
 package projects.chirolhill.juliette.csci310_project2;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -19,8 +22,10 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -134,6 +139,29 @@ public class OrderActivity extends AppCompatActivity {
 //            }
 //        });
 
+        editDate.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(currOrder.getDate());
+                new DatePickerDialog(OrderActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        DateFormat dateFormat1 = new SimpleDateFormat("yyyy/MM/dd");
+                        DateFormat dateFormat2 = new SimpleDateFormat("MMM d, yyyy");
+                        try {
+                            currOrder.setDate(dateFormat1.parse("" + year + "/" + (month + 1) + "/" + dayOfMonth));
+                            editDate.setText(dateFormat2.format(currOrder.getDate()));
+                        } catch (ParseException e) {
+                            Log.d(TAG, e.getMessage());
+                            e.printStackTrace();
+                        }
+                    }
+                }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,6 +170,10 @@ public class OrderActivity extends AppCompatActivity {
                     finish();
                 }
                 else { // save results and display readonly
+                    // update the order based on user inputs
+                    currOrder.setTotalCaffeine(Integer.parseInt(editCaffeineLevel.getText().toString()));
+                    currOrder.setTotalCost(Double.parseDouble(editTotalMoneySpent.getText().toString()));
+
                     // create the new order
                     currOrder = new Order(orderID, currOrder.getShop(), currOrder.getTrip(), currOrder.getTrip(), currOrder.getDate());
                     Database.getInstance().addOrder(currOrder);
