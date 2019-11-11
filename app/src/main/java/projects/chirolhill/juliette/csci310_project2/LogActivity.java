@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
 import projects.chirolhill.juliette.csci310_project2.model.Customer;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
@@ -93,21 +94,21 @@ public class LogActivity extends AppCompatActivity {
         // NOTE: this is asynchronous, see code below for workaround to populate the orders list
         populateOrders();
 
-        // TODO: store the series' as private vars and combine all extraction logic
-        //       into one method
-        // caffeineBarChart: extract dates and caffeine levels from orders
-        DateIntegerSeries caffeineSeries = extractCaffeineData(orders);
-
-        // moneyXYPlot: extract dates and money levels from orders
-        DateDoubleSeries expenditureSeries = extractExpenditureData(orders);
-
-        // create charts and order list
-        caffeineBarChart = findViewById(R.id.caffeineBarChart);
-        moneyXYPlot = findViewById(R.id.moneyXYPlot);
-
-        // setup charts and order list
-        this.onCreateCaffeineBarChart(caffeineSeries);
-        this.onCreateMoneyXYPlot(expenditureSeries);
+//        // TODO: store the series' as private vars and combine all extraction logic
+//        //       into one method
+//        // caffeineBarChart: extract dates and caffeine levels from orders
+//        DateIntegerSeries caffeineSeries = extractCaffeineData(orders);
+//
+//        // moneyXYPlot: extract dates and money levels from orders
+//        DateDoubleSeries expenditureSeries = extractExpenditureData(orders);
+//
+//        // create charts and order list
+//        caffeineBarChart = findViewById(R.id.caffeineBarChart);
+//        moneyXYPlot = findViewById(R.id.moneyXYPlot);
+//
+//        // setup charts and order list
+//        this.onCreateCaffeineBarChart(caffeineSeries);
+//        this.onCreateMoneyXYPlot(expenditureSeries);
     }
 
     @Override
@@ -126,15 +127,36 @@ public class LogActivity extends AppCompatActivity {
             public void dbCallback(Object o) {
                 Customer tempCustomer = (Customer)o;
                 log = tempCustomer.getLog();
+                final Stack<Order> ordersStack = new Stack<Order>();
+                ordersStack.addAll(log.getOrders());
 
                 //TODO: extract final order id from here (via log.orders.getOrders()
                 // get all orders from database
-                for(Order order : log.getOrders()) {
+                while (ordersStack.size() > 0) {
+                    Order order = ordersStack.pop();
                     Database.getInstance().setCallback(new Database.Callback() {
                         @Override
                         public void dbCallback(Object o) {
                             orders.add((Order)o);
+
                             // TODO: check if this is final order, if so, trigger extract functions
+                            if (ordersStack.size() == 0) {
+                                // TODO: store the series' as private vars and combine all extraction logic
+                                //       into one method
+                                // caffeineBarChart: extract dates and caffeine levels from orders
+                                DateIntegerSeries caffeineSeries = extractCaffeineData(orders);
+
+                                // moneyXYPlot: extract dates and money levels from orders
+                                DateDoubleSeries expenditureSeries = extractExpenditureData(orders);
+
+                                // create charts and order list
+                                caffeineBarChart = findViewById(R.id.caffeineBarChart);
+                                moneyXYPlot = findViewById(R.id.moneyXYPlot);
+
+                                // setup charts and order list
+                                onCreateCaffeineBarChart(caffeineSeries);
+                                onCreateMoneyXYPlot(expenditureSeries);
+                            }
                         }
                     });
                     Database.getInstance().getOrder(order.getId());
@@ -152,6 +174,7 @@ public class LogActivity extends AppCompatActivity {
     private DateIntegerSeries extractCaffeineData(List<Order> orders) {
         LocalDate ONE_WEEK_AGO = LocalDate.now().minusDays(7);
 
+        /*
         // testing data
         ArrayList<Long> domainLabels = new ArrayList<Long>();
         for (int i = 0; i < 7; i++) {
@@ -166,6 +189,7 @@ public class LogActivity extends AppCompatActivity {
             newOrder.setTotalCaffeine(caffeineLevels[i]);
             orders.add(newOrder);
         }
+        */
 
         ArrayList<LocalDate> orderedListOfMapDays = new ArrayList<LocalDate>();
 
@@ -432,6 +456,3 @@ public class LogActivity extends AppCompatActivity {
     }
 
 }
-
-
-
