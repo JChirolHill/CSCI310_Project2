@@ -140,7 +140,7 @@ public class LogActivity extends AppCompatActivity {
                             orders.add((Order)o);
 
                             // TODO: check if this is final order, if so, trigger extract functions
-                            if (ordersStack.size() == 0) {
+                            if (orders.size() == log.getOrders().size()) {
                                 // TODO: store the series' as private vars and combine all extraction logic
                                 //       into one method
                                 // caffeineBarChart: extract dates and caffeine levels from orders
@@ -154,8 +154,8 @@ public class LogActivity extends AppCompatActivity {
                                 moneyXYPlot = findViewById(R.id.moneyXYPlot);
 
                                 // setup charts and order list
-                                onCreateCaffeineBarChart(caffeineSeries);
-                                onCreateMoneyXYPlot(expenditureSeries);
+                                // onCreateCaffeineBarChart(caffeineSeries);
+                                // onCreateMoneyXYPlot(expenditureSeries);
                             }
                         }
                     });
