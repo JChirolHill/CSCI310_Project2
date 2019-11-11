@@ -154,6 +154,8 @@ public class LogActivity extends AppCompatActivity {
                                 moneyXYPlot = findViewById(R.id.moneyXYPlot);
 
                                 // setup charts and order list
+                                // NOTE: the charts are still generated, despite commenting! something
+                                //       is prematurely generating the charts before these calls are even made
                                 // onCreateCaffeineBarChart(caffeineSeries);
                                 // onCreateMoneyXYPlot(expenditureSeries);
                             }
