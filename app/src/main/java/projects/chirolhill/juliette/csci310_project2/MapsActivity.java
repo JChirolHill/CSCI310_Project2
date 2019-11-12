@@ -90,6 +90,8 @@ public class MapsActivity extends FragmentActivity implements
                 startActivity(i);
             }
         });
+
+        // PLEASE DON'T DELETE FOR NOW :)
 //        btnFindShops = findViewById(R.id.btnFindShops);
 //
 //        btnFindShops.setOnClickListener(new View.OnClickListener() {
