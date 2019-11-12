@@ -42,7 +42,6 @@ public class ShopInfoActivity extends AppCompatActivity {
     private TextView textAddress;
     private ListView listDrinks;
     private Button btnAddDrink;
-    private Button btnLogOrder;
 
     private BasicShop currShop;
     private boolean showStats;
@@ -66,7 +65,6 @@ public class ShopInfoActivity extends AppCompatActivity {
         textAddress = findViewById(R.id.textAddress);
         listDrinks = findViewById(R.id.list);
         btnAddDrink = findViewById(R.id.btnAddDrink);
-        btnLogOrder = findViewById(R.id.btnLogOrder);
 
         drinks = new ArrayList<>();
 
@@ -114,20 +112,6 @@ public class ShopInfoActivity extends AppCompatActivity {
             }
         });
 
-        btnLogOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Shop shop = new Shop(((Shop)currShop).getOwnerID(), currShop);
-                for(Drink d : drinks) {
-                    shop.addDrink(d);
-                }
-
-                Intent i = new Intent(getApplicationContext(), CreateOrderActivity.class);
-                i.putExtra(Shop.PREF_SHOP, shop);
-                startActivity(i);
-            }
-        });
-
         listDrinks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -141,7 +125,15 @@ public class ShopInfoActivity extends AppCompatActivity {
                     startActivityForResult(i, REQUEST_CODE_ADD_DRINK);
                 }
                 else { // log an order
-                    // TODO log order if click on item, can then remove the log order button that is kind of in the way
+                    Shop shop = new Shop(((Shop)currShop).getOwnerID(), currShop);
+                    for(Drink d : drinks) {
+                        shop.addDrink(d);
+                    }
+
+                    Intent i = new Intent(getApplicationContext(), CreateOrderActivity.class);
+                    i.putExtra(Shop.PREF_SHOP, shop);
+                    i.putExtra(Drink.EXTRA_DRINK, drinks.get(position));
+                    startActivity(i);
                 }
             }
         });
@@ -208,9 +200,6 @@ public class ShopInfoActivity extends AppCompatActivity {
                             textItems.setText(getResources().getString(R.string.noDrinks));
                         }
                         else { // display all drinks
-                            if(!isMerchant) {
-                                btnLogOrder.setVisibility(View.VISIBLE);
-                            }
                             textItems.setText(getResources().getString(R.string.itemsListed));
                             textItems.setTextSize(getResources().getDimension(R.dimen.textsize));
                             for(Drink d : ((Shop) currShop).getDrinks()) {
