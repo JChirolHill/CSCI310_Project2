@@ -71,8 +71,9 @@ public class CreateOrderActivity extends AppCompatActivity {
 
         drinks = new ArrayList<>();
 
-        // get shop from intent
+        // get shop and drink from intent
         Intent i = getIntent();
+        Drink passedIn = (Drink)i.getSerializableExtra(Drink.EXTRA_DRINK);
         currShop = (Shop)i.getSerializableExtra(Shop.PREF_SHOP);
         for(Drink d : currShop.getDrinks()) {
             drinks.add(d);
@@ -83,10 +84,14 @@ public class CreateOrderActivity extends AppCompatActivity {
         userID = prefs.getString(User.PREF_USER_ID, "Invalid ID");
         order = new Order(null, currShop.getId(), null, prefs.getString(User.PREF_USER_ID, "Invalid ID"), new Date());
 
+        // add drink that was passed in to this order
+        if(passedIn != null) {
+            order.addDrink(passedIn);
+        }
+
         // set up adapter
         drinkAdapter = new DrinkListAdapter(this, R.layout.list_item_drink_order, drinks);
         listDrinks.setAdapter(drinkAdapter);
-//        drinkAdapter.notifyDataSetChanged();
 
         // get user with its log from database
         Database.getInstance().setCallback(new Database.Callback() {
@@ -233,7 +238,6 @@ public class CreateOrderActivity extends AppCompatActivity {
             TextView textCaffeine = convertView.findViewById(R.id.listDrinkCaffeine);
             TextView textPrice = convertView.findViewById(R.id.listDrinkPrice);
             TextView textNumOrdered = convertView.findViewById(R.id.textNumOrdered);
-//            Button btnAddDrink = convertView.findViewById(R.id.btnAddDrink);
 //            ImageView image = convertView.findViewById(R.id.listShopImage);
 
             // copy/map the data from the current item (model) to the curr row (view)
@@ -248,13 +252,6 @@ public class CreateOrderActivity extends AppCompatActivity {
                 textNumOrdered.setText("x" + order.getDrinks().get(d.getId()).second);
             }
 //            Picasso.get().load(s.getImgURL()).into(image);
-
-//            btnAddDrink.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    order.addDrink(d);
-//                }
-//            });
 
             return convertView;
         }
