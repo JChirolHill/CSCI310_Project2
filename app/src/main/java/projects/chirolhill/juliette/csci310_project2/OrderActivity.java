@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -99,9 +101,9 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 textDate.setText(dateFormat.format(currOrder.getDate()));
                 editDate.setText(dateFormat.format(currOrder.getDate()));
                 totalMoneySpent.setText(getResources().getString(R.string.dollarCost, currOrder.getTotalCost(false)));
-                editTotalMoneySpent.setText(Double.toString(currOrder.getTotalCost(false)));
-                textCaffeineLevel.setText(currOrder.getTotalCaffeine(false) + " " + getResources().getString(R.string.milligrams));
-                editCaffeineLevel.setText(currOrder.getTotalCaffeine(false));
+                editTotalMoneySpent.setText(String.format("%1$.2f", currOrder.getTotalCost(false)));
+                textCaffeineLevel.setText(getResources().getString(R.string.milligrams, currOrder.getTotalCaffeine(false)));
+                editCaffeineLevel.setText(getResources().getString(R.string.milligrams, currOrder.getTotalCaffeine(false)));
 
                 // load in all the drinks
                 for(Map.Entry<String, Pair<Drink, Integer>> entry : currOrder.getDrinks().entrySet()) {
@@ -140,6 +142,29 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 //            }
 //        });
 
+        editDate.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(currOrder.getDate());
+                new DatePickerDialog(OrderActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        DateFormat dateFormat1 = new SimpleDateFormat("yyyy/MM/dd");
+                        DateFormat dateFormat2 = new SimpleDateFormat("MMM d, yyyy");
+                        try {
+                            currOrder.setDate(dateFormat1.parse("" + year + "/" + (month + 1) + "/" + dayOfMonth));
+                            editDate.setText(dateFormat2.format(currOrder.getDate()));
+                        } catch (ParseException e) {
+                            Log.d(TAG, e.getMessage());
+                            e.printStackTrace();
+                        }
+                    }
+                }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,6 +173,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     finish();
                 }
                 else { // save results and display readonly
+                    // update the order based on user inputs
+                    currOrder.setTotalCaffeine(Integer.parseInt(editCaffeineLevel.getText().toString()));
+                    currOrder.setTotalCost(Double.parseDouble(editTotalMoneySpent.getText().toString()));
+
                     // create the new order
                     currOrder = new Order(orderID, currOrder.getShop(), currOrder.getTrip(), currOrder.getTrip(), currOrder.getDate());
                     Database.getInstance().addOrder(currOrder);
@@ -196,6 +225,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
         totalMoneySpent.setVisibility(View.VISIBLE);
         textCaffeineLevel.setVisibility(View.VISIBLE);
+        textDate.setVisibility(View.VISIBLE);
         editTotalMoneySpent.setVisibility(View.GONE);
         editCaffeineLevel.setVisibility(View.GONE);
         editDate.setVisibility(View.GONE);
@@ -209,6 +239,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
 
         totalMoneySpent.setVisibility(View.GONE);
         textCaffeineLevel.setVisibility(View.GONE);
+        textDate.setVisibility(View.GONE);
         editTotalMoneySpent.setVisibility(View.VISIBLE);
         editCaffeineLevel.setVisibility(View.VISIBLE);
         editDate.setVisibility(View.VISIBLE);
@@ -237,7 +268,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             // copy/map the data from the current item (model) to the curr row (view)
             textName.setText(d.getName());
             textType.setText(d.isCoffee() ? getResources().getString(R.string.coffee) : getResources().getString(R.string.tea));
-            textCaffeine.setText(d.getCaffeine() + " " + getResources().getString(R.string.milligrams));
+            textCaffeine.setText(getResources().getString(R.string.milligrams, d.getCaffeine()));
             textPrice.setText("$" + Float.toString(d.getPrice()));
 //            Picasso.get().load(s.getImgURL()).into(image);
 

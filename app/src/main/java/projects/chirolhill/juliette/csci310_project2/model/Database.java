@@ -26,6 +26,7 @@ import projects.chirolhill.juliette.csci310_project2.model.dbadapters.DatabaseDr
 import projects.chirolhill.juliette.csci310_project2.model.dbadapters.DatabaseMerchant;
 import projects.chirolhill.juliette.csci310_project2.model.dbadapters.DatabaseOrder;
 import projects.chirolhill.juliette.csci310_project2.model.dbadapters.DatabaseShop;
+import projects.chirolhill.juliette.csci310_project2.model.dbadapters.DatabaseTrip;
 
 public class Database {
     /**
@@ -160,7 +161,6 @@ public class Database {
 
     // returns drink if exists, null if does not exist
     public void getDrink(String id) {
-        Log.d(TAG, id);
         dbDrinksRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -208,7 +208,6 @@ public class Database {
 
     // returns order if exists, null if does not exist
     public void getOrder(String id) {
-        Log.d(TAG, id);
         dbOrdersRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -229,12 +228,12 @@ public class Database {
         });
     }
 
-    // returns the key at which drink was added
+    // returns the key at which order was added
     public String addOrder(Order order) {
         try {
             if(order.getId() == null) {
-                DatabaseReference newDrinkRef = dbOrdersRef.push();
-                order.setId(newDrinkRef.getKey());
+                DatabaseReference newOrderRef = dbOrdersRef.push();
+                order.setId(newOrderRef.getKey());
             }
             dbOrdersRef.child(order.getId()).setValue(new DatabaseOrder(order));
         } catch(DatabaseException de) {
@@ -242,6 +241,53 @@ public class Database {
             return de.getMessage();
         }
         return order.getId();
+    }
+
+    public String removeOrder(Order o) {
+        try {
+            dbOrdersRef.child(o.getId()).removeValue();
+        }
+        catch(DatabaseException de) {
+            return de.getMessage();
+        }
+        return null;
+    }
+
+    // returns trip if exists, null if does not exist
+    public void getTrip(String id) {
+        dbTripsRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Trip currTrip;
+                if(dataSnapshot.getValue() == null) { // new trip, not in database
+                    currTrip = null;
+                }
+                else { // existing trip in database
+                    currTrip = (Trip)dataSnapshot.getValue(DatabaseTrip.class).revertToOriginal();
+                }
+                cb.dbCallback(currTrip);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG, databaseError.getMessage());
+            }
+        });
+    }
+
+    // returns the key at which trip was added
+    public String addTrip(Trip trip) {
+        try {
+            if(trip.getId() == null) {
+                DatabaseReference newTripRef = dbTripsRef.push();
+                trip.setId(newTripRef.getKey());
+            }
+            dbTripsRef.child(trip.getId()).setValue(new DatabaseTrip(trip));
+        } catch(DatabaseException de) {
+            Log.d(TAG, de.getMessage());
+            return de.getMessage();
+        }
+        return trip.getId();
     }
 
     // uploads images to firestore

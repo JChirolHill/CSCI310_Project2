@@ -20,9 +20,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.Customer;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
+import projects.chirolhill.juliette.csci310_project2.model.Drink;
 import projects.chirolhill.juliette.csci310_project2.model.Order;
 import projects.chirolhill.juliette.csci310_project2.model.User;
 import projects.chirolhill.juliette.csci310_project2.model.UserLog;
@@ -36,6 +38,7 @@ public class ViewOrdersActivity extends AppCompatActivity {
     private OrderListAdapter orderAdapter;
     private String userID;
     private UserLog log;
+    private Customer currCustomer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +55,19 @@ public class ViewOrdersActivity extends AppCompatActivity {
         orderAdapter = new OrderListAdapter(this, R.layout.list_item_order, orders);
         listOrders.setAdapter(orderAdapter);
 
-        // get user's orders
+        // get user
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         userID = prefs.getString(User.PREF_USER_ID, "invalid userid");
-        populateOrders();
+        Database.getInstance().setCallback(new Database.Callback() {
+            @Override
+            public void dbCallback(Object o) {
+                currCustomer = (Customer)o;
+
+                // get the user's orders
+                populateOrders();
+            }
+        });
+        Database.getInstance().getUser(userID);
 
         listOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -67,6 +79,38 @@ public class ViewOrdersActivity extends AppCompatActivity {
                 startActivityForResult(i, REQUEST_CODE_VIEW_ORDER);
             }
         });
+
+//        listOrders.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                // remove the order from adapter
+//                final Order removed = orders.remove(position);
+//                orderAdapter.notifyDataSetChanged();
+//
+//                // remove from database list of orders
+//                Database.getInstance().removeOrder(removed);
+//
+//                // remove from database customer list of orders
+//                currCustomer.getLog().removeOrder(removed);
+//                Database.getInstance().addUser(currCustomer);
+//
+//                // undo snackbar
+//                Snackbar.make(findViewById(R.id.listOrders), getResources().getString(R.string.orderDeleted), Snackbar.LENGTH_LONG)
+//                        .setAction(getResources().getString(R.string.undo), new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View v) {
+//                                // add back to database
+//                                Database.getInstance().addOrder(removed);
+//
+//                                // update adapter
+//                                orders.add(removed);
+//                                orderAdapter.notifyDataSetChanged();
+//                            }
+//                        }).show();
+//
+//                return true;
+//            }
+//        });
     }
 
     @Override
@@ -89,15 +133,16 @@ public class ViewOrdersActivity extends AppCompatActivity {
                 log = tempCustomer.getLog();
 
                 // get all orders from database
-                for(Order order : log.getOrders()) {
+                for(Map.Entry<String, Order> entry : log.getOrders().entrySet()) {
                     Database.getInstance().setCallback(new Database.Callback() {
                         @Override
                         public void dbCallback(Object o) {
+//                            currCustomer.getLog().addOrder((Order)o);
                             orders.add((Order)o);
                             orderAdapter.notifyDataSetChanged();
                         }
                     });
-                    Database.getInstance().getOrder(order.getId());
+                    Database.getInstance().getOrder(entry.getKey());
                 }
             }
         });
@@ -118,7 +163,7 @@ public class ViewOrdersActivity extends AppCompatActivity {
             TextView textDate = convertView.findViewById(R.id.listDate);
             TextView textTotalCost = convertView.findViewById(R.id.listTotalCost);
             TextView textTotalCaffeine = convertView.findViewById(R.id.listTotalCaffeine);
-            TextView textTripDuration = convertView.findViewById(R.id.listTripDuration);
+//            TextView textTripDuration = convertView.findViewById(R.id.listTripDuration);
 
             Order order = getItem(position);
 
@@ -126,7 +171,7 @@ public class ViewOrdersActivity extends AppCompatActivity {
             DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy");
             textDate.setText(dateFormat.format(order.getDate()));
             textTotalCost.setText(getResources().getString(R.string.dollarCost, order.getTotalCost(false)));
-            textTotalCaffeine.setText(order.getTotalCaffeine(false) + " " + getResources().getString(R.string.milligrams));
+            textTotalCaffeine.setText(getResources().getString(R.string.milligrams, order.getTotalCaffeine(false)));
 //            textTripDuration.setText();
 
             return convertView;

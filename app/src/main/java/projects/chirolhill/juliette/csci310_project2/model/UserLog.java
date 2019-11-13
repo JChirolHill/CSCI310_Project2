@@ -2,20 +2,22 @@ package projects.chirolhill.juliette.csci310_project2.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserLog implements Serializable {
     public static final String PREF_TOTAL_CAFFEINE = "pref_total_caffeine";
 
     private String id;
     private Customer owner;
-    private List<Order> orders;
+    private Map<String, Order> orders;
     private int totalCaffeineLevel;
     private double totalMoneySpent;
 
     public UserLog(Customer owner) {
         this.owner = owner;
-        orders = new ArrayList<>();
+        orders = new HashMap<>();
         totalCaffeineLevel = 0;
         totalMoneySpent = 0.0;
     }
@@ -28,7 +30,7 @@ public class UserLog implements Serializable {
         return owner;
     }
 
-    public List<Order> getOrders() {
+    public Map<String, Order> getOrders() {
         return orders;
     }
 
@@ -42,14 +44,19 @@ public class UserLog implements Serializable {
 
     // sets totalCaffeineLevel and totalMoneySpent
     private void calcTotals() {
-        for(Order o : orders) {
-            totalCaffeineLevel += o.getTotalCaffeine(true);
-            totalMoneySpent += o.getTotalCost(true);
+        for(Map.Entry<String, Order> entry : orders.entrySet()) {
+            totalCaffeineLevel += entry.getValue().getTotalCaffeine(true);
+            totalMoneySpent += entry.getValue().getTotalCost(true);
         }
     }
 
     public void addOrder(Order o) {
-        orders.add(o);
+        orders.put(o.getId(), o);
+        calcTotals();
+    }
+
+    public void removeOrder(String id) {
+        orders.remove(id);
         calcTotals();
     }
 }

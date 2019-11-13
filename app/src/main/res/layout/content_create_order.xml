@@ -56,6 +56,15 @@
         android:textAlignment="center"
         app:layout_constraintTop_toBottomOf="@id/textCaffeineToday"/>
 
+    <TextView
+        android:id="@+id/textError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textColor="@color/danger"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/textTotalCost"/>
+
     <ListView
         android:id="@+id/listItems"
         android:layout_width="match_parent"
@@ -63,7 +72,7 @@
         android:layout_marginTop="12dp"
         android:layout_marginBottom="8dp"
         android:divider="@null"
-        app:layout_constraintTop_toBottomOf="@id/textTotalCost"
+        app:layout_constraintTop_toBottomOf="@id/textError"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/btnSubmitOrder"/>

@@ -26,6 +26,7 @@
     <string name="customer">Customer</string>
     <string name="myshops">My Shops</string>
     <string name="myorders">My Orders</string>
+    <string name="logout">Log Out</string>
 
 
     <!-- ShopList activity -->
@@ -35,6 +36,7 @@
     <!-- Map activity -->
     <string name="title_activity_maps">Map</string>
     <string name="find_shops">Find Nearby Shops</string>
+    <string name="suresignout">Are you sure you want to log out?</string>
 
     <!-- Shop info activity -->
     <string name="title_activity_shop_info">ShopInfoActivity</string>
@@ -44,7 +46,8 @@
     <string name="notClaimedNoDrinks">This shop has not been claimed, so it does not have any drinks currently.</string>
     <string name="coffee">Coffee</string>
     <string name="tea">Tea</string>
-    <string name="milligrams"> mg</string>
+    <string name="milligrams">%1$d mg</string>
+    <string name="dollars">$%1$.2f</string>
     <string name="addDrink">Add Drink</string>
     <string name="noDrinks">This shop does not have any drinks listed</string>
     <string name="logOrder">Log Order</string>
@@ -94,9 +97,15 @@
     <string name="totalCost">Total Cost: %1$.2f</string>
     <string name="overCaffeineLevel">This order would put your caffeine level above the recommended 400mg.</string>
     <string name="proceed">Proceed</string>
+    <string name="emptyOrder">Your order appears to be empty</string>
 
     <!-- Log activity -->
     <string name="title_activity_log">LogActivity</string>
     <string name="viewOrders">View Orders</string>
+
+    <!-- View orders activity -->
     <string name="title_activity_view_orders">ViewOrdersActivity</string>
+    <string name="orderDeleted">Order Deleted</string>
+
+    <string name="action_settings">blah</string>
 </resources>

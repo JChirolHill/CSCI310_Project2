@@ -25,11 +25,19 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PatternItem;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.PolyUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
@@ -37,10 +45,15 @@ import projects.chirolhill.juliette.csci310_project2.model.MapShop;
 import projects.chirolhill.juliette.csci310_project2.model.Shop;
 import projects.chirolhill.juliette.csci310_project2.model.User;
 import projects.chirolhill.juliette.csci310_project2.model.YelpFetcher;
+import projects.chirolhill.juliette.csci310_project2.model.DirectionsFetcher;
+import projects.chirolhill.juliette.csci310_project2.model.DirectionsResponse;
+import projects.chirolhill.juliette.csci310_project2.model.DirectionsRoute;
 
-public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLocationButtonClickListener,
+public class MapsActivity extends FragmentActivity implements
+        GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
         GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnInfoWindowClickListener,
         OnMapReadyCallback {
     private final String TAG = MapsActivity.class.getSimpleName();
 
@@ -51,8 +64,10 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     private Location myLocation;
     private GoogleMap mMap;
     private YelpFetcher yelpFetcher;
+    private DirectionsFetcher directionsFetcher;
     private LatLng currLatLng;
-    private Map<String, BasicShop> shopListing;
+    private Map<Marker, BasicShop> shopListing;
+    private ArrayList<Polyline> polylines;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +78,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         yelpFetcher = new YelpFetcher(getApplicationContext(), this);
+        directionsFetcher = new DirectionsFetcher(getApplicationContext(), this);
 
         imgProfile = findViewById(R.id.imgProfile);
 
@@ -74,6 +90,8 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                 startActivity(i);
             }
         });
+
+        // PLEASE DON'T DELETE FOR NOW :)
 //        btnFindShops = findViewById(R.id.btnFindShops);
 //
 //        btnFindShops.setOnClickListener(new View.OnClickListener() {
@@ -88,8 +106,28 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        polylines = new ArrayList<Polyline>();
     }
 
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setMessage(getResources().getString(R.string.suresignout));
+        alertDialogBuilder.setCancelable(true);
+
+        // want to log out, redirect to signin page
+        alertDialogBuilder.setPositiveButton(getResources().getString(R.string.logout), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent i = new Intent(getApplicationContext(), SignInActivity.class);
+                startActivity(i);
+            }
+        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
 
     /**
      * Manipulates the map once available.
@@ -145,8 +183,18 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
             mMap.addMarker(marker);
 
             // get coffeeshop data from volley
-            Log.d(TAG, "fetching from yelp first time");
             yelpFetcher.fetch(myLocation.getLatitude(), myLocation.getLongitude());
+
+            // needed for OnInfoWindowClickListener() to work
+            mMap.setOnInfoWindowClickListener(this);
+
+            // to remove leftover polylines between clicks
+            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    for (Polyline p : polylines) p.remove();
+                }
+            });
         }
     }
 
@@ -162,10 +210,15 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
     }
 
     @Override
-    public boolean onMarkerClick(Marker marker) {
-        if (marker.getPosition().latitude != currLatLng.latitude
+    public boolean onMarkerClick (final Marker marker) {
+        // remove old polylines
+        for (Polyline p : polylines) p.remove();
+
+        // needed to allow inner-class button listeners to access marker
+        final Marker passableMarker = marker;
+
+        if(marker.getPosition().latitude != currLatLng.latitude
                 && marker.getPosition().longitude != currLatLng.longitude) {
-            final String selectedShopName = marker.getTitle();
 
             SharedPreferences prefs = this.getSharedPreferences("Settings", Context.MODE_PRIVATE);
             boolean isMerchant = prefs.getBoolean(User.PREF_IS_MERCHANT, true);
@@ -176,7 +229,7 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                             @Override
                             public void onClick(View v) {
                                 // get the clicked shop
-                                BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
+                                BasicShop selectedShop = new BasicShop(shopListing.get(marker));
 
                                 // launch intent to claim the shop
                                 Intent i = new Intent(getApplicationContext(), ClaimShopActivity.class);
@@ -184,25 +237,27 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
                                 startActivity(i);
                             }
                         }).show();
-            } else { // customer: show option to view drinks
+            }
+            else { // customer: show option to view drinks
                 AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle(marker.getTitle());
                 // Add the buttons
                 builder.setNeutralButton("Driving Directions", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
+                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
                         // launch intent to view driving directions to shop here
-
+                        calculateDirections(passableMarker, "driving");
                     }
                 });
                 builder.setNegativeButton("Walking Directions", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
+                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
                         // launch intent to view walking directions to shop here
+                        calculateDirections(passableMarker, "walking");
                     }
                 });
                 builder.setPositiveButton("View Drinks", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        BasicShop selectedShop = new BasicShop(shopListing.get(selectedShopName));
+                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
 
                         // launch intent to view shop details here
                         Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
@@ -222,16 +277,80 @@ public class MapsActivity extends FragmentActivity implements GoogleMap.OnMyLoca
         return false; // moves camera to the selected marker
     }
 
+    /**
+     * Allows a click of a given marker's info window to trigger a directions query.
+     * @param marker
+     *
+     * POTENTIALLY REMOVE BECAUSE WE MIGHT SWITCH TO CLICKING WITHIN A DRAWER
+     */
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        // remove old polylines
+        for (Polyline p : polylines) p.remove();
+
+//        calculateDirections(marker, "driving");
+    }
+
+    /**
+     * Calculates directions from current location to specified marker.
+     * Currently only providing one route (the fastest).
+     */
+    public void calculateDirections(Marker marker, String mode) {
+        // DEBUG
+        Log.d(TAG, "calculateDirections: calculating directions.");
+
+        // to trigger polyline drawing
+        directionsFetcher.setCallback(new DirectionsFetcher.Callback() {
+            @Override
+            public void directionsCallback(Object o) {
+                DirectionsResponse response = (DirectionsResponse) o;
+                drawPolyline(response);
+            }
+        });
+
+        // trigger the HTTP GET request
+        directionsFetcher.fetch(currLatLng.latitude, currLatLng.longitude,
+                marker.getPosition().latitude, marker.getPosition().longitude, mode);
+    }
+
+    /**
+     * Uses supplied route data to draw the appropriate polyline.
+     * Currently non-clickable, single line.
+     */
+    public void drawPolyline(DirectionsResponse response) {
+        ArrayList<DirectionsRoute> routes = response.getRoutes();
+        for (int i = 0; i < routes.size(); i++) { // testing on only ONE route/polyline for now
+            List<LatLng> latlngs = PolyUtil.decode(routes.get(i).getEncodedPolyline());
+
+            if (response.getMode().equals("driving")) { // driving line
+                Polyline polyline = mMap.addPolyline(new PolylineOptions()
+                        .clickable(true)
+                        .addAll(latlngs));
+                this.polylines.add(polyline);
+            } else { // walking line
+                Polyline polyline = mMap.addPolyline(new PolylineOptions()
+                        .clickable(true)
+                        .addAll(latlngs)
+                        .pattern(Arrays.asList((PatternItem) new Dot())));
+                this.polylines.add(polyline);
+            }
+        }
+
+        // TODO: display the route's ETA in an info window besides the polyline
+    }
+
     public void drawUpdatedList() {
         // add markers for all coffeeshops
         for (MapShop ms : yelpFetcher.getShops()) {
             String snippet = "Rating: " + Double.toString(ms.getRating());
-            shopListing.put(ms.getName(), ms);
-            mMap.addMarker(new MarkerOptions()
+            Marker marker = mMap.addMarker(new MarkerOptions()
                     .position(new LatLng(ms.getLocation().latitude, ms.getLocation().longitude))
                     .title(ms.getName())
                     .snippet(snippet)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
+            // store the marker linked with the map shop
+            shopListing.put(marker, ms);
         }
     }
 }
