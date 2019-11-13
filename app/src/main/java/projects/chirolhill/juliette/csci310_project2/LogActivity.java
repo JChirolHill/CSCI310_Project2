@@ -139,7 +139,6 @@ public class LogActivity extends AppCompatActivity {
                         public void dbCallback(Object o) {
                             orders.add((Order)o);
 
-                            // TODO: check if this is final order, if so, trigger extract functions
                             if (orders.size() == log.getOrders().size()) {
                                 // TODO: store the series' as private vars and combine all extraction logic
                                 //       into one method
@@ -156,8 +155,8 @@ public class LogActivity extends AppCompatActivity {
                                 // setup charts and order list
                                 // NOTE: the charts are still generated, despite commenting! something
                                 //       is prematurely generating the charts before these calls are even made
-                                // onCreateCaffeineBarChart(caffeineSeries);
-                                // onCreateMoneyXYPlot(expenditureSeries);
+                                 onCreateCaffeineBarChart(caffeineSeries);
+                                 onCreateMoneyXYPlot(expenditureSeries);
                             }
                         }
                     });
@@ -301,6 +300,10 @@ public class LogActivity extends AppCompatActivity {
      * Setup code for the caffeine chart (formatting, incorporating data)
      */
     private void onCreateCaffeineBarChart(DateIntegerSeries caffeineSeries) {
+        // refreshes the chart (it will be loaded with default vals at this point)
+        caffeineBarChart.clear();
+        caffeineBarChart.redraw();
+
         // formatting: set y-axis increments from 0 to 1000 in increments of 200, and add extra
         // vals at beg/end to create a margin for the bars
         caffeineBarChart.setRangeBoundaries(new Integer(0), new Integer(1000), BoundaryMode.FIXED);
@@ -377,6 +380,10 @@ public class LogActivity extends AppCompatActivity {
      * Setup code for the money chart (formatting, incorporating data)
      */
     private void onCreateMoneyXYPlot(DateDoubleSeries expenditureSeries) {
+        // refreshes the chart (it will be loaded with default vals at this point)
+        moneyXYPlot.clear();
+        moneyXYPlot.redraw();
+
         // formatting: add extra vals at beg/end (7 days +1 on each end = 9) to create a margin for the bars
         moneyXYPlot.setRangeStep(StepMode.INCREMENT_BY_VAL, 5.0);
         moneyXYPlot.setDomainStep(StepMode.SUBDIVIDE, 9);
