@@ -12,17 +12,18 @@ import java.util.ArrayList;
 public class DateDoubleSeries implements XYSeries {
 
     protected ArrayList<Long> xSeries; // dates, stored as unsigned longs
-    protected ArrayList<Number> ySeries;
+    protected ArrayList<Double> ySeries;
     private String title;
+    private Double maxYValue;
 
     // TODO: some sort of data "default" logic for when we have incomplete weeks of data for a user
     public DateDoubleSeries(String title) {
         this.title = title;
         this.xSeries = new ArrayList<Long>();
-        this.ySeries = new ArrayList<Number>();
+        this.ySeries = new ArrayList<Double>();
     }
 
-    public void add(Long date, Number value) {
+    public void add(Long date, Double value) {
         this.xSeries.add(date);
         this.ySeries.add(value);
     }
@@ -44,4 +45,15 @@ public class DateDoubleSeries implements XYSeries {
         else return this.xSeries.size();
     }
 
+    // useful for determining how high to set the max Y value on the graph
+    public double getmaxYValue() {
+        if (maxYValue == null) {
+            double tempMax = 0;
+            for (int i = 0; i < ySeries.size(); i++) {
+                if (ySeries.get(i) > tempMax) tempMax = ySeries.get(i);
+            }
+            this.maxYValue = tempMax;
+        }
+        return this.maxYValue;
+    }
 }
