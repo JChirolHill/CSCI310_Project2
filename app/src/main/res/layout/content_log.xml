@@ -8,100 +8,100 @@
     tools:context=".LogActivity"
     tools:showIn="@layout/activity_log">
 
-<android.support.v4.widget.NestedScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:layout_constraintBottom_toBottomOf="parent">
-
-    <android.support.constraint.ConstraintLayout
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <!-- LOG Title -->
-        <TextView
-            android:id="@+id/textLogTitle"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/viewLogTitle"
-            android:textAlignment="center"
-            android:textSize="30sp"
-            android:textFontWeight="700"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:layout_height="match_parent">
 
-        <!-- Caffeine Level Graph -->
-        <com.androidplot.xy.XYPlot
-            android:id="@+id/caffeineBarChart"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="15dp"
+            <!-- LOG Title -->
+            <TextView
+                android:id="@+id/textLogTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/viewLogTitle"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                android:textFontWeight="700"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-            style="@style/APDefacto.Light"
-            app:paddingTop="8dp"
-            app:graphAnchor="center"
-            app:graphHorizontalPositioning="absolute_from_center"
-            app:graphHorizontalPosition="8dp"
-            app:graphVerticalPositioning="absolute_from_center"
-            app:graphVerticalPosition="2dp"
-            app:layout_constraintTop_toBottomOf="@id/textLogTitle"
+            <!-- Caffeine Level Graph -->
+            <com.androidplot.xy.XYPlot
+                android:id="@+id/caffeineBarChart"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="15dp"
 
-            app:graphHeightMode="absolute"
-            app:graphHeight="250dp"
-            app:graphWidthMode="fill"
-            app:graphWidth="40dp"
+                style="@style/APDefacto.Light"
+                app:paddingTop="8dp"
+                app:graphAnchor="center"
+                app:graphHorizontalPositioning="absolute_from_center"
+                app:graphHorizontalPosition="8dp"
+                app:graphVerticalPositioning="absolute_from_center"
+                app:graphVerticalPosition="2dp"
+                app:layout_constraintTop_toBottomOf="@id/textLogTitle"
 
-            app:domainTitle="Date"
-            app:lineLabelRotationBottom="-45"
-            app:lineLabels="left|bottom"
-            app:rangeTitle="Daily Caffeine Level (mg)"
-            app:title="Caffeine Levels" />
+                app:graphHeightMode="absolute"
+                app:graphHeight="250dp"
+                app:graphWidthMode="fill"
+                app:graphWidth="40dp"
 
-        <!-- Weekly Expenditure Graph -->
-        <com.androidplot.xy.XYPlot
-            android:id="@+id/moneyXYPlot"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="15dp"
+                app:domainTitle="Date"
+                app:lineLabelRotationBottom="-45"
+                app:lineLabels="left|bottom"
+                app:rangeTitle="Daily Caffeine Level (mg)"
+                app:title="Caffeine Levels" />
 
-            style="@style/APDefacto.Light"
-            app:paddingTop="8dp"
-            app:graphAnchor="center"
-            app:graphHorizontalPositioning="absolute_from_center"
-            app:graphHorizontalPosition="8dp"
-            app:graphVerticalPositioning="absolute_from_center"
-            app:graphVerticalPosition="2dp"
-            app:layout_constraintTop_toBottomOf="@id/caffeineBarChart"
+            <!-- Weekly Expenditure Graph -->
+            <com.androidplot.xy.XYPlot
+                android:id="@+id/moneyXYPlot"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="15dp"
 
-            app:graphHeightMode="absolute"
-            app:graphHeight="250dp"
-            app:graphWidthMode="fill"
-            app:graphWidth="40dp"
+                style="@style/APDefacto.Light"
+                app:paddingTop="8dp"
+                app:graphAnchor="center"
+                app:graphHorizontalPositioning="absolute_from_center"
+                app:graphHorizontalPosition="8dp"
+                app:graphVerticalPositioning="absolute_from_center"
+                app:graphVerticalPosition="2dp"
+                app:layout_constraintTop_toBottomOf="@id/caffeineBarChart"
 
-            app:domainTitle="Date"
-            app:lineLabelRotationBottom="-45"
-            app:lineLabels="left|bottom"
-            app:rangeTitle="Money Spent (dollars)"
-            app:title="Weekly Expenditures" />
+                app:graphHeightMode="absolute"
+                app:graphHeight="250dp"
+                app:graphWidthMode="fill"
+                app:graphWidth="40dp"
 
-        <!-- "View Order" Button -->
-        <Button
-            android:id="@+id/btnViewOrders"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_background"
-            android:layout_margin="8dp"
-            android:text="@string/viewOrders"
-            android:padding="4dp"
-            android:textColor="@color/colorBackground"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+                app:domainTitle="Date"
+                app:lineLabelRotationBottom="-45"
+                app:lineLabels="left|bottom"
+                app:rangeTitle="Money Spent (dollars)"
+                app:title="Weekly Expenditures" />
 
-    </android.support.constraint.ConstraintLayout>
+            <!-- "View Order" Button -->
+            <Button
+                android:id="@+id/btnViewOrders"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_background"
+                android:layout_margin="8dp"
+                android:text="@string/viewOrders"
+                android:padding="4dp"
+                android:textColor="@color/colorBackground"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+        </android.support.constraint.ConstraintLayout>
 
     </android.support.v4.widget.NestedScrollView>
 

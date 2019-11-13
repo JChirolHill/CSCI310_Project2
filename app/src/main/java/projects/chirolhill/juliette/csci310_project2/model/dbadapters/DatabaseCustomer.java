@@ -2,6 +2,7 @@ package projects.chirolhill.juliette.csci310_project2.model.dbadapters;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
 import projects.chirolhill.juliette.csci310_project2.model.Customer;
@@ -28,8 +29,8 @@ public class DatabaseCustomer implements DatabaseAdapter {
 //        this.logID = u.getLog().getId();
 //        }
         orders = new ArrayList<>();
-        for(Order o : u.getLog().getOrders()) {
-            orders.add(o.getId());
+        for(Map.Entry<String, Order> entry : u.getLog().getOrders().entrySet()) {
+            orders.add(entry.getKey());
         }
     }
 

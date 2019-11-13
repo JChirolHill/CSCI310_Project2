@@ -9,7 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.androidplot.util.PixelUtils;
 import com.androidplot.xy.BarFormatter;
@@ -22,6 +28,8 @@ import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 
+import java.lang.reflect.Array;
+import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
@@ -29,11 +37,13 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
+import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.Customer;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
@@ -96,6 +106,12 @@ public class LogActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
+        startActivity(i);
+    }
+
     /**
      * This method populates the List<Order> orders stored with this class.
      * A callback is triggered to extract the current user, from which a series
@@ -109,7 +125,7 @@ public class LogActivity extends AppCompatActivity {
                 Customer tempCustomer = (Customer)o;
                 log = tempCustomer.getLog();
                 final Stack<Order> ordersStack = new Stack<Order>();
-                ordersStack.addAll(log.getOrders());
+                ordersStack.addAll(log.getOrders().values());
 
                 //TODO: extract final order id from here (via log.orders.getOrders()
                 // get all orders from database

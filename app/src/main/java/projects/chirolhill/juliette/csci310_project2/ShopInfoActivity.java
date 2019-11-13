@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
@@ -35,13 +36,12 @@ public class ShopInfoActivity extends AppCompatActivity {
 
     private TextView textShopName;
     private ImageView imageShop;
-    private TextView textRating;
+    private RatingBar ratingBar;
     private TextView textPrice;
     private TextView textItems;
     private TextView textAddress;
     private ListView listDrinks;
     private Button btnAddDrink;
-    private Button btnLogOrder;
 
     private BasicShop currShop;
     private boolean showStats;
@@ -59,13 +59,12 @@ public class ShopInfoActivity extends AppCompatActivity {
 
         textShopName = findViewById(R.id.textShopName);
         imageShop = findViewById(R.id.imageShop);
-        textRating = findViewById(R.id.textRating);
+        ratingBar = findViewById(R.id.ratingBar);
         textPrice = findViewById(R.id.textPrice);
         textItems = findViewById(R.id.textItems);
         textAddress = findViewById(R.id.textAddress);
         listDrinks = findViewById(R.id.list);
         btnAddDrink = findViewById(R.id.btnAddDrink);
-        btnLogOrder = findViewById(R.id.btnLogOrder);
 
         drinks = new ArrayList<>();
 
@@ -90,7 +89,7 @@ public class ShopInfoActivity extends AppCompatActivity {
 
         // load content onto layout
         textShopName.setText(currShop.getName());
-        textRating.setText(Double.toString(currShop.getRating()));
+        ratingBar.setRating((float)currShop.getRating());
         textPrice.setText(currShop.getPriceRange());
         textAddress.setText(currShop.getAddress());
         Picasso.get().load(currShop.getImgURL()).into(imageShop);
@@ -113,20 +112,6 @@ public class ShopInfoActivity extends AppCompatActivity {
             }
         });
 
-        btnLogOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Shop shop = new Shop(((Shop)currShop).getOwnerID(), currShop);
-                for(Drink d : drinks) {
-                    shop.addDrink(d);
-                }
-
-                Intent i = new Intent(getApplicationContext(), CreateOrderActivity.class);
-                i.putExtra(Shop.PREF_SHOP, shop);
-                startActivity(i);
-            }
-        });
-
         listDrinks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -140,7 +125,15 @@ public class ShopInfoActivity extends AppCompatActivity {
                     startActivityForResult(i, REQUEST_CODE_ADD_DRINK);
                 }
                 else { // log an order
-                    // TODO log order if click on item, can then remove the log order button that is kind of in the way
+                    Shop shop = new Shop(((Shop)currShop).getOwnerID(), currShop);
+                    for(Drink d : drinks) {
+                        shop.addDrink(d);
+                    }
+
+                    Intent i = new Intent(getApplicationContext(), CreateOrderActivity.class);
+                    i.putExtra(Shop.PREF_SHOP, shop);
+                    i.putExtra(Drink.EXTRA_DRINK, drinks.get(position));
+                    startActivity(i);
                 }
             }
         });
@@ -207,9 +200,6 @@ public class ShopInfoActivity extends AppCompatActivity {
                             textItems.setText(getResources().getString(R.string.noDrinks));
                         }
                         else { // display all drinks
-                            if(!isMerchant) {
-                                btnLogOrder.setVisibility(View.VISIBLE);
-                            }
                             textItems.setText(getResources().getString(R.string.itemsListed));
                             textItems.setTextSize(getResources().getDimension(R.dimen.textsize));
                             for(Drink d : ((Shop) currShop).getDrinks()) {
@@ -245,8 +235,8 @@ public class ShopInfoActivity extends AppCompatActivity {
             // copy/map the data from the current item (model) to the curr row (view)
             textName.setText(d.getName());
             textType.setText(d.isCoffee() ? getResources().getString(R.string.coffee) : getResources().getString(R.string.tea));
-            textCaffeine.setText(d.getCaffeine() + " " + getResources().getString(R.string.milligrams));
-            textPrice.setText("$" + Float.toString(d.getPrice()));
+            textCaffeine.setText(getResources().getString(R.string.milligrams, d.getCaffeine()));
+            textPrice.setText(getResources().getString(R.string.dollars, d.getPrice()));
 //            Picasso.get().load(s.getImgURL()).into(image);
 
             return convertView;

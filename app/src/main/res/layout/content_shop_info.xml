@@ -32,11 +32,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <TextView
-        android:id="@+id/textRating"
+    <RatingBar
+        android:id="@+id/ratingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/rating"
+        android:layout_marginTop="2dp"
+        style="?android:attr/ratingBarStyleSmall"
+        android:numStars="5"
+        android:isIndicator="true"
         app:layout_constraintTop_toBottomOf="@id/imageShop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/textPrice"/>
@@ -46,7 +49,7 @@
         android:layout_height="wrap_content"
         android:text="@string/price"
         app:layout_constraintTop_toBottomOf="@id/imageShop"
-        app:layout_constraintStart_toEndOf="@id/textRating"
+        app:layout_constraintStart_toEndOf="@id/ratingBar"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
@@ -78,22 +81,9 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="24dp"
         android:divider="@null"
-        app:layout_constraintTop_toBottomOf="@id/btnLogOrder"
+        app:layout_constraintTop_toBottomOf="@id/textItems"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <Button
-        android:id="@+id/btnLogOrder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="@string/logOrder"
-        android:textColor="#fff"
-        android:visibility="gone"
-        android:background="@drawable/button_background"
-        app:layout_constraintTop_toBottomOf="@id/textItems"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
