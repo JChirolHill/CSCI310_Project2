@@ -69,7 +69,7 @@
     <!-- Order activity -->
     <string name="title_activity_order">OrderActivity</string>
     <string name="title_activity_order_confirmation">Order Confirmation</string>
-    <string name="viewOrder">View Order</string>
+    <string name="viewOrder">Order Listing</string>
     <string name="editOrder">Edit Order</string>
     <string name="totalMoneySpent">Total Cost:</string>
     <string name="itemsOrdered">Items Ordered:</string>

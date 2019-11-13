@@ -237,11 +237,14 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         textOrderTitle.setText(getResources().getString(R.string.editOrder));
         btnOk.setText(getResources().getString(R.string.save));
 
-        totalMoneySpent.setVisibility(View.GONE);
-        textCaffeineLevel.setVisibility(View.GONE);
+
+        //this part is temporarily removed since user aren't supposed to change these fields by now
+        //totalMoneySpent.setVisibility(View.GONE);
+        //textCaffeineLevel.setVisibility(View.GONE);
+        //editTotalMoneySpent.setVisibility(View.VISIBLE);
+        //editCaffeineLevel.setVisibility(View.VISIBLE);
+
         textDate.setVisibility(View.GONE);
-        editTotalMoneySpent.setVisibility(View.VISIBLE);
-        editCaffeineLevel.setVisibility(View.VISIBLE);
         editDate.setVisibility(View.VISIBLE);
         btnEdit.setVisibility(View.GONE);
     }
