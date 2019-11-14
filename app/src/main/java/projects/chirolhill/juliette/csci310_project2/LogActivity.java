@@ -35,6 +35,7 @@ import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -70,6 +71,7 @@ public class LogActivity extends AppCompatActivity {
     private LineAndPointRenderer moneyXYPlotRenderer;
 
     private SimpleDateFormat formatter = new SimpleDateFormat("MM/dd");
+    private final LocalDate ONE_WEEK_AGO = LocalDate.now().minusDays(7);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,8 +172,6 @@ public class LogActivity extends AppCompatActivity {
      * @return
      */
     private DateIntegerSeries extractCaffeineData(List<Order> orders) {
-        LocalDate ONE_WEEK_AGO = LocalDate.now().minusDays(7);
-
         ArrayList<LocalDate> orderedListOfMapDays = new ArrayList<LocalDate>();
 
         HashMap<LocalDate, Integer> dateToCaffeineMap = new HashMap<LocalDate, Integer>();
@@ -222,8 +222,6 @@ public class LogActivity extends AppCompatActivity {
      * Pulls out an androidplot-ready XYSeries for the expenditure line plot.
      */
     private DateDoubleSeries extractExpenditureData(List<Order> orders) {
-        LocalDate ONE_WEEK_AGO = LocalDate.now().minusDays(7);
-
         ArrayList<LocalDate> orderedListOfMapDays = new ArrayList<LocalDate>();
 
         HashMap<LocalDate, Double> dateToExpenditureMap = new HashMap<LocalDate, Double>();
@@ -301,21 +299,8 @@ public class LogActivity extends AppCompatActivity {
         caffineBarChartRenderer.setBarGroupWidth(BarRenderer.BarGroupWidthMode.FIXED_WIDTH, PixelUtils.dpToPix(25));
         caffineBarChartRenderer.setBarOrientation(BarRenderer.BarOrientation.STACKED);
 
-        // TODO: define this as a real class since the other graph also uses it
         // X-AXIS = date values, formatted as "10/27"
-        caffeineBarChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new Format() {
-            @Override
-            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-                long value = ((Number) obj).longValue();
-                // TODO: detect edge values and render them empty
-                return new StringBuffer(formatter.format(new Date(value)) + " ");
-            }
-
-            @Override
-            public Number parseObject(String string, ParsePosition position) {
-                throw new UnsupportedOperationException("Not yet implemented.");
-            }
-        });
+        caffeineBarChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new xAxisDateFormat());
 
         // Y-AXIS = caffeine values, formatted as "800"
         caffeineBarChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new Format() {
@@ -379,18 +364,7 @@ public class LogActivity extends AppCompatActivity {
         moneyXYPlotRenderer = moneyXYPlot.getRenderer(LineAndPointRenderer.class);
 
         // X-AXIS = date values, formatted as "10/27"
-        moneyXYPlot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new Format() {
-            @Override
-            public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-                long value = ((Number) obj).longValue();
-                return new StringBuffer(formatter.format(new Date(value)) + " ");
-            }
-
-            @Override
-            public Number parseObject(String string, ParsePosition position) {
-                throw new UnsupportedOperationException("Not yet implemented.");
-            }
-        });
+        moneyXYPlot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new xAxisDateFormat());
 
         // Y-AXIS = dollar values, formatted as "$50"
         moneyXYPlot.getGraph().getLineLabelStyle(XYGraphWidget.Edge.LEFT).setFormat(new Format() {
@@ -407,6 +381,30 @@ public class LogActivity extends AppCompatActivity {
                 throw new UnsupportedOperationException("Not yet implemented.");
             }
         });
+    }
+
+    /**
+     * A formatter class to cleanly represent dates on the graph X-axis.
+     * Turns long value milliseconds into a MM/DD.
+     */
+    class xAxisDateFormat extends Format {
+        @Override
+        public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
+            long value = ((Number) obj).longValue();
+
+            // ignore the edge dates, those were added just to create margins on the left and right
+            // TODO figure out if this is actually necessary
+            LocalDate valueDate = Instant.ofEpochMilli(value).atZone(ZoneId.systemDefault()).toLocalDate();
+            if (valueDate.isBefore(ONE_WEEK_AGO) ||
+                    valueDate.isAfter(ONE_WEEK_AGO.plusDays(7))) return new StringBuffer();
+
+            return new StringBuffer(formatter.format(new Date(value)) + " ");
+        }
+
+        @Override
+        public Number parseObject(String string, ParsePosition position) {
+            throw new UnsupportedOperationException("Not yet implemented.");
+        }
     }
 
 }
