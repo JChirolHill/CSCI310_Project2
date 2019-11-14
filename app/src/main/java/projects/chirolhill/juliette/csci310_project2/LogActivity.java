@@ -27,6 +27,7 @@ import com.androidplot.xy.LineAndPointRenderer;
 import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
+import com.androidplot.xy.YValueMarker;
 
 import java.lang.reflect.Array;
 import java.text.DateFormat;
@@ -165,6 +166,7 @@ public class LogActivity extends AppCompatActivity {
     /**
      * TODO: refactor, shares code with extractExpenditureData
      * Pulls out an androidplot-ready XYSeries for the caffeine bar chart.
+     * Gets one week of data, plus current day = 8 days of data.
      * @return
      */
     private DateIntegerSeries extractCaffeineData(List<Order> orders) {
@@ -173,7 +175,7 @@ public class LogActivity extends AppCompatActivity {
         ArrayList<LocalDate> orderedListOfMapDays = new ArrayList<LocalDate>();
 
         HashMap<LocalDate, Integer> dateToCaffeineMap = new HashMap<LocalDate, Integer>();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 8; i++) {
             LocalDate date = ONE_WEEK_AGO.plusDays(i);
             dateToCaffeineMap.put(date, 0);
             orderedListOfMapDays.add(date);
@@ -189,7 +191,11 @@ public class LogActivity extends AppCompatActivity {
             Log.d(TAG, "ORDER ON DAY: " + tempDate);
 
             if (ONE_WEEK_AGO.isBefore(tempDate) || ONE_WEEK_AGO.isEqual(tempDate)) {
-                dateToCaffeineMap.put(tempDate, dateToCaffeineMap.get(tempDate) + order.getTotalCaffeine(false));
+                // attempt to calculate a caffeine value, either by refreshing or static; otherwise, assume 0
+                int orderCaffeineLevel = 0;
+                orderCaffeineLevel += (order.getTotalCaffeine(true) > 0 ? order.getTotalCaffeine(true) :
+                        order.getTotalCaffeine(false) > 0 ? order.getTotalCaffeine(false) : 0);
+                dateToCaffeineMap.put(tempDate, dateToCaffeineMap.get(tempDate) + orderCaffeineLevel);
             }
         }
 
@@ -206,7 +212,7 @@ public class LogActivity extends AppCompatActivity {
             caffeineSeries.add(date, caffeine);
         }
         // for formatting, add an empty value to BACK of series
-        caffeineSeries.add(Date.from(ONE_WEEK_AGO.plusDays(7).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0);
+        caffeineSeries.add(Date.from(ONE_WEEK_AGO.plusDays(8).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0);
 
         return caffeineSeries;
     }
@@ -218,28 +224,10 @@ public class LogActivity extends AppCompatActivity {
     private DateDoubleSeries extractExpenditureData(List<Order> orders) {
         LocalDate ONE_WEEK_AGO = LocalDate.now().minusDays(7);
 
-        /*
-        // testing data
-        ArrayList<Long> domainLabels = new ArrayList<Long>();
-        for (int i = 0; i < 7; i++) {
-            Long date = Date.from(ONE_WEEK_AGO.plusDays(i).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime();
-            domainLabels.add(date);
-        }
-        Double[] expenditures = {10.25, 25.25, 0.0, 4.50, 1.50, 10.50, 30.0};
-        orders = new ArrayList<Order>();
-        for (int i = 0; i < domainLabels.size(); i++) {
-            Order newOrder = new Order("Order# " + i);
-            newOrder.setDate(new Date(domainLabels.get(i)));
-            newOrder.setTotalCost(expenditures[i]);
-            orders.add(newOrder);
-        }
-
-         */
-
         ArrayList<LocalDate> orderedListOfMapDays = new ArrayList<LocalDate>();
 
         HashMap<LocalDate, Double> dateToExpenditureMap = new HashMap<LocalDate, Double>();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < 8; i++) {
             LocalDate date = ONE_WEEK_AGO.plusDays(i);
             dateToExpenditureMap.put(date, 0.0);
             orderedListOfMapDays.add(date);
@@ -272,7 +260,7 @@ public class LogActivity extends AppCompatActivity {
             expenditureSeries.add(date, dailyExpenditure);
         }
         // for formatting, add an empty value to BACK of series
-        expenditureSeries.add(Date.from(ONE_WEEK_AGO.plusDays(7).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0.0);
+        expenditureSeries.add(Date.from(ONE_WEEK_AGO.plusDays(8).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0.0);
 
         return expenditureSeries;
     }
@@ -286,11 +274,19 @@ public class LogActivity extends AppCompatActivity {
         caffeineBarChart.clear();
         caffeineBarChart.redraw();
 
-        // formatting: set y-axis increments from 0 to 1000 in increments of 200, and add extra
-        // vals at beg/end to create a margin for the bars
-        caffeineBarChart.setRangeBoundaries(new Integer(0), new Integer(1000), BoundaryMode.FIXED);
-        caffeineBarChart.setRangeStep(StepMode.INCREMENT_BY_VAL, 200);
-        caffeineBarChart.setDomainStep(StepMode.SUBDIVIDE, 9);
+        // default graph: supports y from 0 to 1000 in increments of 200, but this can be
+        // overridden by very large values, in which case it's MAX_VALUE rounded to next
+        // increment of 200, in increments of MAX_VALUE / 5
+        int maxRange = 1000;
+        if (caffeineSeries.getmaxYValue() > 1000) {
+            if (caffeineSeries.getmaxYValue() % 200 != 0) maxRange = caffeineSeries.getmaxYValue() + (200 - (caffeineSeries.getmaxYValue() % 200));
+            else maxRange = caffeineSeries.getmaxYValue();
+        }
+
+        caffeineBarChart.setRangeBoundaries(0, maxRange, BoundaryMode.FIXED);
+        caffeineBarChart.setRangeStep(StepMode.SUBDIVIDE, 5);
+        caffeineBarChart.addMarker(new YValueMarker(400, null)); // red line for 400 mg
+        caffeineBarChart.setDomainStep(StepMode.SUBDIVIDE, 10);
 
         // had to hard code the colors because they're apparently translated into ints in the backend,
         // but the ints DON'T properly translate back into the original hex string ...
@@ -346,11 +342,19 @@ public class LogActivity extends AppCompatActivity {
         moneyXYPlot.clear();
         moneyXYPlot.redraw();
 
+        // default graph: supports y from $0.00 to $20.00 in increments of $2.50, but this can be
+        // overridden by very large values, in which case it's MAX_VALUE rounded to next
+        // increment of $2.50, in increments of MAX_VALUE / 8
+        double maxRange = 20;
+        if (expenditureSeries.getmaxYValue() > 20) {
+            if (expenditureSeries.getmaxYValue() % 5 != 0) maxRange = expenditureSeries.getmaxYValue() + (5 - (expenditureSeries.getmaxYValue() % 5));
+            else maxRange = expenditureSeries.getmaxYValue();
+        }
+
         // formatting: add extra vals at beg/end (7 days +1 on each end = 9) to create a margin for the bars
-        moneyXYPlot.setRangeStep(StepMode.INCREMENT_BY_VAL, 2.5);
-        Double maxYValue = expenditureSeries.getmaxYValue();
-        moneyXYPlot.setRangeBoundaries(0, (maxYValue > 20 ? maxYValue.intValue() : 20), BoundaryMode.FIXED);
-        moneyXYPlot.setDomainStep(StepMode.SUBDIVIDE, 9);
+        moneyXYPlot.setRangeStep(StepMode.SUBDIVIDE, 8);
+        moneyXYPlot.setRangeBoundaries(0, maxRange, BoundaryMode.FIXED);
+        moneyXYPlot.setDomainStep(StepMode.SUBDIVIDE, 10);
 
         // format the lines (color, smoothing, removing fill)
         LineAndPointFormatter coffeeLineFormatter = new LineAndPointFormatter(Color.parseColor("#ac9782"),
@@ -369,7 +373,6 @@ public class LogActivity extends AppCompatActivity {
         */
 
         moneyXYPlot.addSeries(expenditureSeries, coffeeLineFormatter);
-        // moneyXYPlot.addSeries(coffeeSeries, coffeeLineFormatter);
         // moneyXYPlot.addSeries(teaSeries, teaLineFormatter);
 
         // initialize line and point renderer (must be done after set formatter and add series to the plot)
