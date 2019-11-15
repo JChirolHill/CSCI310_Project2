@@ -350,8 +350,6 @@ public class MapsActivity extends FragmentActivity implements
                     .snippet(routes.get(i).getDuration()));
             routeDetailsMarker.showInfoWindow();
         }
-
-        // TODO: display the route's ETA in an info window besides the polyline
     }
 
     public void drawUpdatedList() {
