@@ -65,8 +65,10 @@ public class LogActivity extends AppCompatActivity {
     private UserLog log;
     private List<Order> orders;
 
+    private DateIntegerSeries caffeineSeries;
     private XYPlot caffeineBarChart;
     private BarRenderer caffineBarChartRenderer;
+    private DateDoubleSeries expenditureSeries;
     private XYPlot moneyXYPlot;
     private LineAndPointRenderer moneyXYPlotRenderer;
 
@@ -130,7 +132,6 @@ public class LogActivity extends AppCompatActivity {
                 final Stack<Order> ordersStack = new Stack<Order>();
                 ordersStack.addAll(log.getOrders().values());
 
-                //TODO: extract final order id from here (via log.orders.getOrders()
                 // get all orders from database
                 while (ordersStack.size() > 0) {
                     Order order = ordersStack.pop();
@@ -140,13 +141,7 @@ public class LogActivity extends AppCompatActivity {
                             orders.add((Order)o);
 
                             if (orders.size() == log.getOrders().size()) {
-                                // TODO: store the series' as private vars and combine all extraction logic
-                                //       into one method
-                                // caffeineBarChart: extract dates and caffeine levels from orders
-                                DateIntegerSeries caffeineSeries = extractCaffeineData(orders);
-
-                                // moneyXYPlot: extract dates and money levels from orders
-                                DateDoubleSeries expenditureSeries = extractExpenditureData(orders);
+                                extractDataFromOrders(orders);
 
                                 // create charts and order list
                                 caffeineBarChart = findViewById(R.id.caffeineBarChart);
@@ -166,22 +161,24 @@ public class LogActivity extends AppCompatActivity {
     }
 
     /**
-     * TODO: refactor, shares code with extractExpenditureData
-     * Pulls out an androidplot-ready XYSeries for the caffeine bar chart.
-     * Gets one week of data, plus current day = 8 days of data.
-     * @return
+     * Pulls out the necessary data for the graphs from the list of orders:
+     * - caffeineSeries: total daily caffeine consumption for the past week, plus current day (TODO: separate by beverage)
+     * - expenditureSeries: total daily expenditures for the past week, plus current day
+     * @param orders
      */
-    private DateIntegerSeries extractCaffeineData(List<Order> orders) {
+    private void extractDataFromOrders(List<Order> orders) {
         ArrayList<LocalDate> orderedListOfMapDays = new ArrayList<LocalDate>();
 
         HashMap<LocalDate, Integer> dateToCaffeineMap = new HashMap<LocalDate, Integer>();
+        HashMap<LocalDate, Double> dateToExpenditureMap = new HashMap<LocalDate, Double>();
         for (int i = 0; i < 8; i++) {
             LocalDate date = ONE_WEEK_AGO.plusDays(i);
             dateToCaffeineMap.put(date, 0);
+            dateToExpenditureMap.put(date, 0.0);
             orderedListOfMapDays.add(date);
         }
 
-        // loop through orders, comparing their days and adding their caffeine values accordingly
+        // loop through orders, comparing their days and adding values accordingly
         for (Order order : orders) {
             // dates (in milliseconds) from orders are clocked to noon and converted to dates
             LocalDateTime tempDateResetTime = order.getDate().toInstant()
@@ -191,18 +188,27 @@ public class LogActivity extends AppCompatActivity {
             Log.d(TAG, "ORDER ON DAY: " + tempDate);
 
             if (ONE_WEEK_AGO.isBefore(tempDate) || ONE_WEEK_AGO.isEqual(tempDate)) {
+                // CAFFEINE
                 // attempt to calculate a caffeine value, either by refreshing or static; otherwise, assume 0
                 int orderCaffeineLevel = 0;
                 orderCaffeineLevel += (order.getTotalCaffeine(true) > 0 ? order.getTotalCaffeine(true) :
                         order.getTotalCaffeine(false) > 0 ? order.getTotalCaffeine(false) : 0);
                 dateToCaffeineMap.put(tempDate, dateToCaffeineMap.get(tempDate) + orderCaffeineLevel);
+
+                // EXPENDITURES
+                // attempt to calculate an expenditure value, either by refreshing or static; otherwise, assume 0
+                double dailyExpenditureLevel = 0.0;
+                dailyExpenditureLevel += (order.getTotalCost(true) > 0 ? order.getTotalCost(true) :
+                        order.getTotalCost(false) > 0 ? order.getTotalCost(false) : 0.0);
+                dateToExpenditureMap.put(tempDate, dateToExpenditureMap.get(tempDate) + dailyExpenditureLevel);
             }
         }
 
         // TODO create two series: coffee AND tea
         // TODO: move formatting adjustment to inside of onCreateCaffeineChart
+        // CAFFEINE SERIES
+        caffeineSeries = new DateIntegerSeries("Caffeine");
         // for formatting, add an empty value at FRONT of series
-        DateIntegerSeries caffeineSeries = new DateIntegerSeries("Caffeine");
         caffeineSeries.add(Date.from(ONE_WEEK_AGO.minusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0);
         for (int i = 0; i < orderedListOfMapDays.size(); i++) {
             LocalDate localDate = orderedListOfMapDays.get(i);
@@ -214,41 +220,10 @@ public class LogActivity extends AppCompatActivity {
         // for formatting, add an empty value to BACK of series
         caffeineSeries.add(Date.from(ONE_WEEK_AGO.plusDays(8).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0);
 
-        return caffeineSeries;
-    }
-
-    /**
-     * TODO: refactor, shares code with extractExpenditureData
-     * Pulls out an androidplot-ready XYSeries for the expenditure line plot.
-     */
-    private DateDoubleSeries extractExpenditureData(List<Order> orders) {
-        ArrayList<LocalDate> orderedListOfMapDays = new ArrayList<LocalDate>();
-
-        HashMap<LocalDate, Double> dateToExpenditureMap = new HashMap<LocalDate, Double>();
-        for (int i = 0; i < 8; i++) {
-            LocalDate date = ONE_WEEK_AGO.plusDays(i);
-            dateToExpenditureMap.put(date, 0.0);
-            orderedListOfMapDays.add(date);
-        }
-
-        // loop through orders, comparing their days and adding their expenditure values accordingly
-        for (Order order : orders) {
-            // dates (in milliseconds) from orders are clocked to noon and converted to dates
-            LocalDateTime tempDateResetTime = order.getDate().toInstant()
-                    .atZone(ZoneId.systemDefault())
-                    .toLocalDate().atStartOfDay();
-            LocalDate tempDate = tempDateResetTime.toLocalDate();
-            Log.d(TAG, "ORDER ON DAY: " + tempDate);
-
-            if (ONE_WEEK_AGO.isBefore(tempDate) || ONE_WEEK_AGO.isEqual(tempDate)) {
-                dateToExpenditureMap.put(tempDate, dateToExpenditureMap.get(tempDate) + order.getTotalCost(false));
-            }
-        }
-
         // TODO create two series: coffee AND tea
         // TODO: move formatting adjustment to inside of onCreateCaffeineChart
-        // for formatting, add an empty value at FRONT of series
-        DateDoubleSeries expenditureSeries = new DateDoubleSeries("Expenditures");
+        // EXPENDITURE SERIES
+        expenditureSeries = new DateDoubleSeries("Expenditures");
         expenditureSeries.add(Date.from(ONE_WEEK_AGO.minusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0.0);
         for (int i = 0; i < orderedListOfMapDays.size(); i++) {
             LocalDate localDate = orderedListOfMapDays.get(i);
@@ -259,8 +234,6 @@ public class LogActivity extends AppCompatActivity {
         }
         // for formatting, add an empty value to BACK of series
         expenditureSeries.add(Date.from(ONE_WEEK_AGO.plusDays(8).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0.0);
-
-        return expenditureSeries;
     }
 
     /**
