@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -305,11 +306,13 @@ public class MapsActivity extends FragmentActivity implements
 
             if (response.getMode().equals("driving")) { // driving line
                 Polyline polyline = mMap.addPolyline(new PolylineOptions()
+                        .color(Color.parseColor("#1E90FF"))
                         .clickable(true)
                         .addAll(latlngs));
                 this.polylines.add(polyline);
             } else { // walking line
                 Polyline polyline = mMap.addPolyline(new PolylineOptions()
+                        .color(Color.parseColor("#1E90FF"))
                         .clickable(true)
                         .addAll(latlngs)
                         .pattern(Arrays.asList((PatternItem) new Dot())));
