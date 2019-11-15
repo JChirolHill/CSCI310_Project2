@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Dot;
@@ -68,6 +71,7 @@ public class MapsActivity extends FragmentActivity implements
     private LatLng currLatLng;
     private Map<Marker, BasicShop> shopListing;
     private ArrayList<Polyline> polylines;
+    private Marker routeDetailsMarker; // invisible, serves as an anchor for the route details info window
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -324,16 +328,27 @@ public class MapsActivity extends FragmentActivity implements
 
             if (response.getMode().equals("driving")) { // driving line
                 Polyline polyline = mMap.addPolyline(new PolylineOptions()
+                        .color(Color.parseColor("#1E90FF"))
                         .clickable(true)
                         .addAll(latlngs));
                 this.polylines.add(polyline);
             } else { // walking line
                 Polyline polyline = mMap.addPolyline(new PolylineOptions()
+                        .color(Color.parseColor("#1E90FF"))
                         .clickable(true)
                         .addAll(latlngs)
                         .pattern(Arrays.asList((PatternItem) new Dot())));
                 this.polylines.add(polyline);
             }
+
+            // info window to display route details
+            if (routeDetailsMarker != null) routeDetailsMarker.remove(); // remove old invisible marker
+            routeDetailsMarker = mMap.addMarker(new MarkerOptions()
+                    .position(latlngs.get(latlngs.size()/2))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.blank_pixel))
+                    .title(routes.get(i).getDistance())
+                    .snippet(routes.get(i).getDuration()));
+            routeDetailsMarker.showInfoWindow();
         }
 
         // TODO: display the route's ETA in an info window besides the polyline
