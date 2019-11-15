@@ -36,12 +36,13 @@
                 android:layout_marginTop="8dp"
                 app:layout_constraintTop_toBottomOf="@id/listDate"/>
 
+            <!-- Changed text from $4.56 to itemPrice string. Not sure what original was about-->
             <TextView
                 android:id="@+id/listTotalCost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="$4.56"
+                android:text="@string/itemPrice"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/listHorizLine"/>
 
