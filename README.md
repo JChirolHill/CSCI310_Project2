@@ -23,5 +23,5 @@ As a customer, when you are logging and order, click the drink item in the list 
 Since claiming a store (as a merchant) requires taking a picture of verification documents, the emulator will crash if you try to take a picture with it (by clicking the Capture button on the Claim Shop Activity).  If you would like to test the claiming a shop functionality, we can provide a demo or please use a real Android device to run the app.
 
 ### Note2:
-When you first log in as a Customer, the only store that is currently claimed and has a drinks menu is the Philz Coffee in Sunnyvale, CA. Also, because the map is calling the Yelp API for open stores, you will not see this store during the times that the shop is not actually open. 
+When you first log in as a Customer, the only store that is currently claimed and has a drinks menu is the Philz Coffee in Palo Alto, CA. Also, because the map is calling the Yelp API for open stores, you will not see this store during the times that the shop is not actually open. 
 
