@@ -180,12 +180,14 @@ public class ViewOrdersActivity extends AppCompatActivity {
 
         @Override
         public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
             this.setNotifyOnChange(false);
 
+            //sort from latest to earliest
             this.sort(new Comparator<Order>() {
                 @Override
                 public int compare(Order lhs, Order rhs) {
-                    return lhs.getDate().compareTo(rhs.getDate());
+                    return rhs.getDate().compareTo(lhs.getDate());
                 }
             });
 
