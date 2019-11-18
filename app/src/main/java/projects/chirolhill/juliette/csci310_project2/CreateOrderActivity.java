@@ -253,12 +253,12 @@ public class CreateOrderActivity extends AppCompatActivity {
             textName.setText(d.getName());
             textType.setText(d.isCoffee() ? getResources().getString(R.string.coffee) : getResources().getString(R.string.tea));
             textCaffeine.setText(getResources().getString(R.string.milligrams, d.getCaffeine()));
-            textPrice.setText("$" + Float.toString(d.getPrice()));
+            textPrice.setText(getResources().getString((R.string.itemPrice), d.getPrice()));
             if(order.getDrinks().get(d.getId()) == null) { // none ordered yet
-                textNumOrdered.setText("x0");
+                textNumOrdered.setText(getString(R.string.x, 0));
             }
             else {
-                textNumOrdered.setText("x" + order.getDrinks().get(d.getId()).second);
+                textNumOrdered.setText(getString(R.string.x, order.getDrinks().get(d.getId()).second));
             }
 //            Picasso.get().load(s.getImgURL()).into(image);
 

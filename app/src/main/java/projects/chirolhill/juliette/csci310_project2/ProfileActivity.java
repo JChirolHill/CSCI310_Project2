@@ -110,7 +110,8 @@ public class ProfileActivity extends AppCompatActivity {
         editUsername.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                textTitle.setText(getResources().getString(R.string.createAccountTitle) + ", " + v.getText().toString());
+                textTitle.setText(getString(R.string.textTitle, v.getText().toString()));
+
                 return false;
             }
         });
