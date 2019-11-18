@@ -9,11 +9,11 @@ public class Drink implements Serializable {
     private String name;
     private boolean isCoffee;
     private String imageURL;
-    private float price;
+    private Float price;
 //    private Shop shop;
     private String shopID;
     private int timesOrdered;
-    private int caffeine; // stored in milligrams
+    private Integer caffeine; // stored in milligrams
 
     public Drink(String id, String shopID) {
         this.id = id;
@@ -41,7 +41,7 @@ public class Drink implements Serializable {
         return imageURL;
     }
 
-    public float getPrice() {
+    public Float getPrice() {
         return price;
     }
 
@@ -53,7 +53,7 @@ public class Drink implements Serializable {
         return timesOrdered;
     }
 
-    public int getCaffeine() {
+    public Integer getCaffeine() {
         return caffeine;
     }
 
@@ -69,7 +69,7 @@ public class Drink implements Serializable {
         this.imageURL = imageURL;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(Float price) {
         this.price = price;
     }
 
@@ -77,7 +77,7 @@ public class Drink implements Serializable {
         isCoffee = coffee;
     }
 
-    public void setCaffeine(int caffeine) {
+    public void setCaffeine(Integer caffeine) {
         this.caffeine = caffeine;
     }
 

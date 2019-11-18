@@ -31,7 +31,7 @@ public class DrinkActivity extends AppCompatActivity {
     private RadioButton radioBtnCoffee;
     private RadioButton radioBtnTea;
     private Button btnSave;
-
+    private TextView textNullError;
     private String shopID;
     private Drink drink;
     private boolean createDrink;
@@ -51,6 +51,7 @@ public class DrinkActivity extends AppCompatActivity {
         radioBtnCoffee = findViewById(R.id.radio_coffee);
         radioBtnTea = findViewById(R.id.radio_tea);
         btnSave = findViewById(R.id.btnSave);
+        textNullError = findViewById(R.id.textNullError);
 
         // get intent
         Intent i = getIntent();
@@ -80,13 +81,23 @@ public class DrinkActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // make new drink
+
+                String nameTemp = editName.getText().toString().trim();
+                Float priceTemp = Float.parseFloat(editPrice.getText().toString().trim());
+                Integer caffeineTemp = Integer.parseInt(editCaffeine.getText().toString().trim());
+
+                if (nameTemp == null || priceTemp == null || caffeineTemp == null){
+                    textNullError.setVisibility(View.VISIBLE);
+                    finish();
+                }
+
                 if(createDrink) {
                     drink = new Drink((radioIsCoffee.getCheckedRadioButtonId() == R.id.radio_coffee), shopID);
                 }
                 drink.setIsCoffee((radioIsCoffee.getCheckedRadioButtonId() == R.id.radio_coffee));
-                drink.setName(editName.getText().toString().trim());
-                drink.setPrice(Float.parseFloat(editPrice.getText().toString().trim()));
-                drink.setCaffeine(Integer.parseInt(editCaffeine.getText().toString().trim()));
+                drink.setName(nameTemp);
+                drink.setPrice(priceTemp);
+                drink.setCaffeine(caffeineTemp);
 
                 // add drink to database
                 drink.setId(Database.getInstance().addDrink(drink));
