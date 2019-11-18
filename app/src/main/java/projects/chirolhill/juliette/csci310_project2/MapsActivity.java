@@ -244,6 +244,7 @@ public class MapsActivity extends FragmentActivity implements
             }
             else { // customer: show option to view drinks
                 AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle(marker.getTitle());
+
                 // Add the buttons
                 builder.setNeutralButton("Driving Directions", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -270,6 +271,7 @@ public class MapsActivity extends FragmentActivity implements
                         startActivity(i);
                     }
                 });
+                // TODO "Start Trip" button
 
 
                 // Create the AlertDialog
