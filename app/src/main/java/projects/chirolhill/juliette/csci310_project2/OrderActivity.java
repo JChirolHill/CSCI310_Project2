@@ -34,6 +34,7 @@ import java.util.Map;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.Drink;
 import projects.chirolhill.juliette.csci310_project2.model.Order;
+import projects.chirolhill.juliette.csci310_project2.model.Shop;
 
 public class OrderActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = OrderActivity.class.getSimpleName();
@@ -173,9 +174,10 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                     finish();
                 }
                 else { // save results and display readonly
+                    // for now removed, since we do not support user changing caffeine and cost
                     // update the order based on user inputs
-                    currOrder.setTotalCaffeine(Integer.parseInt(editCaffeineLevel.getText().toString()));
-                    currOrder.setTotalCost(Double.parseDouble(editTotalMoneySpent.getText().toString()));
+//                    currOrder.setTotalCaffeine(Integer.parseInt(editCaffeineLevel.getText().toString()));
+//                    currOrder.setTotalCost(Double.parseDouble(editTotalMoneySpent.getText().toString()));
 
                     // create the new order
                     currOrder = new Order(orderID, currOrder.getShop(), currOrder.getTrip(), currOrder.getTrip(), currOrder.getDate());
@@ -189,7 +191,12 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                renderEditable();
+                //renderEditable();
+
+                Intent i = new Intent(getApplicationContext(), CreateOrderActivity.class);
+                i.putExtra("EXTRA_EDITABLE", true);
+                i.putExtra("EXTRA_SHOP_ID", currOrder.getShop());
+                startActivity(i);
             }
         });
 

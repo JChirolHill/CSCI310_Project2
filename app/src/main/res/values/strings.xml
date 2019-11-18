@@ -12,7 +12,7 @@
     <string name="createAccountTitle">Profile Details</string>
     <string name="viewAccountTitle">View Profile</string>
     <string name="viewLogTitle">Log</string>
-    <string name="viewLogOrders">Your Orders</string>
+    <string name="viewLogOrders">Order Listing</string>
     <string name="createAccountSubtitle">Please fill in your account details</string>
     <string name="usernamePrompt">Username:</string>
     <string name="emailPrompt">Email:</string>
@@ -69,7 +69,7 @@
     <!-- Order activity -->
     <string name="title_activity_order">OrderActivity</string>
     <string name="title_activity_order_confirmation">Order Confirmation</string>
-    <string name="viewOrder">Order Listing</string>
+    <string name="viewOrder">View Order</string>
     <string name="editOrder">Edit Order</string>
     <string name="totalMoneySpent">Total Cost:</string>
     <string name="itemsOrdered">Items Ordered:</string>

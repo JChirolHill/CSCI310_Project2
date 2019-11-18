@@ -46,6 +46,7 @@ public class CreateOrderActivity extends AppCompatActivity {
     private int totalCaffeineToday;
     private String userID;
 
+    private TextView textCreateOrderTitle;
     private TextView textNumItems;
     private TextView textTotalCaffeineOrder;
     private TextView textTotalCaffeineToday;
@@ -61,6 +62,7 @@ public class CreateOrderActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        textCreateOrderTitle = findViewById(R.id.textCreateOrderTitle);
         textNumItems = findViewById(R.id.textNumItems);
         textTotalCaffeineOrder = findViewById(R.id.textCaffeineOrder);
         textTotalCaffeineToday = findViewById(R.id.textCaffeineToday);
@@ -73,16 +75,26 @@ public class CreateOrderActivity extends AppCompatActivity {
 
         // get shop and drink from intent
         Intent i = getIntent();
-        Drink passedIn = (Drink)i.getSerializableExtra(Drink.EXTRA_DRINK);
-        currShop = (Shop)i.getSerializableExtra(Shop.PREF_SHOP);
-        for(Drink d : currShop.getDrinks()) {
-            drinks.add(d);
-        }
 
+        boolean editable = (boolean)i.getSerializableExtra("EXTRA_EDITABLE");
+        Drink passedIn = (Drink) i.getSerializableExtra(Drink.EXTRA_DRINK);
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
-
         userID = prefs.getString(User.PREF_USER_ID, "Invalid ID");
-        order = new Order(null, currShop.getId(), null, prefs.getString(User.PREF_USER_ID, "Invalid ID"), new Date());
+
+        if(!editable) {
+            currShop = (Shop) i.getSerializableExtra(Shop.PREF_SHOP);
+            for (Drink d : currShop.getDrinks()) {
+                drinks.add(d);
+            }
+
+            order = new Order(null, currShop.getId(), null, prefs.getString(User.PREF_USER_ID, "Invalid ID"), new Date());
+        }
+        else{
+            String shopId = (String)i.getSerializableExtra("EXTRA_SHOP_ID");
+            //this line is apparently wrong, but idk how to fetch the data needed to get the shop info
+            order = new Order(null, shopId, null, prefs.getString(User.PREF_USER_ID, "Invalid ID"), new Date());
+            textCreateOrderTitle.setText("Edit Order");
+        }
 
         // add drink that was passed in to this order
         if(passedIn != null) {
