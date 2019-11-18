@@ -1,13 +1,16 @@
 package projects.chirolhill.juliette.csci310_project2;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
@@ -33,6 +36,10 @@ import projects.chirolhill.juliette.csci310_project2.model.Order;
 import projects.chirolhill.juliette.csci310_project2.model.Shop;
 import projects.chirolhill.juliette.csci310_project2.model.User;
 import projects.chirolhill.juliette.csci310_project2.model.UserLog;
+
+import static projects.chirolhill.juliette.csci310_project2.R.color.colorPrimaryDark;
+import static projects.chirolhill.juliette.csci310_project2.R.color.colorAccent;
+
 
 public class CreateOrderActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_ORDER_CONFIRMATION = 1;
@@ -116,7 +123,7 @@ public class CreateOrderActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 textError.setVisibility(View.GONE);
-
+                btnSubmitOrder.setBackgroundColor(ResourcesCompat.getColor(getResources(), colorAccent, null));
                 order.addDrink(drinks.get(position));
                 drinkAdapter.notifyDataSetChanged();
 
@@ -126,13 +133,15 @@ public class CreateOrderActivity extends AppCompatActivity {
 
         // long click removes from order
         listDrinks.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @SuppressLint("ResourceAsColor")
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 order.removeDrink(drinks.get(position).getId());
+                if (order.getDrinks().size() == 0) {
+                    btnSubmitOrder.setBackgroundColor(ResourcesCompat.getColor(getResources(), colorPrimaryDark, null));
+                }
                 drinkAdapter.notifyDataSetChanged();
-
                 displayInfo();
-
                 return true;
             }
         });
