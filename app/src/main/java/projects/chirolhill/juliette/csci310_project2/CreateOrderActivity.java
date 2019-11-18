@@ -123,7 +123,7 @@ public class CreateOrderActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 textError.setVisibility(View.GONE);
-                btnSubmitOrder.setBackgroundColor(ResourcesCompat.getColor(getResources(), colorAccent, null));
+                btnSubmitOrder.setBackground(getResources().getDrawable(R.drawable.button_background_green));
                 order.addDrink(drinks.get(position));
                 drinkAdapter.notifyDataSetChanged();
 
@@ -138,7 +138,7 @@ public class CreateOrderActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 order.removeDrink(drinks.get(position).getId());
                 if (order.getDrinks().size() == 0) {
-                    btnSubmitOrder.setBackgroundColor(ResourcesCompat.getColor(getResources(), colorPrimaryDark, null));
+                    btnSubmitOrder.setBackground(getResources().getDrawable(R.drawable.button_background_brown));
                 }
                 drinkAdapter.notifyDataSetChanged();
                 displayInfo();
