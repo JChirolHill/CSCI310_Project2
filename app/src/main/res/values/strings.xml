@@ -114,8 +114,5 @@
 
     <string name="action_settings">blah</string>
 
-    <!-- List Item Shop Activitiy -->
-    <string name="shopName">Shop Name</string>
-    <string name="shopRating">3.5</string>
 
 </resources>
