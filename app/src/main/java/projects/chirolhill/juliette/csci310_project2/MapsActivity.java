@@ -271,8 +271,6 @@ public class MapsActivity extends FragmentActivity implements
                         startActivity(i);
                     }
                 });
-                // TODO "Start Trip" button
-
 
                 // Create the AlertDialog
                 AlertDialog dialog = builder.create();
@@ -298,12 +296,15 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     /**
-     * Calculates directions from current location to specified marker.
-     * Currently only providing one route (the fastest).
+     * Calculates directions from current location to specified marker, and then create button
+     * for user to start a trip if desired.
+     * Currently only provides one route (the fastest).
      */
     public void calculateDirections(Marker marker, String mode) {
         // DEBUG
         Log.d(TAG, "calculateDirections: calculating directions.");
+
+        final Marker finalMarker = marker; // needed for usage in inner classes
 
         // to trigger polyline drawing
         directionsFetcher.setCallback(new DirectionsFetcher.Callback() {
@@ -311,12 +312,39 @@ public class MapsActivity extends FragmentActivity implements
             public void directionsCallback(Object o) {
                 DirectionsResponse response = (DirectionsResponse) o;
                 drawPolyline(response);
+
             }
         });
 
         // trigger the HTTP GET request
         directionsFetcher.fetch(currLatLng.latitude, currLatLng.longitude,
-                marker.getPosition().latitude, marker.getPosition().longitude, mode);
+                finalMarker.getPosition().latitude, marker.getPosition().longitude, mode);
+
+        // allow user to start a trip
+        Snackbar.make(findViewById(R.id.map), finalMarker.getTitle(), Snackbar.LENGTH_INDEFINITE)
+            .setAction("Start Trip", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // TODO create some sort of floating clock to show time elapsed
+                        final long startTime = System.currentTimeMillis();
+
+                        // TODO create a second snackbar with the option to cancel
+                        Snackbar.make(findViewById(R.id.map), finalMarker.getTitle(), Snackbar.LENGTH_INDEFINITE)
+                                .setAction("Cancel Trip", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        long endTime = System.currentTimeMillis();
+                                        Log.d(TAG, "TIME ELAPSED FOR TRIP: " + ((endTime - startTime)/1000.0) + " seconds.");
+
+                                    }
+                                })
+                                .setActionTextColor(Color.RED)
+                                .show();
+
+                        // TODO periodically check current location until it is within 10 feet of coffee shop
+
+                    }
+                }).show();
     }
 
     /**
