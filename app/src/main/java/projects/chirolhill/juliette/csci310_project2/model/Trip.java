@@ -11,6 +11,10 @@ public class Trip {
     private Date timeArrived;
     private List<String> directions;
 
+    public Trip() {
+        directions = new ArrayList<>();
+    }
+
     public Trip(String destination, Date timeDiscover) {
         this.destination = destination;
         this.timeDiscover = timeDiscover;
@@ -32,6 +36,8 @@ public class Trip {
     public Date getTimeDiscover() {
         return timeDiscover;
     }
+
+    public void setTimeDiscover(Date timeDiscover) { this.timeDiscover = timeDiscover; }
 
     public Date getTimeArrived() {
         return timeArrived;

@@ -42,10 +42,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
 import projects.chirolhill.juliette.csci310_project2.model.MapShop;
 import projects.chirolhill.juliette.csci310_project2.model.Shop;
+import projects.chirolhill.juliette.csci310_project2.model.Trip;
 import projects.chirolhill.juliette.csci310_project2.model.User;
 import projects.chirolhill.juliette.csci310_project2.model.YelpFetcher;
 import projects.chirolhill.juliette.csci310_project2.model.DirectionsFetcher;
@@ -304,7 +306,7 @@ public class MapsActivity extends FragmentActivity implements
         // DEBUG
         Log.d(TAG, "calculateDirections: calculating directions.");
 
-        final Marker finalMarker = marker; // needed for usage in inner classes
+        final Marker finalMarker = marker;
 
         // to trigger polyline drawing
         directionsFetcher.setCallback(new DirectionsFetcher.Callback() {
@@ -312,30 +314,40 @@ public class MapsActivity extends FragmentActivity implements
             public void directionsCallback(Object o) {
                 DirectionsResponse response = (DirectionsResponse) o;
                 drawPolyline(response);
-
+                setupTrip(finalMarker);
             }
         });
 
         // trigger the HTTP GET request
         directionsFetcher.fetch(currLatLng.latitude, currLatLng.longitude,
-                finalMarker.getPosition().latitude, marker.getPosition().longitude, mode);
+                marker.getPosition().latitude, marker.getPosition().longitude, mode);
 
-        // allow user to start a trip
-        Snackbar.make(findViewById(R.id.map), finalMarker.getTitle(), Snackbar.LENGTH_INDEFINITE)
-            .setAction("Start Trip", new View.OnClickListener() {
+    }
+
+    /**
+     * Sets up the UI/backend logic for a trip. Creates the visual popup to display the start button,
+     * allows the user to cancel, and records the data for the trip itself.
+     * NOTE: if the trip is cancelled, an empty trip object is still returned.
+     * @param marker
+     * @return
+     */
+    public Trip setupTrip(final Marker marker) {
+        final Trip trip = new Trip();
+        Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_INDEFINITE)
+                .setAction("Start Trip", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // TODO create some sort of floating clock to show time elapsed
+                        // TODO create some sort of floating clock to show time elapsed?
                         final long startTime = System.currentTimeMillis();
+                        trip.setTimeDiscover(new Date(startTime));
 
-                        // TODO create a second snackbar with the option to cancel
-                        Snackbar.make(findViewById(R.id.map), finalMarker.getTitle(), Snackbar.LENGTH_INDEFINITE)
+                        // a snackbar to display the "Cancel Trip" option
+                        Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_INDEFINITE)
                                 .setAction("Cancel Trip", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         long endTime = System.currentTimeMillis();
                                         Log.d(TAG, "TIME ELAPSED FOR TRIP: " + ((endTime - startTime)/1000.0) + " seconds.");
-
                                     }
                                 })
                                 .setActionTextColor(Color.RED)
@@ -345,6 +357,8 @@ public class MapsActivity extends FragmentActivity implements
 
                     }
                 }).show();
+
+        return trip;
     }
 
     /**
