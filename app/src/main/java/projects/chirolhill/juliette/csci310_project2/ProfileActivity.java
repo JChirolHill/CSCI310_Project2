@@ -222,7 +222,7 @@ public class ProfileActivity extends AppCompatActivity {
         textTypeUser.setText(prefs.getBoolean(User.PREF_IS_MERCHANT, false) ? R.string.merchant : R.string.customer);
         textTitle.setText(R.string.viewAccountTitle);
         btnSave.setText(R.string.edit);
-        btnSave.setBackgroundColor(ResourcesCompat.getColor(getResources(), colorPrimaryDark, null));
+        btnSave.setBackground(getResources().getDrawable(R.drawable.button_background_brown));
 
     }
 
@@ -248,6 +248,6 @@ public class ProfileActivity extends AppCompatActivity {
         radioBtnYes.setChecked(u.isMerchant());
         textTitle.setText(R.string.createAccountTitle);
         btnSave.setText(R.string.save);
-        btnSave.setBackgroundColor(ResourcesCompat.getColor(getResources(), colorAccent, null));
+        btnSave.setBackground(getResources().getDrawable(R.drawable.button_background_green));
     }
 }
