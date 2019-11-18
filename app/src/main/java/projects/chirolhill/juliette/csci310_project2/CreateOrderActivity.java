@@ -81,20 +81,12 @@ public class CreateOrderActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         userID = prefs.getString(User.PREF_USER_ID, "Invalid ID");
 
-        if(!editable) {
-            currShop = (Shop) i.getSerializableExtra(Shop.PREF_SHOP);
-            for (Drink d : currShop.getDrinks()) {
-                drinks.add(d);
-            }
+        currShop = (Shop) i.getSerializableExtra(Shop.PREF_SHOP);
+        for (Drink d : currShop.getDrinks()) {
+            drinks.add(d);
+        }
 
-            order = new Order(null, currShop.getId(), null, prefs.getString(User.PREF_USER_ID, "Invalid ID"), new Date());
-        }
-        else{
-            String shopId = (String)i.getSerializableExtra("EXTRA_SHOP_ID");
-            //this line is apparently wrong, but idk how to fetch the data needed to get the shop info
-            order = new Order(null, shopId, null, prefs.getString(User.PREF_USER_ID, "Invalid ID"), new Date());
-            textCreateOrderTitle.setText("Edit Order");
-        }
+        order = new Order(null, currShop.getId(), null, prefs.getString(User.PREF_USER_ID, "Invalid ID"), new Date());
 
         // add drink that was passed in to this order
         if(passedIn != null) {

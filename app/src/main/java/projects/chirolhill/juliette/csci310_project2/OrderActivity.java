@@ -191,12 +191,12 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //renderEditable();
+                renderEditable();
 
-                Intent i = new Intent(getApplicationContext(), CreateOrderActivity.class);
-                i.putExtra("EXTRA_EDITABLE", true);
-                i.putExtra("EXTRA_SHOP_ID", currOrder.getShop());
-                startActivity(i);
+//                Intent i = new Intent(getApplicationContext(), CreateOrderActivity.class);
+//                i.putExtra("EXTRA_EDITABLE", true);
+//                i.putExtra("EXTRA_SHOP_ID", currOrder.getShop());
+//                startActivity(i);
             }
         });
 
