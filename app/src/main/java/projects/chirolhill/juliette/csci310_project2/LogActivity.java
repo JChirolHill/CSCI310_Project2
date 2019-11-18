@@ -111,12 +111,6 @@ public class LogActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
-        startActivity(i);
-    }
-
     /**
      * This method populates the List<Order> orders stored with this class.
      * A callback is triggered to extract the current user, from which a series
