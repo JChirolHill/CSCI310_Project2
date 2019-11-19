@@ -1,6 +1,7 @@
 package projects.chirolhill.juliette.csci310_project2;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.res.ResourcesCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -28,11 +30,14 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
 import projects.chirolhill.juliette.csci310_project2.model.Customer;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.Merchant;
+import projects.chirolhill.juliette.csci310_project2.model.Order;
+import projects.chirolhill.juliette.csci310_project2.model.Shop;
 import projects.chirolhill.juliette.csci310_project2.model.User;
 
 import static projects.chirolhill.juliette.csci310_project2.R.color.colorAccent;
@@ -64,6 +69,49 @@ public class ProfileActivity extends AppCompatActivity {
     private boolean readonly;
     private boolean origReadonly;
     private boolean createProfile;
+
+//    RadioGroup.OnCheckedChangeListener checkListener = new RadioGroup.OnCheckedChangeListener() {
+//        @Override
+//        public void onCheckedChanged(RadioGroup group, int checkedId) {
+//            // get checked button
+//            final RadioButton checkedRadioButton = findViewById(checkedId);
+//            final boolean toMerchant = checkedRadioButton.getText().toString().equals(getResources().getString(R.string.yes));
+//            group.clearCheck();
+//
+//            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getApplicationContext());
+//            if(toMerchant) {
+//                alertDialogBuilder.setMessage(getResources().getString(R.string.sureChangeToMerchant));
+//            }
+//            else {
+//                alertDialogBuilder.setMessage(getResources().getString(R.string.sureChangeToCustomer));
+//            }
+//            alertDialogBuilder.setCancelable(true);
+//
+//            // want to change type of user, check desired button
+//            alertDialogBuilder.setPositiveButton(getResources().getString(R.string.logout), new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialog, int which) {
+//                    checkedRadioButton.setChecked(true);
+//                }
+//            });
+//
+//            // want to cancel change of user
+//            alertDialogBuilder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//                @Override
+//                public void onCancel(DialogInterface dialog) {
+//                    if(toMerchant) {
+//                        radioBtnNo.setChecked(true);
+//                    }
+//                    else {
+//                        radioBtnYes.setChecked(false);
+//                    }
+//                }
+//            });
+//
+//            AlertDialog alertDialog = alertDialogBuilder.create();
+//            alertDialog.show();
+//        }
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +164,8 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+//        radioIsMerchant.setOnCheckedChangeListener(checkListener);
+
         btnDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,17 +198,19 @@ public class ProfileActivity extends AppCompatActivity {
                     renderEditable(u);
                 }
                 else { // save to db and switch to view mode
-                    User u;
+                    final User u;
                     if(radioIsMerchant.getCheckedRadioButtonId() == R.id.radio_yes) {
                         u = new Merchant();
                     }
                     else {
                         u = new Customer();
                     }
+
                     SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
                     u.setuID(prefs.getString(User.PREF_USER_ID, ""));
                     u.setUsername(editUsername.getText().toString().trim());
                     u.setEmail(textEmail.getText().toString().trim());
+                    final boolean wasMerchant = prefs.getBoolean(User.PREF_IS_MERCHANT, false);
 
                     SharedPreferences.Editor prefEditor = prefs.edit();
                     prefEditor.putString(User.PREF_USERNAME, u.getUsername());
@@ -166,19 +218,45 @@ public class ProfileActivity extends AppCompatActivity {
                     prefEditor.putBoolean(User.PREF_IS_MERCHANT, u.isMerchant());
                     prefEditor.commit();
 
-                    String addResult = Database.getInstance().addUser(u);
-                    if(addResult == null) { // no errors, successfully added to db
-                        if(origReadonly) { // originally readonly, just revert to readonly
-                            renderReadOnly();
+                    // persist any shops/drinks from this user
+                    Database.getInstance().setCallback(new Database.Callback() {
+                        @Override
+                        public void dbCallback(Object o) {
+                            // only persists shop/order data if remain same type of user
+                            if(wasMerchant && u.isMerchant()) {
+                                Merchant m = (Merchant)o;
+                                if(m != null) {
+                                    for(Map.Entry<String, Shop> s : m.getShops().entrySet()) {
+                                        ((Merchant)u).addShop(s.getValue());
+                                    }
+                                }
+                            }
+                            else if(!wasMerchant && !u.isMerchant()) {
+                                Customer c = (Customer)o;
+                                if(c != null) {
+                                    for(Map.Entry<String, Order> order : c.getLog().getOrders().entrySet()) {
+                                        ((Customer)u).getLog().addOrder(order.getValue());
+                                    }
+                                }
+                            }
+
+                            // add user to database and check result
+                            String addResult = Database.getInstance().addUser(u);
+                            if(addResult == null) { // no errors, successfully added to db
+                                if(origReadonly) { // originally readonly, just revert to readonly
+                                    renderReadOnly();
+                                }
+                                else { // go to maps activity
+                                    Intent i = new Intent(getApplicationContext(), MapsActivity.class);
+                                    startActivity(i);
+                                }
+                            }
+                            else { // some errors
+                                textError.setText(addResult);
+                            }
                         }
-                        else { // go to maps activity
-                            Intent i = new Intent(getApplicationContext(), MapsActivity.class);
-                            startActivity(i);
-                        }
-                    }
-                    else { // some errors
-                        textError.setText(addResult);
-                    }
+                    });
+                    Database.getInstance().getUser(u.getuID());
                 }
                 readonly = !readonly;
             }
@@ -245,8 +323,14 @@ public class ProfileActivity extends AppCompatActivity {
         textTitle.setText(R.string.createAccountTitle);
         editUsername.setText(u.getUsername());
         textEmail.setText(u.getEmail());
+
+//        textIsMerchantPrompt.setVisibility(View.VISIBLE);
+//        radioIsMerchant.setVisibility(View.VISIBLE);
+//        radioIsMerchant.setOnCheckedChangeListener(null);
         radioBtnNo.setChecked(!u.isMerchant());
         radioBtnYes.setChecked(u.isMerchant());
+//        radioIsMerchant.setOnCheckedChangeListener(checkListener);
+
         textTitle.setText(R.string.createAccountTitle);
         btnSave.setText(R.string.save);
         btnSave.setBackground(getResources().getDrawable(R.drawable.button_background_green));
