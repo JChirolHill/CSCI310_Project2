@@ -1,8 +1,9 @@
 .gradle/
 .idea/
 *.iml*
-*.properties
 *.DS_Store
+local.properties
+gradle-wrapper.properties
 CerinaTestActivity.java
 activity_cerina_test.xml
 bottom_sheet.xml
