@@ -351,6 +351,7 @@ public class MapsActivity extends FragmentActivity implements
                                 .setActionTextColor(Color.RED);
                         cancelTripPopUp.show();
 
+                        // TODO prevent user from doing anything else during a trip
                         // TODO periodically check current location until it is within 10 meters of coffee shop
                         if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);

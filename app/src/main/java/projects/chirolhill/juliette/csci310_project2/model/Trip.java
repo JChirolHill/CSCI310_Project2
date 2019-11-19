@@ -9,7 +9,7 @@ public class Trip {
     private String destination;
     private Date timeDiscover;
     private Date timeArrived;
-    private List<String> directions;
+    private List<String> directions; // TODO remove
 
     public Trip() {
         directions = new ArrayList<>();
