@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -154,7 +155,7 @@ public class MapsActivity extends FragmentActivity implements
             ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
         } else {
-            // Write you code here if permission already given.
+            // Write code here if permission already given.
             mMap.setMyLocationEnabled(true);
             mMap.setOnMyLocationButtonClickListener(this);
             mMap.setOnMyLocationClickListener(this);
@@ -187,7 +188,7 @@ public class MapsActivity extends FragmentActivity implements
             mMap.addMarker(marker);
 
             // get coffeeshop data from volley
-            yelpFetcher.fetch(myLocation.getLatitude(), myLocation.getLongitude());
+            yelpFetcher.fetch(currLatLng.latitude, currLatLng.longitude);
 
             // needed for OnInfoWindowClickListener() to work
             mMap.setOnInfoWindowClickListener(this);
