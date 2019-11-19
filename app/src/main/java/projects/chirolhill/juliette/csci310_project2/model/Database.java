@@ -53,7 +53,7 @@ public class Database {
     public static final String USERS = "users";
     public static final String ORDERS = "orders";
     public static final String DRINKS = "drinks";
-    public static final String SHOPS = "shop";
+    public static final String SHOPS = "shops";
     public static final String TRIPS = "trips";
 
     private static final Database ourInstance = new Database();
