@@ -64,7 +64,6 @@ public class MapsActivity extends FragmentActivity implements
 
     //    private Button btnFindShops;
     private ImageButton imgProfile;
-
     private LocationManager locationManager;
     private Location myLocation;
     private GoogleMap mMap;
@@ -342,19 +341,42 @@ public class MapsActivity extends FragmentActivity implements
                         trip.setTimeDiscover(new Date(startTime));
 
                         // a snackbar to display the "Cancel Trip" option
-                        Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_INDEFINITE)
+                        final Snackbar cancelTripPopUp = Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_INDEFINITE)
                                 .setAction("Cancel Trip", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        long endTime = System.currentTimeMillis();
-                                        Log.d(TAG, "TIME ELAPSED FOR TRIP: " + ((endTime - startTime)/1000.0) + " seconds.");
+                                        return; // TODO figure out how to make the parent function return
                                     }
                                 })
-                                .setActionTextColor(Color.RED)
-                                .show();
+                                .setActionTextColor(Color.RED);
+                        cancelTripPopUp.show();
 
-                        // TODO periodically check current location until it is within 10 feet of coffee shop
+                        // TODO periodically check current location until it is within 10 meters of coffee shop
+                        if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                            return;
+                        } else {
+                            while (true) { // TODO switch to a periodically executed task (e.g. every minute), cuz there's no way to cancel from here
+                                Location currLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+                                float[] distances = new float[1];
+                                Location.distanceBetween(currLocation.getLatitude(), currLocation.getLongitude(),
+                                        myLocation.getLatitude(), myLocation.getLongitude(), distances);
+                                if (distances[0] < 10) { // if user is within 10m of shop, conclude trip
+                                    Log.d(TAG, "LOCATION IS WITHIN THE 10M distance!!!");
 
+                                    cancelTripPopUp.dismiss();
+
+                                    // trip concluded --> display shop details
+                                    BasicShop selectedShop = new BasicShop(shopListing.get(marker));
+                                    Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
+                                    i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
+                                    i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
+                                    startActivity(i);
+
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }).show();
 
