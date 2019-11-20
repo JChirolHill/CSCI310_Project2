@@ -241,7 +241,7 @@ public class ShopInfoActivity extends AppCompatActivity {
             textName.setText(d.getName());
             if(isMerchant) {
                 textTimesOrdered.setVisibility(View.VISIBLE);
-                textTimesOrdered.setText(getResources().getString(R.string.ordered, d.getTimesOrdered()));
+                textTimesOrdered.setText(getResources().getString(R.string.totalOrders, d.getTimesOrdered()));
             }
             else {
                 textTimesOrdered.setVisibility(View.GONE);

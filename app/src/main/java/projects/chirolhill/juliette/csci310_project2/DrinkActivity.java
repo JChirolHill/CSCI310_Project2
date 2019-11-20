@@ -64,7 +64,7 @@ public class DrinkActivity extends AppCompatActivity {
         if(!createDrink) {
             drink = (Drink)i.getSerializableExtra(Drink.EXTRA_DRINK);
             editName.setText(drink.getName());
-            editPrice.setText(getString(R.string.drinkPrice, drink.getPrice()));
+            editPrice.setText(Float.toString(drink.getPrice()));
             editCaffeine.setText(getString(R.string.caffeineInput, drink.getCaffeine()));
 
             if(drink.isCoffee()) {
