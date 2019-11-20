@@ -24,6 +24,7 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
 import projects.chirolhill.juliette.csci310_project2.model.Customer;
@@ -82,10 +83,10 @@ public class CreateOrderActivity extends AppCompatActivity {
         userID = prefs.getString(User.PREF_USER_ID, "Invalid ID");
 
         currShop = (Shop) i.getSerializableExtra(Shop.PREF_SHOP);
+
         for (Drink d : currShop.getDrinks()) {
             drinks.add(d);
         }
-
         order = new Order(null, currShop.getId(), null, prefs.getString(User.PREF_USER_ID, "Invalid ID"), new Date());
 
         // add drink that was passed in to this order

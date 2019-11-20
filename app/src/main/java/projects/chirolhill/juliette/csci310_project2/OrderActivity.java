@@ -58,6 +58,8 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
     private String orderID;
     private Order currOrder;
     private List<Drink> drinks;
+    private Shop currShop;
+    private int drinkCounter;
 
     private DrinkListAdapter drinkAdapter;
 
@@ -191,12 +193,39 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                renderEditable();
+                //renderEditable();
 
-//                Intent i = new Intent(getApplicationContext(), CreateOrderActivity.class);
-//                i.putExtra("EXTRA_EDITABLE", true);
-//                i.putExtra("EXTRA_SHOP_ID", currOrder.getShop());
-//                startActivity(i);
+                Database.getInstance().setCallback(new Database.Callback() {
+                    @Override
+                    public void dbCallback(Object o) {
+                        if(o != null) {
+                            currShop = (Shop)o;
+                            drinkCounter = 0;
+                            final int numDrinks = currShop.getDrinks().size();
+                            if(currShop.getDrinks() != null) {
+                                Database.getInstance().setCallback(new Database.Callback() {
+                                    @Override
+                                    public void dbCallback(Object o) {
+                                        currShop.addDrink((Drink)o);
+                                    }
+                                });
+
+                                for(Drink d : ((Shop) currShop).getDrinks()) {
+                                    ++drinkCounter;
+                                    Database.getInstance().getDrink(d.getId());
+                                }
+                            }
+
+                            if(drinkCounter == numDrinks) {
+                                Intent i = new Intent(getApplicationContext(), CreateOrderActivity.class);
+                                i.putExtra("EXTRA_EDITABLE", true);
+                                i.putExtra(Shop.PREF_SHOP, currShop);
+                                startActivity(i);
+                            }
+                        }
+                    }
+                });
+                Database.getInstance().getShop(currOrder.getShop());
             }
         });
 
