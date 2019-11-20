@@ -55,9 +55,8 @@
     <string name="logOrder">Log Order</string>
     <string name="undo">Undo</string>
     <string name="drinkDeleted">Drink Deleted</string>
-    <string name="totalRevenue">Total Revenue:</string>
-    <string name="totalOrders">Total Orders:</string>
-    <string name="ordered">Total Orders: %1$d</string>
+    <string name="totalRevenue">Total Revenue: $%1$.2f</string>
+    <string name="totalOrders">Total Orders: %1$d</string>
 
     <!-- Claim shop activity -->
     <string name="title_activity_claim_shop">ClaimShopActivity</string>

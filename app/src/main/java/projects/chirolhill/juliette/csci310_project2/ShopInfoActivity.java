@@ -38,6 +38,8 @@ public class ShopInfoActivity extends AppCompatActivity {
     private ImageView imageShop;
     private RatingBar ratingBar;
     private TextView textPrice;
+//    private TextView textTotalRevenue;
+//    private TextView textTotalOrders;
     private TextView textItems;
     private TextView textAddress;
     private ListView listDrinks;
@@ -61,6 +63,8 @@ public class ShopInfoActivity extends AppCompatActivity {
         imageShop = findViewById(R.id.imageShop);
         ratingBar = findViewById(R.id.ratingBar);
         textPrice = findViewById(R.id.textPrice);
+//        textTotalRevenue = findViewById(R.id.textTotalRevenue);
+//        textTotalOrders = findViewById(R.id.textTotalOrders);
         textItems = findViewById(R.id.textItems);
         textAddress = findViewById(R.id.textAddress);
         listDrinks = findViewById(R.id.list);
