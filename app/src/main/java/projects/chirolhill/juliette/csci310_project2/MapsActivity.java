@@ -85,7 +85,7 @@ public class MapsActivity extends FragmentActivity implements
     private Button btnDrinks;
     private Button btnDrive;
     private Button btnWalk;
-
+    private TextView bottomSheetContent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +148,7 @@ public class MapsActivity extends FragmentActivity implements
         btnDrive.setBackgroundColor(Color.TRANSPARENT);
         btnWalk.setBackgroundColor(Color.TRANSPARENT);
 
+        bottomSheetContent = findViewById(R.id.bottom_sheet_content);
 
 
     }
@@ -455,10 +456,15 @@ public class MapsActivity extends FragmentActivity implements
         ArrayList<DirectionsRoute> routes = response.getRoutes();
         DirectionsRoute route = routes.get(0);
         ArrayList<DirectionsStep> steps = route.getSteps();
+        String temp = "";
         for (int i = 0; i < steps.size(); i++) {
-            Log.d(TAG, steps.get(i).getStep());
+            temp += steps.get(i).getStep();
+
+//            Log.d(TAG, steps.get(i).getStep());
 
         }
+        bottomSheetContent.setText(temp);
+
     }
         public void drawUpdatedList() {
         // add markers for all coffeeshops
