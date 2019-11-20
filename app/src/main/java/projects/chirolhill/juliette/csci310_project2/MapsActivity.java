@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -22,13 +21,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Dot;
@@ -40,7 +37,6 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -169,14 +165,20 @@ public class MapsActivity extends FragmentActivity implements
         }
     }
 
-
-    @Override
-    public void onBackPressed() {
+    public void recedeDisplay(){
         if(mBottomSheetBehavior.getState() == 3){
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
         else if(mBottomSheetBehavior.getState() == 4){
+            for (Polyline p : polylines) p.remove();
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mBottomSheetBehavior.getState() != 5) {
+            recedeDisplay();
         }
         else{
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
@@ -260,13 +262,7 @@ public class MapsActivity extends FragmentActivity implements
             mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng latLng) {
-                    for (Polyline p : polylines) p.remove();
-                    if(mBottomSheetBehavior.getState() == 3){
-                        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    }
-                    else if(mBottomSheetBehavior.getState() == 4){
-                        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                    }
+                    recedeDisplay();
                 }
             });
         }
@@ -287,7 +283,9 @@ public class MapsActivity extends FragmentActivity implements
     public boolean onMarkerClick (final Marker marker) {
         // remove old polylines
         for (Polyline p : polylines) p.remove();
-
+        bottomSheetContent.setText("");
+        btnDrive.setBackgroundColor(Color.TRANSPARENT);
+        btnWalk.setBackgroundColor(Color.TRANSPARENT);
         // needed to allow inner-class button listeners to access marker
         final Marker passableMarker = marker;
 
