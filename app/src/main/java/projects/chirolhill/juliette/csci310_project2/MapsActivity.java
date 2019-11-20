@@ -172,6 +172,8 @@ public class MapsActivity extends FragmentActivity implements
         }
         else if(mBottomSheetBehavior.getState() == 4){
             for (Polyline p : polylines) p.remove();
+            bottomSheetContent.setVisibility(View.GONE);
+            btnTimer.setVisibility(View.GONE);
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         }
     }
@@ -440,6 +442,8 @@ public class MapsActivity extends FragmentActivity implements
             temp += cleanStep + System.getProperty("line.separator");
 //            Log.d(TAG, steps.get(i).getStep());
         }
+        bottomSheetContent.setVisibility(View.VISIBLE);
+        btnTimer.setVisibility(View.VISIBLE);
         bottomSheetContent.setText(temp);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
