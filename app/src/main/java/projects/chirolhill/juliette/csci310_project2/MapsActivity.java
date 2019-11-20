@@ -86,7 +86,7 @@ public class MapsActivity extends FragmentActivity implements
     private Button btnWalk;
     private Button btnTimer;
     ListView lv;
-    List<String> fruits_list;
+    List<String> steps_list;
     ArrayAdapter<String> arrayAdapter;
 
 //    private ListView lv;
@@ -107,17 +107,17 @@ public class MapsActivity extends FragmentActivity implements
         lv = (ListView) findViewById(R.id.bottom_sheet_content);
 
         // Initializing a new String Array
-        String[] fruits = new String[] {
+        String[] steps_str_list = new String[] {
                 "Cape Gooseberry",
                 "Capuli cherry"
         };
 
         // Create a List from String Array elements
-        fruits_list = new ArrayList<String>(Arrays.asList(fruits));
+        steps_list = new ArrayList<String>(Arrays.asList(steps_str_list));
 
         // Create an ArrayAdapter from List
         arrayAdapter = new ArrayAdapter<String>
-                (this, android.R.layout.simple_list_item_1, fruits_list);
+                (this, android.R.layout.simple_list_item_1, steps_list);
 
         // DataBind ListView with items from ArrayAdapter
         lv.setAdapter(arrayAdapter);
@@ -215,8 +215,8 @@ public class MapsActivity extends FragmentActivity implements
         }
         else if(mBottomSheetBehavior.getState() == 4){
             for (Polyline p : polylines) p.remove();
-//            lv.setVisibility(View.GONE);
-//            btnTimer.setVisibility(View.GONE);
+            lv.setVisibility(View.GONE);
+            btnTimer.setVisibility(View.GONE);
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         }
     }
@@ -484,11 +484,11 @@ public class MapsActivity extends FragmentActivity implements
             cleanStep = steps.get(i).getStep().replaceAll("<[^>]*>", "");
             cleanStep = cleanStep.replaceAll("Destination will be", System.getProperty("line.separator") + "Destination will be");
             temp += cleanStep + System.getProperty("line.separator");
-            Log.d(TAG, steps.get(i).getStep());
-            fruits_list.add(steps.get(i).getStep());
+//            Log.d(TAG, steps.get(i).getStep());
+            steps_list.add(steps.get(i).getStep());
         }
-//        lv.setVisibility(View.VISIBLE);
-//        btnTimer.setVisibility(View.VISIBLE);
+        lv.setVisibility(View.VISIBLE);
+        btnTimer.setVisibility(View.VISIBLE);
         arrayAdapter.notifyDataSetChanged();
 
 //        lv.setText(temp);
