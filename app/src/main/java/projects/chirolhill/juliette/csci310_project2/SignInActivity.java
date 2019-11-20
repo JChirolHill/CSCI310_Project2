@@ -70,7 +70,6 @@ public class SignInActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(SignInActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(SignInActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(SignInActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-//            return;
         }
     }
 
@@ -81,6 +80,7 @@ public class SignInActivity extends AppCompatActivity {
             IdpResponse response = IdpResponse.fromResultIntent(data);
 
             if(resultCode == RESULT_OK) {
+                textMoment.setText(getResources().getString(R.string.onemoment));
                 btnSignIn.setVisibility(View.GONE);
 
                 // Successfully signed in

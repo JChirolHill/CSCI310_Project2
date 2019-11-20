@@ -3,6 +3,7 @@ package projects.chirolhill.juliette.csci310_project2.model;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.util.Pair;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -231,11 +232,50 @@ public class Database {
     // returns the key at which order was added
     public String addOrder(Order order) {
         try {
-            if(order.getId() == null) {
+            final boolean newOrder;
+            if(order.getId() == null) { // new order
+                newOrder = true;
                 DatabaseReference newOrderRef = dbOrdersRef.push();
                 order.setId(newOrderRef.getKey());
             }
+            else {
+                newOrder = false;
+            }
             dbOrdersRef.child(order.getId()).setValue(new DatabaseOrder(order));
+
+            // update all the drinks based on number ordered in this order
+            for(Map.Entry<String, Pair<Drink, Integer>> orderPair : order.getDrinks().entrySet()) {
+                final Pair<Drink, Integer> drinkPair = orderPair.getValue();
+                dbDrinksRef.child(orderPair.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        // retrieve drink
+                        Drink currDrink;
+                        if(dataSnapshot.getValue() == null) { // drink DNE
+                            currDrink = null;
+                        }
+                        else {
+                            currDrink = (Drink)dataSnapshot.getValue(DatabaseDrink.class).revertToOriginal();
+                        }
+
+                        // update curr drink based on order
+                        if(newOrder) {
+                            currDrink.increaseTimesOrdered(drinkPair.second);
+                        }
+                        else { // update order, update total drinks based on delta
+                            //TODO find delta between old and updated order to accurately update total times ordered
+                        }
+
+                        // add back the drink
+                        addDrink(currDrink);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
         } catch(DatabaseException de) {
             Log.d(TAG, de.getMessage());
             return de.getMessage();
