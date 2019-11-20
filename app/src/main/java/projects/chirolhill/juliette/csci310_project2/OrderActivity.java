@@ -104,7 +104,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 textDate.setText(dateFormat.format(currOrder.getDate()));
                 editDate.setText(dateFormat.format(currOrder.getDate()));
                 totalMoneySpent.setText(getResources().getString(R.string.dollarCost, currOrder.getTotalCost(false)));
-                editTotalMoneySpent.setText(String.format("%1$.2f", currOrder.getTotalCost(false)));
+                editTotalMoneySpent.setText(getString(R.string.dollarCost, currOrder.getTotalCost(false) ));
                 textCaffeineLevel.setText(getResources().getString(R.string.milligrams, currOrder.getTotalCaffeine(false)));
                 editCaffeineLevel.setText(getResources().getString(R.string.milligrams, currOrder.getTotalCaffeine(false)));
 
@@ -308,7 +308,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
             textName.setText(d.getName());
             textType.setText(d.isCoffee() ? getResources().getString(R.string.coffee) : getResources().getString(R.string.tea));
             textCaffeine.setText(getResources().getString(R.string.milligrams, d.getCaffeine()));
-            textPrice.setText("$" + Float.toString(d.getPrice()));
+            textPrice.setText(getString(R.string.dollarCost, d.getPrice()));
 //            Picasso.get().load(s.getImgURL()).into(image);
 
             return convertView;

@@ -111,12 +111,6 @@ public class LogActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        Intent i = new Intent(getApplicationContext(), ProfileActivity.class);
-        startActivity(i);
-    }
-
     /**
      * This method populates the List<Order> orders stored with this class.
      * A callback is triggered to extract the current user, from which a series
@@ -180,7 +174,7 @@ public class LogActivity extends AppCompatActivity {
 
         // loop through orders, comparing their days and adding values accordingly
         for (Order order : orders) {
-            // dates (in milliseconds) from orders are clocked to noon and converted to dates
+            // dates (in milliseconds) from orders are clocked to start of day and converted to dates
             LocalDateTime tempDateResetTime = order.getDate().toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate().atStartOfDay();
@@ -205,7 +199,6 @@ public class LogActivity extends AppCompatActivity {
         }
 
         // TODO create two series: coffee AND tea
-        // TODO: move formatting adjustment to inside of onCreateCaffeineChart
         // CAFFEINE SERIES
         caffeineSeries = new DateIntegerSeries("Caffeine");
         // for formatting, add an empty value at FRONT of series
@@ -221,7 +214,6 @@ public class LogActivity extends AppCompatActivity {
         caffeineSeries.add(Date.from(ONE_WEEK_AGO.plusDays(8).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0);
 
         // TODO create two series: coffee AND tea
-        // TODO: move formatting adjustment to inside of onCreateCaffeineChart
         // EXPENDITURE SERIES
         expenditureSeries = new DateDoubleSeries("Expenditures");
         expenditureSeries.add(Date.from(ONE_WEEK_AGO.minusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0.0);

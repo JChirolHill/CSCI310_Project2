@@ -93,7 +93,7 @@
                 android:id="@+id/btnViewOrders"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_background"
+                android:background="@drawable/button_background_brown"
                 android:layout_margin="8dp"
                 android:text="@string/viewOrders"
                 android:padding="4dp"
