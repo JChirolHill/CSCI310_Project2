@@ -15,13 +15,15 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
+
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -83,13 +85,46 @@ public class MapsActivity extends FragmentActivity implements
     private Button btnDrive;
     private Button btnWalk;
     private Button btnTimer;
-    private TextView bottomSheetContent;
+    ListView lv;
+    List<String> fruits_list;
+    ArrayAdapter<String> arrayAdapter;
+
+//    private ListView lv;
+//    private List<String> steps_list;
+//    private ArrayAdapter<String> adapter;
+//    private String[] steps_str_list;
 
 
-    @Override
+
+            @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+
+
+        // Get reference of widgets from XML layout
+        lv = (ListView) findViewById(R.id.bottom_sheet_content);
+
+        // Initializing a new String Array
+        String[] fruits = new String[] {
+                "Cape Gooseberry",
+                "Capuli cherry"
+        };
+
+        // Create a List from String Array elements
+        fruits_list = new ArrayList<String>(Arrays.asList(fruits));
+
+        // Create an ArrayAdapter from List
+        arrayAdapter = new ArrayAdapter<String>
+                (this, android.R.layout.simple_list_item_1, fruits_list);
+
+        // DataBind ListView with items from ArrayAdapter
+        lv.setAdapter(arrayAdapter);
+
+
+
+
 
         shopListing = new HashMap<>();
 
@@ -149,7 +184,15 @@ public class MapsActivity extends FragmentActivity implements
         btnDrive.setBackgroundColor(Color.TRANSPARENT);
         btnWalk.setBackgroundColor(Color.TRANSPARENT);
 
-        bottomSheetContent = findViewById(R.id.bottom_sheet_content);
+
+
+
+//        lv = findViewById(R.id.bottom_sheet_content);
+//        steps_str_list = new String[]{"k1", "k2"};
+//
+//        steps_list = new ArrayList<String>(Arrays.asList(steps_str_list));
+//        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, steps_list);
+//        lv.setAdapter(adapter);
 
 
     }
@@ -172,8 +215,8 @@ public class MapsActivity extends FragmentActivity implements
         }
         else if(mBottomSheetBehavior.getState() == 4){
             for (Polyline p : polylines) p.remove();
-            bottomSheetContent.setVisibility(View.GONE);
-            btnTimer.setVisibility(View.GONE);
+//            lv.setVisibility(View.GONE);
+//            btnTimer.setVisibility(View.GONE);
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         }
     }
@@ -286,7 +329,7 @@ public class MapsActivity extends FragmentActivity implements
     public boolean onMarkerClick (final Marker marker) {
         // remove old polylines
         for (Polyline p : polylines) p.remove();
-        bottomSheetContent.setText("");
+//        lv.setText("");
         btnDrive.setBackgroundColor(Color.TRANSPARENT);
         btnWalk.setBackgroundColor(Color.TRANSPARENT);
         // needed to allow inner-class button listeners to access marker
@@ -437,14 +480,18 @@ public class MapsActivity extends FragmentActivity implements
         String temp = "";
         String cleanStep = "";
         for (int i = 0; i < steps.size(); i++) {
+
             cleanStep = steps.get(i).getStep().replaceAll("<[^>]*>", "");
             cleanStep = cleanStep.replaceAll("Destination will be", System.getProperty("line.separator") + "Destination will be");
             temp += cleanStep + System.getProperty("line.separator");
-//            Log.d(TAG, steps.get(i).getStep());
+            Log.d(TAG, steps.get(i).getStep());
+            fruits_list.add(steps.get(i).getStep());
         }
-        bottomSheetContent.setVisibility(View.VISIBLE);
-        btnTimer.setVisibility(View.VISIBLE);
-        bottomSheetContent.setText(temp);
+//        lv.setVisibility(View.VISIBLE);
+//        btnTimer.setVisibility(View.VISIBLE);
+        arrayAdapter.notifyDataSetChanged();
+
+//        lv.setText(temp);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
     }
