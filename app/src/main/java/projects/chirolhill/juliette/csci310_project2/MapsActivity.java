@@ -37,6 +37,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -44,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
+import projects.chirolhill.juliette.csci310_project2.model.DirectionsStep;
 import projects.chirolhill.juliette.csci310_project2.model.MapShop;
 import projects.chirolhill.juliette.csci310_project2.model.Shop;
 import projects.chirolhill.juliette.csci310_project2.model.User;
@@ -309,6 +311,7 @@ public class MapsActivity extends FragmentActivity implements
             public void directionsCallback(Object o) {
                 DirectionsResponse response = (DirectionsResponse) o;
                 drawPolyline(response);
+                displaySteps(response);
             }
         });
 
@@ -352,7 +355,16 @@ public class MapsActivity extends FragmentActivity implements
         }
     }
 
-    public void drawUpdatedList() {
+    public void displaySteps(DirectionsResponse response) {
+        ArrayList<DirectionsRoute> routes = response.getRoutes();
+        DirectionsRoute route = routes.get(0);
+        ArrayList<DirectionsStep> steps = route.getSteps();
+        for (int i = 0; i < steps.size(); i++) {
+            Log.d(TAG, steps.get(i).getStep());
+
+        }
+    }
+        public void drawUpdatedList() {
         // add markers for all coffeeshops
         for (MapShop ms : yelpFetcher.getShops()) {
             String snippet = "Rating: " + Double.toString(ms.getRating());
@@ -367,3 +379,4 @@ public class MapsActivity extends FragmentActivity implements
         }
     }
 }
+
