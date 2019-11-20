@@ -179,21 +179,29 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage(getResources().getString(R.string.suresignout));
-        alertDialogBuilder.setCancelable(true);
+        if(mBottomSheetBehavior.getState() == 3){
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
+        else if(mBottomSheetBehavior.getState() == 4){
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        }
+        else{
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setMessage(getResources().getString(R.string.suresignout));
+            alertDialogBuilder.setCancelable(true);
 
-        // want to log out, redirect to signin page
-        alertDialogBuilder.setPositiveButton(getResources().getString(R.string.logout), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent i = new Intent(getApplicationContext(), SignInActivity.class);
-                startActivity(i);
-            }
-        });
+            // want to log out, redirect to signin page
+            alertDialogBuilder.setPositiveButton(getResources().getString(R.string.logout), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent i = new Intent(getApplicationContext(), SignInActivity.class);
+                    startActivity(i);
+                }
+            });
 
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
     }
 
     /**
@@ -459,11 +467,10 @@ public class MapsActivity extends FragmentActivity implements
         String temp = "";
         for (int i = 0; i < steps.size(); i++) {
             temp += steps.get(i).getStep();
-
 //            Log.d(TAG, steps.get(i).getStep());
         }
         bottomSheetContent.setText(temp);
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
     }
         public void drawUpdatedList() {
