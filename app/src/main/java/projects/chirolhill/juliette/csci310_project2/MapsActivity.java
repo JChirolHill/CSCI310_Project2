@@ -461,9 +461,9 @@ public class MapsActivity extends FragmentActivity implements
             temp += steps.get(i).getStep();
 
 //            Log.d(TAG, steps.get(i).getStep());
-
         }
         bottomSheetContent.setText(temp);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
     }
         public void drawUpdatedList() {
