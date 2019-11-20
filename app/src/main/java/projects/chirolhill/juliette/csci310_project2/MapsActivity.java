@@ -268,7 +268,12 @@ public class MapsActivity extends FragmentActivity implements
                 @Override
                 public void onMapClick(LatLng latLng) {
                     for (Polyline p : polylines) p.remove();
-                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                    if(mBottomSheetBehavior.getState() == 3){
+                        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    }
+                    else if(mBottomSheetBehavior.getState() == 4){
+                        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                    }
                 }
             });
         }
@@ -344,40 +349,6 @@ public class MapsActivity extends FragmentActivity implements
                         calculateDirections(passableMarker, "walking");
                     }
                 });
-
-
-
-//                AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle(marker.getTitle());
-//                // Add the buttons
-//                builder.setNeutralButton("Driving Directions", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
-//                        // launch intent to view driving directions to shop here
-//                        calculateDirections(passableMarker, "driving");
-//                    }
-//                });
-//                builder.setNegativeButton("Walking Directions", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
-//                        // launch intent to view walking directions to shop here
-//                        calculateDirections(passableMarker, "walking");
-//                    }
-//                });
-//                builder.setPositiveButton("View Drinks", new DialogInterface.OnClickListener() {
-//                    public void onClick(DialogInterface dialog, int id) {
-//                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
-//
-//                        // launch intent to view shop details here
-//                        Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
-//                        i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
-//                        i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
-//                        startActivity(i);
-//                    }
-//                });
-//                // Create the AlertDialog
-//                AlertDialog dialog = builder.create();
-//                dialog.show();
-
 
                 mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 shopName.setText(marker.getTitle());
