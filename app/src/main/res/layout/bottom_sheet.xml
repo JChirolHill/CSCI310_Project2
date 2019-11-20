@@ -22,7 +22,7 @@
             android:id="@+id/bottom_sheet_shop_name"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1.2"
+            android:layout_weight=".9"
             android:text="Shop Name"
             android:textColor="@color/colorPrimary"
             android:textSize="18dp"
@@ -34,10 +34,10 @@
             android:id="@+id/btn_drinks"
             android:layout_width="5dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".6"
+            android:layout_weight=".7"
             android:background="@color/white"
             android:text="View&#10;Drinks"
-            android:textSize="10dp"
+            android:textSize="11.5dp"
             android:textColor="@color/colorPrimaryDark"
 
             />
@@ -46,31 +46,34 @@
             android:id="@+id/btn_drive"
             android:layout_width="5dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".6"
+            android:layout_weight=".7"
             android:background="@color/white"
             android:text="Driving&#10;Directions"
-            android:textSize="10dp"
+            android:textSize="11.5dp"
             android:textColor="@color/colorPrimaryDark"/>
 
         <Button
             android:id="@+id/btn_walk"
             android:layout_width="5dp"
             android:layout_height="wrap_content"
-            android:layout_weight=".6"
+            android:layout_weight=".7"
             android:background="@color/white"
             android:text="Walking&#10;Directions"
-            android:textSize="10dp"
+            android:textSize="11.5dp"
             android:textColor="@color/colorPrimaryDark"/>
 
     </LinearLayout>
 
     <TextView
         android:id="@+id/bottom_sheet_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=""
+        android:textSize="20dp"
         android:paddingLeft="10dp"
         android:visibility="gone"
+        android:scrollbars = "vertical"
+        android:lineSpacingExtra="10dp"
         />
 
 

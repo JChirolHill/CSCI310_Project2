@@ -17,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -150,7 +151,7 @@ public class MapsActivity extends FragmentActivity implements
         btnWalk.setBackgroundColor(Color.TRANSPARENT);
 
         bottomSheetContent = findViewById(R.id.bottom_sheet_content);
-
+        bottomSheetContent.setMovementMethod(new ScrollingMovementMethod());
 
     }
 
@@ -437,10 +438,10 @@ public class MapsActivity extends FragmentActivity implements
         String temp = "";
         String cleanStep = "";
         for (int i = 0; i < steps.size(); i++) {
-            cleanStep = steps.get(i).getStep().replaceAll("<[^>]*>", "");
+            cleanStep = steps.get(i).getStep().replaceAll("<[^>]*>", "").replaceAll("&nbsp;", " ");
             cleanStep = cleanStep.replaceAll("Destination will be", System.getProperty("line.separator") + "Destination will be");
             temp += cleanStep + System.getProperty("line.separator");
-//            Log.d(TAG, steps.get(i).getStep());
+            Log.d(TAG, steps.get(i).getStep());
         }
         bottomSheetContent.setVisibility(View.VISIBLE);
         btnTimer.setVisibility(View.VISIBLE);
