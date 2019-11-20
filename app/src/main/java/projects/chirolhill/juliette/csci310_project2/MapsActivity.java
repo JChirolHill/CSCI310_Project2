@@ -398,6 +398,7 @@ public class MapsActivity extends FragmentActivity implements
      * Currently non-clickable, single line.
      */
     public void drawPolyline(DirectionsResponse response) {
+        for (Polyline p : polylines) p.remove();
         ArrayList<DirectionsRoute> routes = response.getRoutes();
         for (int i = 0; i < routes.size(); i++) { // testing on only ONE route/polyline for now
             List<LatLng> latlngs = PolyUtil.decode(routes.get(i).getEncodedPolyline());
