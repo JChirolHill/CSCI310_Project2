@@ -70,7 +70,6 @@
         android:layout_height="wrap_content"
         android:text=""
         android:paddingLeft="10dp"
-        android:visibility="gone"
         />
 
 
@@ -84,6 +83,5 @@
         android:foreground="?attr/selectableItemBackground"
         android:text="Start Timer"
         android:textColor="#fff"
-        android:visibility="gone"/>
-
+        />
 </LinearLayout>

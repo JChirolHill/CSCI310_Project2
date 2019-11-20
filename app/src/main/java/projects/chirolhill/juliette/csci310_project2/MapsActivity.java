@@ -433,8 +433,11 @@ public class MapsActivity extends FragmentActivity implements
         DirectionsRoute route = routes.get(0);
         ArrayList<DirectionsStep> steps = route.getSteps();
         String temp = "";
+        String cleanStep = "";
         for (int i = 0; i < steps.size(); i++) {
-            temp += steps.get(i).getStep() + System.getProperty("line.separator");
+            cleanStep = steps.get(i).getStep().replaceAll("<[^>]*>", "");
+            cleanStep = cleanStep.replaceAll("Destination will be", System.getProperty("line.separator") + "Destination will be");
+            temp += cleanStep + System.getProperty("line.separator");
 //            Log.d(TAG, steps.get(i).getStep());
         }
         bottomSheetContent.setText(temp);
