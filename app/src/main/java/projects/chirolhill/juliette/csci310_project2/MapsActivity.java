@@ -342,7 +342,7 @@ public class MapsActivity extends FragmentActivity implements
                         trip.setTimeDiscover(new Date(startTime));
 
                         // a snackbar to display the "Cancel Trip" option
-                        final Snackbar cancelTripPopUp = Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_INDEFINITE)
+                        final Snackbar cancelTripPopUp = Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_LONG)
                                 .setAction("Cancel Trip", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -371,7 +371,7 @@ public class MapsActivity extends FragmentActivity implements
                                     if (distances[0] < 10) { // if user is within 10m of shop, conclude trip
                                         Log.d(TAG, "LOCATION IS WITHIN THE 10M distance!!!");
 
-                                        cancelTripPopUp.dismiss();
+                                        cancelTripPopUp.dismiss(); // this isn't working for some reason
 
                                         // trip concluded --> display shop details
                                         BasicShop selectedShop = new BasicShop(shopListing.get(marker));
