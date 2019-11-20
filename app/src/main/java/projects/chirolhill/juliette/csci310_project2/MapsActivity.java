@@ -12,6 +12,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -75,10 +76,16 @@ public class MapsActivity extends FragmentActivity implements
     private ArrayList<Polyline> polylines;
     private Marker routeDetailsMarker; // invisible, serves as an anchor for the route details info window
 
+    private BottomSheetBehavior mBottomSheetBehavior;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        View bottomSheet = findViewById(R.id.bottom_sheet);
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         shopListing = new HashMap<>();
 
@@ -156,7 +163,7 @@ public class MapsActivity extends FragmentActivity implements
             ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
             return;
         } else {
-            // Write you code here if permission already given.
+            // Write your code here if permission already given.
             mMap.setMyLocationEnabled(true);
             mMap.setOnMyLocationButtonClickListener(this);
             mMap.setOnMyLocationClickListener(this);
@@ -199,6 +206,7 @@ public class MapsActivity extends FragmentActivity implements
                 @Override
                 public void onMapClick(LatLng latLng) {
                     for (Polyline p : polylines) p.remove();
+                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                 }
             });
         }
@@ -245,38 +253,38 @@ public class MapsActivity extends FragmentActivity implements
                         }).show();
             }
             else { // customer: show option to view drinks
-                AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle(marker.getTitle());
-                // Add the buttons
-                builder.setNeutralButton("Driving Directions", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
-                        // launch intent to view driving directions to shop here
-                        calculateDirections(passableMarker, "driving");
-                    }
-                });
-                builder.setNegativeButton("Walking Directions", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
-                        // launch intent to view walking directions to shop here
-                        calculateDirections(passableMarker, "walking");
-                    }
-                });
-                builder.setPositiveButton("View Drinks", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
+//                AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle(marker.getTitle());
+//                // Add the buttons
+//                builder.setNeutralButton("Driving Directions", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
+//                        // launch intent to view driving directions to shop here
+//                        calculateDirections(passableMarker, "driving");
+//                    }
+//                });
+//                builder.setNegativeButton("Walking Directions", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
+//                        // launch intent to view walking directions to shop here
+//                        calculateDirections(passableMarker, "walking");
+//                    }
+//                });
+//                builder.setPositiveButton("View Drinks", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
+//
+//                        // launch intent to view shop details here
+//                        Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
+//                        i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
+//                        i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
+//                        startActivity(i);
+//                    }
+//                });
+//                // Create the AlertDialog
+//                AlertDialog dialog = builder.create();
+//                dialog.show();
+                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-                        // launch intent to view shop details here
-                        Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
-                        i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
-                        i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
-                        startActivity(i);
-                    }
-                });
-
-
-                // Create the AlertDialog
-                AlertDialog dialog = builder.create();
-                dialog.show();
             }
         }
 
@@ -306,7 +314,7 @@ public class MapsActivity extends FragmentActivity implements
         Log.d(TAG, "calculateDirections: calculating directions.");
 
         // to trigger polyline drawing
-        directionsFetcher.setCallback(new DirectionsFetcher.Callback() {
+        directionsFetcher .setCallback(new DirectionsFetcher.Callback() {
             @Override
             public void directionsCallback(Object o) {
                 DirectionsResponse response = (DirectionsResponse) o;
