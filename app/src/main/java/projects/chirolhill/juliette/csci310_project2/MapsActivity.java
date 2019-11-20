@@ -151,7 +151,6 @@ public class MapsActivity extends FragmentActivity implements
         btnWalk.setBackgroundColor(Color.TRANSPARENT);
 
         bottomSheetContent = findViewById(R.id.bottom_sheet_content);
-        bottomSheetContent.setMovementMethod(new ScrollingMovementMethod());
 
     }
 
