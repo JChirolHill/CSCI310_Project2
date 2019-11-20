@@ -28,7 +28,8 @@
     <string name="myorders">My Orders</string>
     <string name="logout">Log Out</string>
     <string name="textTitle">Profile Details, %s</string>
-
+    <string name="sureChangeToMerchant">All your customer order information will be wiped.  Are you sure you want to become a merchant?</string>
+    <string name="sureChangeToCustomer">All your merchant shop information will be wiped.  Are you sure you want to become a customer?</string>
 
     <!-- ShopList activity -->
     <string name="shopsown">Shops You Own</string>
@@ -54,6 +55,8 @@
     <string name="logOrder">Log Order</string>
     <string name="undo">Undo</string>
     <string name="drinkDeleted">Drink Deleted</string>
+    <string name="totalRevenue">Total Revenue: $%1$.2f</string>
+    <string name="totalOrders">Total Orders: %1$d</string>
 
     <!-- Claim shop activity -->
     <string name="title_activity_claim_shop">ClaimShopActivity</string>
@@ -113,6 +116,4 @@
     <string name="orderDeleted">Order Deleted</string>
 
     <string name="action_settings">blah</string>
-
-
 </resources>
