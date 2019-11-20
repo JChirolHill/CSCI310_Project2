@@ -85,7 +85,9 @@ public class MapsActivity extends FragmentActivity implements
     private Button btnDrinks;
     private Button btnDrive;
     private Button btnWalk;
+    private Button btnTimer;
     private TextView bottomSheetContent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +135,8 @@ public class MapsActivity extends FragmentActivity implements
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         shopName = findViewById(R.id.bottom_sheet_shop_name);
+        btnTimer = findViewById(R.id.btn_timer);
+        btnTimer.setOnClickListener(this);
         btnDrinks = findViewById(R.id.btn_drinks);
         btnDrinks.setOnClickListener(this);
         btnDrive = findViewById(R.id.btn_drive);
@@ -155,24 +159,13 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public void onClick(View v) {
-        // default method for handling onClick Events..
-        switch (v.getId()) {
-
-            case R.id.btn_drinks:
-//                btnDrinks.setBackgroundColor(Color.BLUE);
-
-                break;
-
-            case R.id.btn_drive:
-//                btnDrive.setBackgroundColor(Color.GREEN);
-                break;
-
-            case R.id.btn_walk:
-//                btnWalk.setBackgroundColor(Color.RED);
-                break;
-
-            default:
-                break;
+        if (v.getId() == R.id.btn_timer) {
+            if (btnTimer.getText().equals("Start Timer")) {
+                btnTimer.setText("Stop Timer");
+            }
+            else {
+                btnTimer.setText("Start Timer");
+            }
         }
     }
 
@@ -319,13 +312,12 @@ public class MapsActivity extends FragmentActivity implements
                             }
                         }).show();
             }
-            else { // customer: show option to view drinks
+            else { // customer: view drinks, driving directions, walking directions
 
                 btnDrinks.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View arg0) {
                         BasicShop selectedShop = new BasicShop(shopListing.get(marker));
-
                         // launch intent to view shop details here
                         Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
                         i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
@@ -336,14 +328,19 @@ public class MapsActivity extends FragmentActivity implements
                 btnDrive.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View arg0) {
+                        btnWalk.setBackgroundColor(Color.TRANSPARENT);
+                        btnDrive.setBackgroundColor(getResources().getColor(R.color.colorBackground));
                         BasicShop selectedShop = new BasicShop(shopListing.get(marker));
                         // launch intent to view driving directions to shop here
                         calculateDirections(passableMarker, "driving");
+
                     }
                 });
                 btnWalk.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View arg0) {
+                        btnWalk.setBackgroundColor(getResources().getColor(R.color.colorBackground));
+                        btnDrive.setBackgroundColor(Color.TRANSPARENT);
                         BasicShop selectedShop = new BasicShop(shopListing.get(marker));
                         // launch intent to view driving directions to shop here
                         calculateDirections(passableMarker, "walking");
@@ -437,7 +434,7 @@ public class MapsActivity extends FragmentActivity implements
         ArrayList<DirectionsStep> steps = route.getSteps();
         String temp = "";
         for (int i = 0; i < steps.size(); i++) {
-            temp += steps.get(i).getStep();
+            temp += steps.get(i).getStep() + System.getProperty("line.separator");
 //            Log.d(TAG, steps.get(i).getStep());
         }
         bottomSheetContent.setText(temp);
