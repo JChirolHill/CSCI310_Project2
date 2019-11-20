@@ -19,7 +19,9 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -60,7 +62,9 @@ public class MapsActivity extends FragmentActivity implements
         GoogleMap.OnMyLocationClickListener,
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener,
-        OnMapReadyCallback {
+        OnMapReadyCallback,
+        View.OnClickListener
+        {
     private final String TAG = MapsActivity.class.getSimpleName();
 
     //    private Button btnFindShops;
@@ -77,15 +81,16 @@ public class MapsActivity extends FragmentActivity implements
     private Marker routeDetailsMarker; // invisible, serves as an anchor for the route details info window
 
     private BottomSheetBehavior mBottomSheetBehavior;
+    private TextView shopName;
+    private Button btnDrinks;
+    private Button btnDrive;
+    private Button btnWalk;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
-        View bottomSheet = findViewById(R.id.bottom_sheet);
-        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         shopListing = new HashMap<>();
 
@@ -121,6 +126,53 @@ public class MapsActivity extends FragmentActivity implements
         mapFragment.getMapAsync(this);
 
         polylines = new ArrayList<Polyline>();
+
+        // bottomSheet stuff
+        View bottomSheet = findViewById(R.id.bottom_sheet);
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+        shopName = findViewById(R.id.bottom_sheet_shop_name);
+        btnDrinks = findViewById(R.id.btn_drinks);
+        btnDrinks.setOnClickListener(this);
+        btnDrive = findViewById(R.id.btn_drive);
+        btnDrive.setOnClickListener(this);
+        btnWalk = findViewById(R.id.btn_walk);
+        btnWalk.setOnClickListener(this);
+
+        btnDrinks.setVisibility(View.VISIBLE);
+        btnDrive.setVisibility(View.VISIBLE);
+        btnWalk.setVisibility(View.VISIBLE);
+
+        btnDrinks.setBackgroundColor(Color.TRANSPARENT);
+        btnDrive.setBackgroundColor(Color.TRANSPARENT);
+        btnWalk.setBackgroundColor(Color.TRANSPARENT);
+
+
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        // default method for handling onClick Events..
+        switch (v.getId()) {
+
+            case R.id.btn_drinks:
+//                btnDrinks.setBackgroundColor(Color.BLUE);
+
+                break;
+
+            case R.id.btn_drive:
+//                btnDrive.setBackgroundColor(Color.GREEN);
+                break;
+
+            case R.id.btn_walk:
+//                btnWalk.setBackgroundColor(Color.RED);
+                break;
+
+            default:
+                break;
+        }
     }
 
     @Override
@@ -284,6 +336,7 @@ public class MapsActivity extends FragmentActivity implements
 //                AlertDialog dialog = builder.create();
 //                dialog.show();
                 mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                shopName.setText(marker.getTitle());
 
             }
         }

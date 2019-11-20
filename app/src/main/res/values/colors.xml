@@ -5,4 +5,5 @@
     <color name="colorAccent">#4d7d55</color>
     <color name="colorBackground">#E0DDD6</color>
     <color name="danger">#c7002e</color>
+    <color name="white">#fff</color>
 </resources>
