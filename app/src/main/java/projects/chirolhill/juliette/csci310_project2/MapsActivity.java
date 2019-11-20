@@ -346,7 +346,9 @@ public class MapsActivity extends FragmentActivity implements
                                 .setAction("Cancel Trip", new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
-                                        return; // TODO figure out how to make the parent function return
+                                        // TODO figure out how to kill the mapChecker task below
+                                        // handler.removeCallbacks(mapChecker);
+
                                     }
                                 })
                                 .setActionTextColor(Color.RED);
@@ -385,29 +387,6 @@ public class MapsActivity extends FragmentActivity implements
                             }
                         };
                         handler.post(mapChecker);
-
-                        /*
-                        while (true) { // TODO switch to a periodically executed task (e.g. every minute), cuz there's no way to cancel from here
-                            Location currLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-                            float[] distances = new float[1];
-                            Location.distanceBetween(currLocation.getLatitude(), currLocation.getLongitude(),
-                                    marker.getPosition().latitude, marker.getPosition().longitude, distances);
-                            if (distances[0] < 10) { // if user is within 10m of shop, conclude trip
-                                Log.d(TAG, "LOCATION IS WITHIN THE 10M distance!!!");
-
-                                cancelTripPopUp.dismiss();
-
-                                // trip concluded --> display shop details
-                                BasicShop selectedShop = new BasicShop(shopListing.get(marker));
-                                Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
-                                i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
-                                i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
-                                startActivity(i);
-
-                                break;
-                            }
-                        }
-                         */
                     }
                 }).show();
 
