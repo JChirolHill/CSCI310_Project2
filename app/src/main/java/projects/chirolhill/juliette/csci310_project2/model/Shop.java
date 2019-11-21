@@ -53,6 +53,21 @@ public class Shop extends BasicShop {
         drinks.add(d);
     }
 
+    public void updateDrink(Drink d) {
+        // find matching drink
+        for(Drink drink : drinks) {
+            if(drink.getId().equals(d.getId())) {
+                drink.setName(d.getName());
+                drink.setCaffeine(d.getCaffeine());
+                drink.setIsCoffee(d.isCoffee());
+                drink.setPrice(d.getPrice());
+                drink.setTimesOrdered(d.getTimesOrdered());
+                drink.setImageURL(d.getImageURL());
+                break;
+            }
+        }
+    }
+
     public void removeDrink(Drink d) {
         drinks.remove(d);
     }

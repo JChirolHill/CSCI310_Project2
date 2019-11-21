@@ -131,14 +131,32 @@ public class Database {
         dbShopsRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Shop currShop;
-                if(dataSnapshot.getValue() == null) { // new shop, not in database
+                final Shop currShop;
+                if(dataSnapshot.getValue() == null) { // new shop, not in database, no need to fill values
                     currShop = null;
+                    cb.dbCallback(currShop);
                 }
                 else { // existing shop in database
                     currShop = (Shop)dataSnapshot.getValue(DatabaseShop.class).revertToOriginal();
+
+                    // fetch drink information
+                    dbDrinksRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            // populate all drinks
+                            for(Drink d : currShop.getDrinks()) {
+                                currShop.updateDrink((Drink)dataSnapshot.child(d.getId()).getValue(DatabaseDrink.class).revertToOriginal());
+                            }
+
+                            cb.dbCallback(currShop);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
-                cb.dbCallback(currShop);
             }
 
             @Override
