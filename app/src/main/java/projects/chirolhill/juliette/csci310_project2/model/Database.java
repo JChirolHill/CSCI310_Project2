@@ -230,14 +230,33 @@ public class Database {
         dbOrdersRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Order currOrder;
+                final Order currOrder;
                 if(dataSnapshot.getValue() == null) { // new order, not in database
                     currOrder = null;
+                    cb.dbCallback(currOrder);
                 }
                 else { // existing shop in database
                     currOrder = (Order)dataSnapshot.getValue(DatabaseOrder.class).revertToOriginal();
+
+                    // retrieve trip information if exists
+                    if(currOrder.getTrip() != null && currOrder.getTrip().getId() != null) {
+                        dbTripsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                currOrder.setTrip((Trip)dataSnapshot.child(currOrder.getTrip().getId()).getValue(DatabaseTrip.class).revertToOriginal());
+                                cb.dbCallback(currOrder);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                    else {
+                        cb.dbCallback(currOrder);
+                    }
                 }
-                cb.dbCallback(currOrder);
             }
 
             @Override

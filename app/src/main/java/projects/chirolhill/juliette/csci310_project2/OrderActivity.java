@@ -175,7 +175,7 @@ public class OrderActivity extends AppCompatActivity {
                     currOrder.setTotalCost(Double.parseDouble(editTotalMoneySpent.getText().toString()));
 
                     // create the new order
-                    currOrder = new Order(orderID, currOrder.getShop(), currOrder.getTrip(), currOrder.getTrip(), currOrder.getDate());
+                    currOrder = new Order(orderID, currOrder.getShop(), currOrder.getTrip().getId(), currOrder.getUser(), currOrder.getDate());
                     Database.getInstance().addOrder(currOrder);
 
                     renderReadOnly();
