@@ -13,7 +13,7 @@ public class Order {
     private String id;
     private Map<String, Pair<Drink, Integer>> drinks; // store drinks and number of orders
     private String shopID;
-    private String tripID;
+    private Trip trip;
     private String userID;
     private Date date;
     private double totalCost;
@@ -29,7 +29,7 @@ public class Order {
     public Order(String id, String shopID, String tripID, String userID, Date date) {
         this.id = id;
         this.shopID = shopID;
-        this.tripID = tripID;
+        this.trip = new Trip(tripID);
         this.userID = userID;
         this.date = date;
         drinks = new HashMap<>();
@@ -43,8 +43,8 @@ public class Order {
         return shopID;
     }
 
-    public String getTrip() {
-        return tripID;
+    public Trip getTrip() {
+        return trip;
     }
 
     public String getUser() {
@@ -67,8 +67,8 @@ public class Order {
         this.shopID = shopID;
     }
 
-    public void setTrip(String tripID) {
-        this.tripID = tripID;
+    public void setTrip(Trip trip) {
+        this.trip = trip;
     }
 
     public void setUser(String userID) {
