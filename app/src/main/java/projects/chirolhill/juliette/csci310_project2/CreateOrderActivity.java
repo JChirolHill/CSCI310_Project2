@@ -1,6 +1,7 @@
 package projects.chirolhill.juliette.csci310_project2;
 
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,18 +14,29 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +54,8 @@ import static projects.chirolhill.juliette.csci310_project2.R.color.colorPrimary
 import static projects.chirolhill.juliette.csci310_project2.R.color.colorAccent;
 
 
-public class CreateOrderActivity extends AppCompatActivity {
+public class CreateOrderActivity extends AppCompatActivity implements View.OnClickListener{
+    private static final String TAG = CreateOrderActivity.class.getSimpleName();
     public static final int REQUEST_CODE_ORDER_CONFIRMATION = 1;
 
     private Order order;
@@ -53,7 +66,16 @@ public class CreateOrderActivity extends AppCompatActivity {
     private List<Drink> drinks;
     private int totalCaffeineToday;
     private String userID;
+    private Date date;
+    private boolean editable;
 
+    private DateFormat dateFormat;
+    private EditText editDate;
+    private Spinner spinnerTripHrs;
+    private Spinner spinnerTripMins;
+    private DatePickerDialog datePickerDialog;
+    private TextView textDatePrompt;
+    private TextView textTripPrompt;
     private TextView textCreateOrderTitle;
     private TextView textNumItems;
     private TextView textTotalCaffeineOrder;
@@ -78,13 +100,20 @@ public class CreateOrderActivity extends AppCompatActivity {
         textError = findViewById(R.id.textError);
         listDrinks = findViewById(R.id.listItems);
         btnSubmitOrder = findViewById(R.id.btnSubmitOrder);
+        editDate = findViewById(R.id.editDate);
+        textDatePrompt = findViewById(R.id.textDatePrompt);
+        textTripPrompt = findViewById(R.id.textTripPrompt);
+        spinnerTripHrs = findViewById(R.id.spinnerTripHours);
+        spinnerTripMins = findViewById(R.id.spinnerTripMinutes);
 
         drinks = new ArrayList<>();
+        dateFormat = new SimpleDateFormat("MMM d, yyyy");
 
         // get shop and drink from intent
         Intent i = getIntent();
 
-        boolean editable = (boolean)i.getSerializableExtra("EXTRA_EDITABLE");
+        editable = (boolean)i.getSerializableExtra("EXTRA_EDITABLE");
+        date = (Date)i.getSerializableExtra("EXTRA_DATE");
         Drink passedIn = (Drink) i.getSerializableExtra(Drink.EXTRA_DRINK);
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         userID = prefs.getString(User.PREF_USER_ID, "Invalid ID");
@@ -99,6 +128,19 @@ public class CreateOrderActivity extends AppCompatActivity {
         // add drink that was passed in to this order
         if(passedIn != null) {
             order.addDrink(passedIn);
+        }
+
+//        // set up date if from profile
+//        if(date != null){
+//            editDate =
+//        }
+
+        // render appropriately depending on the readonly state
+        if(!editable) {
+            renderReadOnly();
+        }
+        else {
+            renderEditable();
         }
 
         // set up adapter
@@ -168,7 +210,76 @@ public class CreateOrderActivity extends AppCompatActivity {
                 }
             }
         });
+
+        editDate.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(order.getDate());
+                new DatePickerDialog(CreateOrderActivity.this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        DateFormat dateFormat1 = new SimpleDateFormat("yyyy/MM/dd");
+                        DateFormat dateFormat2 = new SimpleDateFormat("MMM d, yyyy");
+                        try {
+                            LocalDate myDate = LocalDate.of(year, month+1, dayOfMonth);
+                            LocalDate now = LocalDate.now();
+                            if(myDate.isAfter(now)){
+                                order.setDate(dateFormat1.parse("" + now.getYear() + "/" + now.getMonthValue() + "/" + now.getDayOfMonth()));
+                                editDate.setText(dateFormat2.format(order.getDate()));
+                            }
+                            else {
+                                order.setDate(dateFormat1.parse("" + year + "/" + (month + 1) + "/" + dayOfMonth));
+                                editDate.setText(dateFormat2.format(order.getDate()));
+                            }
+                        } catch (ParseException e) {
+                            Log.d(TAG, e.getMessage());
+                            e.printStackTrace();
+                        }
+                    }
+                }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+        spinnerTripHrs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String value = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+//        findViewsById();
+//        setDateTimeField();
     }
+
+    private void findViewsById() {
+        editDate = (EditText) findViewById(R.id.editDate);
+//        editDate.setInputType(InputType.TYPE_NULL);
+        //fromDateEtxt.requestFocus();
+    }
+
+    private void setDateTimeField() {
+        editDate.setOnClickListener(this);
+
+        Calendar newCalendar = Calendar.getInstance();
+        datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                Calendar newDate = Calendar.getInstance();
+                newDate.set(year, monthOfYear, dayOfMonth);
+                editDate.setText(dateFormat.format(date));
+            }
+
+        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+    }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -200,7 +311,13 @@ public class CreateOrderActivity extends AppCompatActivity {
                     Intent i = new Intent(getApplicationContext(), OrderActivity.class);
                     i.putExtra(OrderActivity.EXTRA_READONLY, true);
                     i.putExtra(Order.PREF_ORDER_ID, order.getId());
-                    startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
+                    if(!editable) { // created new order, show view orders
+                        startActivityForResult(i, REQUEST_CODE_ORDER_CONFIRMATION);
+                    }
+                    else { // return to view order for this order
+                        setResult(RESULT_OK, i);
+                        finish();
+                    }
                 }
             });
             Database.getInstance().getUser(userID);
@@ -269,5 +386,24 @@ public class CreateOrderActivity extends AppCompatActivity {
 
             return convertView;
         }
+    }
+
+    private void renderReadOnly() {
+        textDatePrompt.setVisibility(View.GONE);
+        editDate.setVisibility(View.GONE);
+    }
+
+    private void renderEditable() {
+        textDatePrompt.setVisibility(View.VISIBLE);
+        editDate.setVisibility(View.VISIBLE);
+        editDate.setText(dateFormat.format(date));
+        textTripPrompt.setVisibility(View.VISIBLE);
+        spinnerTripHrs.setVisibility(View.VISIBLE);
+        spinnerTripMins.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onClick(View view) {
+        datePickerDialog.show();
     }
 }

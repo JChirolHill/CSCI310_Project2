@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -38,7 +39,7 @@ import projects.chirolhill.juliette.csci310_project2.model.Shop;
 
 public class OrderActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = OrderActivity.class.getSimpleName();
-
+    public static final int REQUEST_CODE_UPDATE_ORDER = 5;
     public static final String EXTRA_READONLY = "extra_order_readonly"; // display as view or update
 
     private TextView textOrderTitle;
@@ -198,39 +199,91 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 Database.getInstance().setCallback(new Database.Callback() {
                     @Override
                     public void dbCallback(Object o) {
-                        if(o != null) {
-                            currShop = (Shop)o;
-                            drinkCounter = 0;
-                            final int numDrinks = currShop.getDrinks().size();
-                            if(currShop.getDrinks() != null) {
-                                Database.getInstance().setCallback(new Database.Callback() {
-                                    @Override
-                                    public void dbCallback(Object o) {
-                                        currShop.addDrink((Drink)o);
-                                    }
-                                });
-
-                                for(Drink d : ((Shop) currShop).getDrinks()) {
-                                    ++drinkCounter;
-                                    Database.getInstance().getDrink(d.getId());
-                                }
-                            }
-
-                            if(drinkCounter == numDrinks) {
-                                Intent i = new Intent(getApplicationContext(), CreateOrderActivity.class);
-                                i.putExtra("EXTRA_EDITABLE", true);
-                                i.putExtra(Shop.PREF_SHOP, currShop);
-                                startActivity(i);
-                            }
-                        }
+                        if (o != null) {
+                            currShop = (Shop) o;
+//                            drinkCounter = 0;
+//                            final int numDrinks = currShop.getDrinks().size();
+//                            if(currShop.getDrinks() != null) {
+//                                Database.getInstance().setCallback(new Database.Callback() {
+//                                    @Override
+//                                    public void dbCallback(Object o) {
+//                                        currShop.addDrink((Drink)o);
+//                                    }
+//                                });
+//
+//                                for(Drink d : ((Shop) currShop).getDrinks()) {
+//                                    ++drinkCounter;
+//                                    Database.getInstance().getDrink(d.getId());
+//                                }
+//                            }
+//
+//                            if(drinkCounter == numDrinks) {
+                            Intent i = new Intent(getApplicationContext(), CreateOrderActivity.class);
+                            i.putExtra("EXTRA_EDITABLE", true);
+                            i.putExtra(Shop.PREF_SHOP, currShop);
+                            i.putExtra("EXTRA_DATE", currOrder.getDate());
+                            startActivityForResult(i, REQUEST_CODE_UPDATE_ORDER);
+//                        }
                     }
+                }
                 });
                 Database.getInstance().getShop(currOrder.getShop());
             }
         });
 
-        findViewsById();
-        setDateTimeField();
+//        findViewsById();
+//        setDateTimeField();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_CODE_UPDATE_ORDER) {
+            if (resultCode == RESULT_OK) {
+                // display the updated order
+                orderID = data.getStringExtra(Order.PREF_ORDER_ID);
+
+                drinks = new ArrayList<>();
+
+                // set up adapter
+                drinkAdapter = new DrinkListAdapter(this, R.layout.list_item_drink, drinks);
+                listDrinks.setAdapter(drinkAdapter);
+
+                // get the order from database
+                Database.getInstance().setCallback(new Database.Callback() {
+                    @Override
+                    public void dbCallback(Object o) {
+                        currOrder = (Order)o;
+
+                        // set values in layout based on order
+                        dateFormat = new SimpleDateFormat("MMM d, yyyy");
+                        textDate.setText(dateFormat.format(currOrder.getDate()));
+                        editDate.setText(dateFormat.format(currOrder.getDate()));
+                        totalMoneySpent.setText(getResources().getString(R.string.dollarCost, currOrder.getTotalCost(false)));
+                        editTotalMoneySpent.setText(getString(R.string.dollarCost, currOrder.getTotalCost(false) ));
+                        textCaffeineLevel.setText(getResources().getString(R.string.milligrams, currOrder.getTotalCaffeine(false)));
+                        editCaffeineLevel.setText(getResources().getString(R.string.milligrams, currOrder.getTotalCaffeine(false)));
+
+                        // load in all the drinks
+                        for(Map.Entry<String, Pair<Drink, Integer>> entry : currOrder.getDrinks().entrySet()) {
+                            Database.getInstance().setCallback(new Database.Callback() {
+                                @Override
+                                public void dbCallback(Object o) {
+                                    Drink tempDrink = (Drink)o;
+                                    int numOrdered = currOrder.getDrinks().get(tempDrink.getId()).second;
+                                    for(int i=0; i<numOrdered; ++i) {
+                                        currOrder.addDrink(tempDrink);
+                                        drinks.add(tempDrink);
+                                        drinkAdapter.notifyDataSetChanged();
+                                    }
+                                }
+                            });
+                            Database.getInstance().getDrink(entry.getKey());
+                        }
+                    }
+                });
+                Database.getInstance().getOrder(orderID);
+            }
+        }
     }
 
     private void findViewsById() {
