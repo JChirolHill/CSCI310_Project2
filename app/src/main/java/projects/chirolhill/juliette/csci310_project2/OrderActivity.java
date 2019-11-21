@@ -286,27 +286,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void findViewsById() {
-        editDate = (EditText) findViewById(R.id.editDate);
-        editDate.setInputType(InputType.TYPE_NULL);
-        //fromDateEtxt.requestFocus();
-    }
-
-    private void setDateTimeField() {
-        editDate.setOnClickListener(this);
-
-        Calendar newCalendar = Calendar.getInstance();
-        datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Calendar newDate = Calendar.getInstance();
-                newDate.set(year, monthOfYear, dayOfMonth);
-                editDate.setText(dateFormat.format(newDate.getTime()));
-            }
-
-        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
-    }
-
     private void renderReadOnly() {
         readonly = true;
         textOrderTitle.setText(getResources().getString(R.string.viewOrder));
@@ -325,13 +304,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         readonly = false;
         textOrderTitle.setText(getResources().getString(R.string.editOrder));
         btnOk.setText(getResources().getString(R.string.save));
-
-
-        //this part is temporarily removed since user aren't supposed to change these fields by now
-        //totalMoneySpent.setVisibility(View.GONE);
-        //textCaffeineLevel.setVisibility(View.GONE);
-        //editTotalMoneySpent.setVisibility(View.VISIBLE);
-        //editCaffeineLevel.setVisibility(View.VISIBLE);
 
         textDate.setVisibility(View.GONE);
         editDate.setVisibility(View.VISIBLE);

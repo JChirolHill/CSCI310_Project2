@@ -47,6 +47,7 @@ import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.Drink;
 import projects.chirolhill.juliette.csci310_project2.model.Order;
 import projects.chirolhill.juliette.csci310_project2.model.Shop;
+import projects.chirolhill.juliette.csci310_project2.model.Trip;
 import projects.chirolhill.juliette.csci310_project2.model.User;
 import projects.chirolhill.juliette.csci310_project2.model.UserLog;
 
@@ -73,6 +74,8 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
     private EditText editDate;
     private Spinner spinnerTripHrs;
     private Spinner spinnerTripMins;
+    private Integer tripHrs;
+    private Integer tripMins;
     private DatePickerDialog datePickerDialog;
     private TextView textDatePrompt;
     private TextView textTripPrompt;
@@ -128,6 +131,11 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
         // add drink that was passed in to this order
         if(passedIn != null) {
             order.addDrink(passedIn);
+        }
+
+        // add a trip if the order is new
+        if(order.getTrip() == null){
+            order.setTrip(new Trip(currShop.getName(), new Date()));
         }
 
 //        // set up date if from profile
@@ -245,41 +253,37 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
         spinnerTripHrs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String value = parent.getItemAtPosition(position).toString();
+                String valueStr = parent.getItemAtPosition(position).toString();
+                tripHrs = Integer.valueOf(valueStr.charAt(0));
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                tripHrs = 0;
             }
         });
 
-//        findViewsById();
-//        setDateTimeField();
-    }
-
-    private void findViewsById() {
-        editDate = (EditText) findViewById(R.id.editDate);
-//        editDate.setInputType(InputType.TYPE_NULL);
-        //fromDateEtxt.requestFocus();
-    }
-
-    private void setDateTimeField() {
-        editDate.setOnClickListener(this);
-
-        Calendar newCalendar = Calendar.getInstance();
-        datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Calendar newDate = Calendar.getInstance();
-                newDate.set(year, monthOfYear, dayOfMonth);
-                editDate.setText(dateFormat.format(date));
+        spinnerTripMins.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String valueStr = parent.getItemAtPosition(position).toString();
+                if(valueStr.length() == 5) {
+                    tripMins = Integer.valueOf(valueStr.substring(0,1));
+                }
+                else if(valueStr.length() == 6){
+                    tripMins = Integer.valueOf(valueStr.substring(0,2));
+                }
+                else{
+                    tripMins = 0;
+                }
             }
 
-        },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                tripMins = 0;
+            }
+        });
     }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -294,6 +298,21 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
         // ordered at least one item
         if(order.getDrinks().size() > 0) {
             textError.setVisibility(View.GONE);
+
+            // use calendar to add an interval to date
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(order.getTrip().getTimeDiscover());
+
+            // manipulate date
+            cal.add(Calendar.HOUR, tripHrs);
+            cal.add(Calendar.MINUTE, tripMins);
+
+            // convert calendar to date
+            Date modifiedDate = cal.getTime();
+            order.getTrip().setTimeArrived(modifiedDate);
+
+            // add trip to database
+            order.getTrip().setId(Database.getInstance().addTrip(order.getTrip()));
 
             // add order to database
             order.setId(Database.getInstance().addOrder(order));
