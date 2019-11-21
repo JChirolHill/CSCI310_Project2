@@ -10,6 +10,7 @@ import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.Drink;
 import projects.chirolhill.juliette.csci310_project2.model.Order;
+import projects.chirolhill.juliette.csci310_project2.model.Trip;
 
 public class DatabaseOrder implements DatabaseAdapter {
     public String id;
@@ -27,7 +28,7 @@ public class DatabaseOrder implements DatabaseAdapter {
         this.id = o.getId();
         this.shopID = o.getShop();
         this.customerID = o.getUser();
-        this.tripID = o.getTrip();
+        this.tripID = o.getTrip().getId();
         this.drinks = new HashMap<>();
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
@@ -46,7 +47,7 @@ public class DatabaseOrder implements DatabaseAdapter {
     public Object revertToOriginal() {
         Order o = new Order(id);
         o.setShop(shopID);
-        o.setTrip(tripID);
+        o.setTrip(new Trip(tripID));
         o.setUser(customerID);
         o.setTotalCost(totalCost);
         o.setTotalCaffeine(totalCaffeine);
