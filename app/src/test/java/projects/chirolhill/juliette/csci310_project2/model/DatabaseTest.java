@@ -32,13 +32,20 @@ public class DatabaseTest {
         bs0.setPriceRange("$$$");
         bs0.setRating(2);
         Shop s0 = new Shop(m0.getuID(), bs0);
+        Shop s1 = new Shop(m0.getuID(), bs1);
 
         // create drinks
-        Drink d1 = new Drink(false, );
+        Drink d0 = new Drink(false, s0.getId());
+        s0.addDrink(d0);
+        Drink d1 = new Drink(true, s0.getId());
+        s0.addDrink(d1);
 
         // create orders
-        Order o1 = new Order(null);
-        o1.addDrink()
+        Order o0 = new Order(null);
+        o0.addDrink(d0);
+        o0.addDrink(d0);
+        o0.addDrink(d1);
+        ((Customer) c0).getLog().addOrder(o0);
     }
 
     @Test
