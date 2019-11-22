@@ -319,6 +319,14 @@ public class MapsActivity extends FragmentActivity implements
             }
         });
 
+        // refresh the user's location
+        if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            return;
+        } else {
+            Location currLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+            currLatLng = new LatLng(currLocation.getLatitude(), currLocation.getLongitude());
+        }
         // trigger the HTTP GET request
         directionsFetcher.fetch(currLatLng.latitude, currLatLng.longitude,
                 marker.getPosition().latitude, marker.getPosition().longitude, mode);
@@ -334,43 +342,46 @@ public class MapsActivity extends FragmentActivity implements
      */
     public Trip setupTrip(final Marker marker) {
         final Trip trip = new Trip();
-        Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_LONG)
+
+        // a snackbar to display the "Cancel Trip" option
+        final Snackbar cancelTripPopUp = Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_INDEFINITE)
+                .setAction("Cancel Trip", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // TODO figure out how to kill the mapChecker task below
+                        // handler.removeCallbacks(mapChecker);
+
+                    }
+                })
+                .setActionTextColor(Color.RED);
+
+        Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_INDEFINITE)
                 .setAction("Start Trip", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         final long startTime = System.currentTimeMillis();
                         trip.setTimeDiscover(new Date(startTime));
 
-                        // a snackbar to display the "Cancel Trip" option
-                        final Snackbar cancelTripPopUp = Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_LONG)
-                                .setAction("Cancel Trip", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        // TODO figure out how to kill the mapChecker task below
-                                        // handler.removeCallbacks(mapChecker);
-
-                                    }
-                                })
-                                .setActionTextColor(Color.RED);
                         cancelTripPopUp.show();
 
-                        // TODO prevent user from doing anything else during a trip
                         Runnable mapChecker = new Runnable() {
                             @Override
                             public void run() {
+                                // TODO prevent user from doing anything else during a trip
                                 Log.d(TAG, "ON TRIP, CHECKING LOCATION");
 
                                 if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                                     ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                                     return;
                                 } else {
+                                    // compute the user's current location from the shop's
                                     Location currLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
                                     float[] distances = new float[1];
                                     Location.distanceBetween(currLocation.getLatitude(), currLocation.getLongitude(),
                                             marker.getPosition().latitude, marker.getPosition().longitude, distances);
-                                    if (distances[0] < 10) { // if user is within 10m of shop, conclude trip
-                                        Log.d(TAG, "LOCATION IS WITHIN THE 10M distance!!!");
 
+                                    // if user is within 10m of shop, conclude trip
+                                    if (distances[0] < 10) {
                                         cancelTripPopUp.dismiss(); // this isn't working for some reason
 
                                         // trip concluded --> display shop details
