@@ -33,7 +33,8 @@ public class DatabaseTrip implements DatabaseAdapter {
         try {
             Date timeDiscDate = new SimpleDateFormat("HH:mm").parse(timeDiscover);
             Date timeArrDate = new SimpleDateFormat("HH:mm").parse(timeArrived);
-            t = new Trip(destination, timeDiscDate);
+            t = new Trip(destination);
+            t.setTimeDiscover(timeDiscDate);
             t.setTimeArrived(timeArrDate);
             t.setId(id);
         } catch(ParseException pe) {
