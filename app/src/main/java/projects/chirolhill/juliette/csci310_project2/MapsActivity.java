@@ -152,7 +152,7 @@ public class MapsActivity extends FragmentActivity implements
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
-        mMap.getUiSettings().setScrollGesturesEnabled(false);
+        // mMap.getUiSettings().setScrollGesturesEnabled(false);
 
         if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -176,11 +176,15 @@ public class MapsActivity extends FragmentActivity implements
                 currLatLng = new LatLng(34.0224, 118.2851);
                 Log.d(TAG, "Location Info: No location :(");
             }
+
+            /*
             MarkerOptions marker = new MarkerOptions()
                     .position(currLatLng)
                     .title("You are here!")
                     .snippet("Your current location")
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+            mMap.addMarker(marker);
+             */
 
             // Moving Camera to a Location with animation
             CameraPosition cameraPosition = new CameraPosition.Builder()
@@ -188,7 +192,6 @@ public class MapsActivity extends FragmentActivity implements
 
             mMap.animateCamera(CameraUpdateFactory
                     .newCameraPosition(cameraPosition));
-            mMap.addMarker(marker);
 
             // get coffeeshop data from volley
             yelpFetcher.fetch(currLatLng.latitude, currLatLng.longitude);
@@ -219,6 +222,9 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public boolean onMarkerClick (final Marker marker) {
+        // if the map is "frozen", user is on a trip and markers shouldn't be clickable either
+        if (!mMap.getUiSettings().isScrollGesturesEnabled()) return true;
+
         // remove old polylines
         for (Polyline p : polylines) p.remove();
 
@@ -316,7 +322,8 @@ public class MapsActivity extends FragmentActivity implements
             public void directionsCallback(Object o) {
                 DirectionsResponse response = (DirectionsResponse) o;
                 drawPolyline(response);
-                setupTrip(finalMarker);
+                Trip trip = setupTrip(finalMarker);
+                Log.d(TAG, "hi");
             }
         });
 
@@ -350,44 +357,52 @@ public class MapsActivity extends FragmentActivity implements
         final Runnable mapChecker = new Runnable() {
             @Override
             public void run() {
-                // TODO prevent user from doing anything else during a trip
-                Log.d(TAG, "ON TRIP, CHECKING LOCATION");
+            // TODO prevent user from doing anything else during a trip
+            mMap.getUiSettings().setAllGesturesEnabled(false);
 
-                if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+
+            if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                return;
+            } else {
+                // compute the user's current location from the shop's
+                Location currLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+                float[] distances = new float[1];
+                Location.distanceBetween(currLocation.getLatitude(), currLocation.getLongitude(),
+                        marker.getPosition().latitude, marker.getPosition().longitude, distances);
+
+                Log.d(TAG, "User is " + distances[0] + " meters from destination.");
+                // if user is within 10m of shop, conclude trip
+                if (distances[0] < 10) {
+                    // TODO: dismiss the 'cancel trip' snackbar?
+                    trip.setTimeArrived(new Date(System.currentTimeMillis()));
+
+                    // trip concluded --> display shop details
+                    BasicShop selectedShop = new BasicShop(shopListing.get(marker));
+                    Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
+                    i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
+                    i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
+                    startActivity(i);
+                    // TODO: set trip destination
+                    // TODO: figure out how to connect this trip to whatever orders they make?
+
+                    // make map clickable again
+                    mMap.getUiSettings().setAllGesturesEnabled(true);
+
+                    handler.removeCallbacks(this);
                     return;
-                } else {
-                    // compute the user's current location from the shop's
-                    Location currLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-                    float[] distances = new float[1];
-                    Location.distanceBetween(currLocation.getLatitude(), currLocation.getLongitude(),
-                            marker.getPosition().latitude, marker.getPosition().longitude, distances);
-
-                    // if user is within 10m of shop, conclude trip
-                    if (distances[0] < 10) {
-                        // TODO: dismiss the 'cancel trip' snackbar
-                        trip.setTimeArrived(new Date(System.currentTimeMillis()));
-
-                        // trip concluded --> display shop details
-                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
-                        Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
-                        i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
-                        i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
-                        startActivity(i);
-                        // TODO: figure out how to connect this trip to whatever orders they make?
-
-                        handler.removeCallbacks(this);
-                        return;
-                    }
                 }
-                handler.postDelayed(this, 10000); // check the user's location every 10 seconds
+            }
+            handler.postDelayed(this, 10000); // check the user's location every 10 seconds
             }
         };
 
         cancelTripPopUp = Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_INDEFINITE)
-            .setAction("Cancel Trip", new View.OnClickListener() {
+            .setAction("End Trip", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // make map clickable again
+                    mMap.getUiSettings().setAllGesturesEnabled(true);
                     handler.removeCallbacks(mapChecker);
                 }
             })
