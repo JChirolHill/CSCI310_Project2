@@ -1,6 +1,6 @@
 package projects.chirolhill.juliette.csci310_project2.model.dbadapters;
 
-import android.util.Pair;
+import android.support.v4.util.Pair;
 
 import java.text.DateFormat;
 import java.text.ParseException;

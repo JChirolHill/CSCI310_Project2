@@ -1,8 +1,8 @@
 package projects.chirolhill.juliette.csci310_project2.model;
 
-import android.util.Pair;
 
-import java.io.Serializable;
+import android.support.v4.util.Pair;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
