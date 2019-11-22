@@ -10,11 +10,28 @@ public class Trip {
     private String destination;
     private Date timeDiscover;
     private Date timeArrived;
-    private List<String> directions;
+
+    public Trip() {
+
+    }
 
     public Trip(String id) {
         this.id = id;
-        directions = new ArrayList<>();
+    }
+
+    public Trip(String destination, int minutes) {
+        this.destination = destination;
+
+        // use calendar to add an interval to date
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(timeDiscover);
+
+        // manipulate date
+        cal.add(Calendar.HOUR, minutes / 60);
+        cal.add(Calendar.MINUTE, minutes % 60);
+
+        // convert calendar to date
+        timeArrived = cal.getTime();
     }
 
     public Trip(String destination, int hours, int minutes) {
@@ -36,7 +53,6 @@ public class Trip {
     public Trip(String destination, Date timeDiscover) {
         this.destination = destination;
         this.timeDiscover = timeDiscover;
-        directions = new ArrayList<>();
     }
 
     public String getId() {
@@ -51,8 +67,16 @@ public class Trip {
         return destination;
     }
 
+    public void setDestination(String shopID) {
+        this.destination = shopID;
+    }
+
     public Date getTimeDiscover() {
         return timeDiscover;
+    }
+
+    public void setTimeDiscover(Date timeDiscover) {
+        this.timeDiscover = timeDiscover;
     }
 
     public Date getTimeArrived() {
@@ -61,14 +85,6 @@ public class Trip {
 
     public void setTimeArrived(Date timeArrived) {
         this.timeArrived = timeArrived;
-    }
-
-    public List<String> getDirections() {
-        return directions;
-    }
-
-    public void setDirections(List<String> directions) {
-        this.directions = directions;
     }
 
     // returns travel time in minutes
