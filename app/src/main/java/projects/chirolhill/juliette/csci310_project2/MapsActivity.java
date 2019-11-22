@@ -345,7 +345,7 @@ public class MapsActivity extends FragmentActivity implements
         // a snackbar to display the "Cancel Trip" option
         final Snackbar cancelTripPopUp;
 
-        // a period task for checking the user's proximity to the shop. runs every 10 seconds
+        // a periodic task for checking the user's distance from the shop. runs every 10 seconds
         final Runnable mapChecker = new Runnable() {
             @Override
             public void run() {
@@ -364,7 +364,8 @@ public class MapsActivity extends FragmentActivity implements
 
                     // if user is within 10m of shop, conclude trip
                     if (distances[0] < 10) {
-                        // cancelTripPopUp.dismiss();
+                        // TODO: dismiss the 'cancel trip' snackbar
+                        trip.setTimeArrived(new Date(System.currentTimeMillis()));
 
                         // trip concluded --> display shop details
                         BasicShop selectedShop = new BasicShop(shopListing.get(marker));
@@ -372,6 +373,7 @@ public class MapsActivity extends FragmentActivity implements
                         i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
                         i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
                         startActivity(i);
+                        // TODO: figure out how to connect this trip to whatever orders they make?
 
                         handler.removeCallbacks(this);
                         return;
@@ -385,23 +387,21 @@ public class MapsActivity extends FragmentActivity implements
             .setAction("Cancel Trip", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO figure out how to kill the mapChecker task below
                     handler.removeCallbacks(mapChecker);
                 }
             })
             .setActionTextColor(Color.RED);
 
         Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_INDEFINITE)
-                .setAction("Start Trip", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        final long startTime = System.currentTimeMillis();
-                        trip.setTimeDiscover(new Date(startTime));
+            .setAction("Start Trip", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    trip.setTimeDiscover(new Date(System.currentTimeMillis()));
 
-                        cancelTripPopUp.show();
-                        handler.post(mapChecker);
-                    }
-                }).show();
+                    cancelTripPopUp.show();
+                    handler.post(mapChecker);
+                }
+            }).show();
 
         return trip;
     }
