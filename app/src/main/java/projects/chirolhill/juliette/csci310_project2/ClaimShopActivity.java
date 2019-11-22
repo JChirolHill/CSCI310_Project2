@@ -70,7 +70,7 @@ public class ClaimShopActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         basicShop = (BasicShop)i.getSerializableExtra(BasicShop.PREF_BASIC_SHOP);
-        textClaimHeader.setText(getResources().getString(R.string.claim) + " " + basicShop.getName());
+        textClaimHeader.setText(getResources().getString(R.string.claim, basicShop.getName()));
 
         // check if shop already claimed
         Database.getInstance().setCallback(new Database.Callback() {

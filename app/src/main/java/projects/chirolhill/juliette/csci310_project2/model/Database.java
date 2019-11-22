@@ -3,6 +3,7 @@ package projects.chirolhill.juliette.csci310_project2.model;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.util.Pair;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -53,7 +54,7 @@ public class Database {
     public static final String USERS = "users";
     public static final String ORDERS = "orders";
     public static final String DRINKS = "drinks";
-    public static final String SHOPS = "shop";
+    public static final String SHOPS = "shops";
     public static final String TRIPS = "trips";
 
     private static final Database ourInstance = new Database();
@@ -130,14 +131,32 @@ public class Database {
         dbShopsRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Shop currShop;
-                if(dataSnapshot.getValue() == null) { // new shop, not in database
+                final Shop currShop;
+                if(dataSnapshot.getValue() == null) { // new shop, not in database, no need to fill values
                     currShop = null;
+                    cb.dbCallback(currShop);
                 }
                 else { // existing shop in database
                     currShop = (Shop)dataSnapshot.getValue(DatabaseShop.class).revertToOriginal();
+
+                    // fetch drink information
+                    dbDrinksRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            // populate all drinks
+                            for(Drink d : currShop.getDrinks()) {
+                                currShop.updateDrink((Drink)dataSnapshot.child(d.getId()).getValue(DatabaseDrink.class).revertToOriginal());
+                            }
+
+                            cb.dbCallback(currShop);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
                 }
-                cb.dbCallback(currShop);
             }
 
             @Override
@@ -211,14 +230,33 @@ public class Database {
         dbOrdersRef.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Order currOrder;
+                final Order currOrder;
                 if(dataSnapshot.getValue() == null) { // new order, not in database
                     currOrder = null;
+                    cb.dbCallback(currOrder);
                 }
                 else { // existing shop in database
                     currOrder = (Order)dataSnapshot.getValue(DatabaseOrder.class).revertToOriginal();
+
+                    // retrieve trip information if exists
+                    if(currOrder.getTrip() != null && currOrder.getTrip().getId() != null) {
+                        dbTripsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                currOrder.setTrip((Trip)dataSnapshot.child(currOrder.getTrip().getId()).getValue(DatabaseTrip.class).revertToOriginal());
+                                cb.dbCallback(currOrder);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                    else {
+                        cb.dbCallback(currOrder);
+                    }
                 }
-                cb.dbCallback(currOrder);
             }
 
             @Override
@@ -231,11 +269,50 @@ public class Database {
     // returns the key at which order was added
     public String addOrder(Order order) {
         try {
-            if(order.getId() == null) {
+            final boolean newOrder;
+            if(order.getId() == null) { // new order
+                newOrder = true;
                 DatabaseReference newOrderRef = dbOrdersRef.push();
                 order.setId(newOrderRef.getKey());
             }
+            else {
+                newOrder = false;
+            }
             dbOrdersRef.child(order.getId()).setValue(new DatabaseOrder(order));
+
+            // update all the drinks based on number ordered in this order
+            for(Map.Entry<String, Pair<Drink, Integer>> orderPair : order.getDrinks().entrySet()) {
+                final Pair<Drink, Integer> drinkPair = orderPair.getValue();
+                dbDrinksRef.child(orderPair.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        // retrieve drink
+                        Drink currDrink;
+                        if(dataSnapshot.getValue() == null) { // drink DNE
+                            currDrink = null;
+                        }
+                        else {
+                            currDrink = (Drink)dataSnapshot.getValue(DatabaseDrink.class).revertToOriginal();
+                        }
+
+                        // update curr drink based on order
+                        if(newOrder) {
+                            currDrink.increaseTimesOrdered(drinkPair.second);
+                        }
+                        else { // update order, update total drinks based on delta
+                            //TODO find delta between old and updated order to accurately update total times ordered
+                        }
+
+                        // add back the drink
+                        addDrink(currDrink);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
         } catch(DatabaseException de) {
             Log.d(TAG, de.getMessage());
             return de.getMessage();

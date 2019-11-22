@@ -38,6 +38,8 @@ public class ShopInfoActivity extends AppCompatActivity {
     private ImageView imageShop;
     private RatingBar ratingBar;
     private TextView textPrice;
+//    private TextView textTotalRevenue;
+//    private TextView textTotalOrders;
     private TextView textItems;
     private TextView textAddress;
     private ListView listDrinks;
@@ -61,6 +63,8 @@ public class ShopInfoActivity extends AppCompatActivity {
         imageShop = findViewById(R.id.imageShop);
         ratingBar = findViewById(R.id.ratingBar);
         textPrice = findViewById(R.id.textPrice);
+//        textTotalRevenue = findViewById(R.id.textTotalRevenue);
+//        textTotalOrders = findViewById(R.id.textTotalOrders);
         textItems = findViewById(R.id.textItems);
         textAddress = findViewById(R.id.textAddress);
         listDrinks = findViewById(R.id.list);
@@ -225,6 +229,7 @@ public class ShopInfoActivity extends AppCompatActivity {
             }
 
             TextView textName = convertView.findViewById(R.id.listDrinkName);
+            TextView textTimesOrdered = convertView.findViewById(R.id.listDrinkTimesOrdered);
             TextView textType = convertView.findViewById(R.id.listDrinkType);
             TextView textCaffeine = convertView.findViewById(R.id.listDrinkCaffeine);
             TextView textPrice = convertView.findViewById(R.id.listDrinkPrice);
@@ -234,6 +239,13 @@ public class ShopInfoActivity extends AppCompatActivity {
 
             // copy/map the data from the current item (model) to the curr row (view)
             textName.setText(d.getName());
+            if(isMerchant) {
+                textTimesOrdered.setVisibility(View.VISIBLE);
+                textTimesOrdered.setText(getResources().getString(R.string.totalOrders, d.getTimesOrdered()));
+            }
+            else {
+                textTimesOrdered.setVisibility(View.GONE);
+            }
             textType.setText(d.isCoffee() ? getResources().getString(R.string.coffee) : getResources().getString(R.string.tea));
             textCaffeine.setText(getResources().getString(R.string.milligrams, d.getCaffeine()));
             textPrice.setText(getResources().getString(R.string.dollars, d.getPrice()));

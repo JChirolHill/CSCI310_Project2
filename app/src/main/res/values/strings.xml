@@ -27,7 +27,9 @@
     <string name="myshops">My Shops</string>
     <string name="myorders">My Orders</string>
     <string name="logout">Log Out</string>
-
+    <string name="textTitle">Profile Details, %s</string>
+    <string name="sureChangeToMerchant">All your customer order information will be wiped.  Are you sure you want to become a merchant?</string>
+    <string name="sureChangeToCustomer">All your merchant shop information will be wiped.  Are you sure you want to become a customer?</string>
 
     <!-- ShopList activity -->
     <string name="shopsown">Shops You Own</string>
@@ -53,12 +55,14 @@
     <string name="logOrder">Log Order</string>
     <string name="undo">Undo</string>
     <string name="drinkDeleted">Drink Deleted</string>
+    <string name="totalRevenue">Total Revenue: $%1$.2f</string>
+    <string name="totalOrders">Total Orders: %1$d</string>
 
     <!-- Claim shop activity -->
     <string name="title_activity_claim_shop">ClaimShopActivity</string>
     <string name="verificationDocsPrompt">Please take a picture of the documents as proof of ownership.</string>
     <string name="capture">Capture</string>
-    <string name="claim">Claim</string>
+    <string name="claim">Claim %s</string>
     <string name="submit">Submit</string>
     <string name="alreadyHasOwner">This shop already has an owner.</string>
     <string name="failedImgUpload">Failed to upload images.</string>
@@ -86,6 +90,8 @@
     <string name="caffeineContent">Caffeine Content (mg):</string>
     <string name="typeDrink">Type of Drink</string>
     <string name="drinkName">Drink Name:</string>
+    <string name="drinkPrice">$ %1$.2f</string>
+    <string name="caffeineInput">%d</string>
 
     <!-- Create order activity -->
     <string name="title_activity_create_order">CreateOrderActivity</string>
@@ -98,6 +104,8 @@
     <string name="overCaffeineLevel">This order would put your caffeine level above the recommended 400mg.</string>
     <string name="proceed">Proceed</string>
     <string name="emptyOrder">Your order appears to be empty</string>
+    <string name="itemPrice">$ %1$.2f</string>
+    <string name="x">x%d</string>
 
     <!-- Log activity -->
     <string name="title_activity_log">LogActivity</string>
