@@ -1,6 +1,7 @@
 package projects.chirolhill.juliette.csci310_project2.model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +15,22 @@ public class Trip {
     public Trip(String id) {
         this.id = id;
         directions = new ArrayList<>();
+    }
+
+    public Trip(String destination, int hours, int minutes) {
+        this.destination = destination;
+        directions = new ArrayList<>();
+        timeArrived = new Date();
+        // use calendar to add an interval to date
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(timeDiscover);
+
+        // manipulate date
+        cal.add(Calendar.HOUR, hours);
+        cal.add(Calendar.MINUTE, minutes);
+
+        // convert calendar to date
+        timeArrived = cal.getTime();
     }
 
     public Trip(String destination, Date timeDiscover) {

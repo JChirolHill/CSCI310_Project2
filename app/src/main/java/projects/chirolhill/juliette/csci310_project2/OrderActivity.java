@@ -222,6 +222,14 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                             i.putExtra("EXTRA_EDITABLE", true);
                             i.putExtra(Shop.PREF_SHOP, currShop);
                             i.putExtra("EXTRA_DATE", currOrder.getDate());
+
+                            Map<String, Pair<Drink, Integer>> map = currOrder.getDrinks();
+                            StringBuilder sb = new StringBuilder();
+                            for(Map.Entry<String, Pair<Drink, Integer>> entry : map.entrySet()){
+                                sb.append(entry.getKey()).append(",").append(entry.getValue().second).append(" ");
+                            }
+
+                            i.putExtra("EXTRA_DRINKS", sb.toString());
                             startActivityForResult(i, REQUEST_CODE_UPDATE_ORDER);
 //                        }
                     }

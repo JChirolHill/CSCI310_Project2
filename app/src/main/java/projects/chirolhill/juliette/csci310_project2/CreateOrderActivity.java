@@ -69,6 +69,7 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
     private String userID;
     private Date date;
     private boolean editable;
+    private String drinkStr;
 
     private DateFormat dateFormat;
     private EditText editDate;
@@ -117,6 +118,7 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
 
         editable = (boolean)i.getSerializableExtra("EXTRA_EDITABLE");
         date = (Date)i.getSerializableExtra("EXTRA_DATE");
+        drinkStr = (String)i.getSerializableExtra("EXTRA_DRINKS");
         Drink passedIn = (Drink) i.getSerializableExtra(Drink.EXTRA_DRINK);
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         userID = prefs.getString(User.PREF_USER_ID, "Invalid ID");
@@ -131,6 +133,19 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
         // add drink that was passed in to this order
         if(passedIn != null) {
             order.addDrink(passedIn);
+        }
+
+        if(editable) {
+            //split by space
+            String[] drinksStr = drinkStr.split("\\s+");
+            for(String s: drinksStr){
+                String[] drinkArr = s.split(",");
+                int amount = Integer.valueOf(drinkArr[1]);
+                for(int j = 0; j < amount; ++j){
+                    order.addDrink(new Drink(drinkArr[0], currShop.getId()));
+                }
+            }
+            displayInfo();
         }
 
         // add a trip if the order is new
@@ -314,7 +329,14 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
             // add trip to database
             order.getTrip().setId(Database.getInstance().addTrip(order.getTrip()));
 
+            // add date to order if editable
+            if(editable) {
+                Date tempDate = editDate.getText()....
+                order.setDate(tempDate);
+            }
+
             // add order to database
+            order.setTrip(new Trip(currShop.getId(), ));
             order.setId(Database.getInstance().addOrder(order));
 
             // get user from database
@@ -419,6 +441,7 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
         textTripPrompt.setVisibility(View.VISIBLE);
         spinnerTripHrs.setVisibility(View.VISIBLE);
         spinnerTripMins.setVisibility(View.VISIBLE);
+        textCreateOrderTitle.setText("Edit Order");
     }
 
     @Override
