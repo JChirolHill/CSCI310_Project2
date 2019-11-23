@@ -36,8 +36,10 @@ public class DatabaseOrder implements DatabaseAdapter {
         this.drinks = new HashMap<>();
         this.totalCostFromCoffee = 0;
         this.totalCostFromTea = 0;
+        this.totalCost = 0;
         this.totalCaffeineFromCoffee = 0;
         this.totalCaffeineFromTea = 0;
+        this.totalCaffeine = 0;
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         this.date = dateFormat.format(o.getDate());

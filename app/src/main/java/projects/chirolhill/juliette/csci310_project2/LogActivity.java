@@ -9,13 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.androidplot.util.PixelUtils;
 import com.androidplot.xy.BarFormatter;
@@ -29,8 +23,6 @@ import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.YValueMarker;
 
-import java.lang.reflect.Array;
-import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
@@ -39,13 +31,11 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
-import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.Customer;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
@@ -66,9 +56,13 @@ public class LogActivity extends AppCompatActivity {
     private List<Order> orders;
 
     private DateIntegerSeries caffeineSeries;
+    private DateIntegerSeries caffeineFromCoffeeSeries;
+    private DateIntegerSeries caffeineFromTeaSeries;
     private XYPlot caffeineBarChart;
-    private BarRenderer caffineBarChartRenderer;
+    private BarRenderer caffeineBarChartRenderer;
     private DateDoubleSeries expenditureSeries;
+    private DateDoubleSeries coffeeExpenditureSeries;
+    private DateDoubleSeries teaExpenditureSeries;
     private XYPlot moneyXYPlot;
     private LineAndPointRenderer moneyXYPlotRenderer;
 
@@ -164,11 +158,19 @@ public class LogActivity extends AppCompatActivity {
         ArrayList<LocalDate> orderedListOfMapDays = new ArrayList<LocalDate>();
 
         HashMap<LocalDate, Integer> dateToCaffeineMap = new HashMap<LocalDate, Integer>();
+        HashMap<LocalDate, Integer> dateToCoffeeCaffeineMap = new HashMap<LocalDate, Integer>();
+        HashMap<LocalDate, Integer> dateToTeaCaffeineMap = new HashMap<LocalDate, Integer>();
         HashMap<LocalDate, Double> dateToExpenditureMap = new HashMap<LocalDate, Double>();
+        HashMap<LocalDate, Double> dateToCoffeeExpenditureMap = new HashMap<LocalDate, Double>();
+        HashMap<LocalDate, Double> dateToTeaExpenditureMap = new HashMap<LocalDate, Double>();
         for (int i = 0; i < 8; i++) {
             LocalDate date = ONE_WEEK_AGO.plusDays(i);
             dateToCaffeineMap.put(date, 0);
+            dateToCoffeeCaffeineMap.put(date, 0);
+            dateToTeaCaffeineMap.put(date, 0);
             dateToExpenditureMap.put(date, 0.0);
+            dateToCoffeeExpenditureMap.put(date, 0.0);
+            dateToTeaExpenditureMap.put(date, 0.0);
             orderedListOfMapDays.add(date);
         }
 
@@ -259,10 +261,10 @@ public class LogActivity extends AppCompatActivity {
         caffeineBarChart.addSeries(caffeineSeries, coffeeBarFormatter);
         // caffeineBarChart.addSeries(teaSeries, teaBarFormatter);
 
-        // initialize bar caffineBarChartRenderer (must be done after set formatter and add series to the plot)
-        caffineBarChartRenderer = caffeineBarChart.getRenderer(BarRenderer.class);
-        caffineBarChartRenderer.setBarGroupWidth(BarRenderer.BarGroupWidthMode.FIXED_WIDTH, PixelUtils.dpToPix(25));
-        caffineBarChartRenderer.setBarOrientation(BarRenderer.BarOrientation.STACKED);
+        // initialize bar caffeineBarChartRenderer (must be done after set formatter and add series to the plot)
+        caffeineBarChartRenderer = caffeineBarChart.getRenderer(BarRenderer.class);
+        caffeineBarChartRenderer.setBarGroupWidth(BarRenderer.BarGroupWidthMode.FIXED_WIDTH, PixelUtils.dpToPix(25));
+        caffeineBarChartRenderer.setBarOrientation(BarRenderer.BarOrientation.STACKED);
 
         // X-AXIS = date values, formatted as "10/27"
         caffeineBarChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new xAxisDateFormat());

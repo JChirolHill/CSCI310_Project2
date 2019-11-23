@@ -83,32 +83,72 @@ public class Order {
         this.date = date;
     }
 
-    public double getTotalCostFromCoffee() {
-        return totalCostFromCoffee;
+    private double calcTotalCostFromCoffee() {
+        double total = 0.0;
+        for (Map.Entry<String, Pair<Drink, Integer>> entry : drinks.entrySet()) {
+            Drink drink = entry.getValue().first;
+            int quantity = entry.getValue().second;
+            if (drink.isCoffee()) total += drink.getPrice() * quantity;
+        }
+        totalCostFromCoffee = total;
+        return total;
+    }
+
+    public double getTotalCostFromCoffee(boolean calc) {
+        return (calc ? calcTotalCostFromCoffee() : totalCostFromCoffee);
     }
 
     public void setTotalCostFromCoffee(double totalCostFromCoffee) {
         this.totalCostFromCoffee = totalCostFromCoffee;
     }
 
-    public double getTotalCostFromTea() {
-        return totalCostFromTea;
+    private double calcTotalCostFromTea() {
+        double total = 0.0;
+        for (Map.Entry<String, Pair<Drink, Integer>> entry : drinks.entrySet()) {
+            Drink drink = entry.getValue().first;
+            int quantity = entry.getValue().second;
+            if (!drink.isCoffee()) total += drink.getPrice() * quantity;
+        }
+        totalCostFromTea = total;
+        return total;
     }
 
-    public void setTotalCostFromTea(double totalCostFromTea) {
-        this.totalCostFromTea = totalCostFromTea;
+    public double getTotalCostFromTea(boolean calc) {
+        return (calc ? calcTotalCostFromTea() : totalCostFromTea);
     }
 
-    public int getTotalCaffeineFromCoffee() {
-        return totalCaffeineFromCoffee;
+    private int calcTotalCaffeineFromCoffee() {
+        int total = 0;
+        for (Map.Entry<String, Pair<Drink, Integer>> entry : drinks.entrySet()) {
+            Drink drink = entry.getValue().first;
+            int quantity = entry.getValue().second;
+            if (drink.isCoffee()) total += drink.getCaffeine() * quantity;
+        }
+        totalCaffeineFromCoffee = total;
+        return total;
+    }
+
+    public int getTotalCaffeineFromCoffee(boolean calc) {
+        return (calc ? calcTotalCaffeineFromCoffee() : totalCaffeineFromCoffee);
     }
 
     public void setTotalCaffeineFromCoffee(int totalCaffeineFromCoffee) {
         this.totalCaffeineFromCoffee = totalCaffeineFromCoffee;
     }
 
-    public int getTotalCaffeineFromTea() {
-        return totalCaffeineFromTea;
+    private int calcTotalCaffeineFromTea() {
+        int total = 0;
+        for (Map.Entry<String, Pair<Drink, Integer>> entry : drinks.entrySet()) {
+            Drink drink = entry.getValue().first;
+            int quantity = entry.getValue().second;
+            if (!drink.isCoffee()) total += drink.getCaffeine() * quantity;
+        }
+        totalCaffeineFromTea = total;
+        return total;
+    }
+
+    public int getTotalCaffeineFromTea(boolean calc) {
+        return (calc ? calcTotalCaffeineFromTea() : totalCaffeineFromTea);
     }
 
     public void setTotalCaffeineFromTea(int totalCaffeineFromTea) {
@@ -132,10 +172,8 @@ public class Order {
     }
 
     private double calcTotalCost() {
-        double total = 0.0;
-        for (Map.Entry<String, Pair<Drink, Integer>> entry : drinks.entrySet()) {
-            total += entry.getValue().first.getPrice() * entry.getValue().second;
-        }
+        double total = calcTotalCostFromCoffee() + calcTotalCostFromTea();
+        totalCost = total;
         return total;
     }
 
@@ -146,10 +184,8 @@ public class Order {
 
     // returns caffeine amount in milligrams
     private int calcTotalCaffeine() {
-        int total = 0;
-        for (Map.Entry<String, Pair<Drink, Integer>> entry : drinks.entrySet()) {
-            total += entry.getValue().first.getCaffeine() * entry.getValue().second;
-        }
+        int total = calcTotalCaffeineFromCoffee() + calcTotalCaffeineFromTea();
+        totalCaffeine = total;
         return total;
     }
 
