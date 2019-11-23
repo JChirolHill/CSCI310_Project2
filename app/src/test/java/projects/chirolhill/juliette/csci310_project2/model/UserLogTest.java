@@ -12,6 +12,8 @@ public class UserLogTest {
     private UserLog log0;
     private UserLog log1;
     private UserLog log2;
+    private UserLog log3;
+    private UserLog log4;
     private Order o0;
     private Order o1;
     private Drink d0;
@@ -42,6 +44,45 @@ public class UserLogTest {
         o1.addDrink(d1);
         log2 = new UserLog(c0);
         log2.addOrder(o1);
+
+        log3 = new UserLog(c0);
+        log4 = new UserLog(c0);
+    }
+
+    @Test
+    public void getOwner() {
+        assertEquals(c0, log0.getOwner());
+        assertEquals(c0, log1.getOwner());
+        assertEquals(c0, log2.getOwner());
+        assertEquals(c0, log3.getOwner());
+    }
+
+    @Test
+    public void getOrders() {
+        // no orders
+        assertEquals(0, log3.getOrders().size());
+
+        // multiple orders
+        log3.addOrder(o0);
+        log3.addOrder(o1);
+        assertEquals(2, log3.getOrders().size());
+    }
+
+    @Test
+    public void removeOrder() {
+        log4.addOrder(o1);
+
+        // remove null
+        log4.removeOrder(null);
+        assertEquals(1, log4.getOrders().size());
+
+        // remove invalid order
+        log4.removeOrder("One Ring To Rule Them All");
+        assertEquals(1, log4.getOrders().size());
+
+        // remove valid order
+        log4.removeOrder("o1");
+        assertEquals(0, log4.getOrders().size());
     }
 
     @Test
