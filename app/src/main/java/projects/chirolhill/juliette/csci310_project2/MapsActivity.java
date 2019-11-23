@@ -94,14 +94,10 @@ public class MapsActivity extends FragmentActivity implements
 //    private ArrayAdapter<String> adapter;
 //    private String[] steps_str_list;
 
-
-
-            @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
-
 
         // Get reference of widgets from XML layout
         lv = (ListView) findViewById(R.id.bottom_sheet_content);
@@ -121,10 +117,6 @@ public class MapsActivity extends FragmentActivity implements
 
         // DataBind ListView with items from ArrayAdapter
         lv.setAdapter(arrayAdapter);
-
-
-
-
 
         shopListing = new HashMap<>();
 
@@ -184,17 +176,12 @@ public class MapsActivity extends FragmentActivity implements
         btnDrive.setBackgroundColor(Color.TRANSPARENT);
         btnWalk.setBackgroundColor(Color.TRANSPARENT);
 
-
-
-
 //        lv = findViewById(R.id.bottom_sheet_content);
 //        steps_str_list = new String[]{"k1", "k2"};
 //
 //        steps_list = new ArrayList<String>(Arrays.asList(steps_str_list));
 //        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, steps_list);
 //        lv.setAdapter(adapter);
-
-
     }
 
     @Override
@@ -207,6 +194,7 @@ public class MapsActivity extends FragmentActivity implements
                 btnTimer.setText("Start Timer");
             }
         }
+        // TODO incorporate the trip logic here
     }
 
     public void recedeDisplay(){
@@ -495,7 +483,8 @@ public class MapsActivity extends FragmentActivity implements
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
     }
-        public void drawUpdatedList() {
+
+    public void drawUpdatedList() {
         // add markers for all coffeeshops
         for (MapShop ms : yelpFetcher.getShops()) {
             String snippet = "Rating: " + Double.toString(ms.getRating());
