@@ -87,6 +87,7 @@ public class Order {
         this.date = date;
     }
 
+    // For calc/getter methods: pass true to calculate val from drink list, false to get attribute val
     // COSTS
     // Coffee
     private double calcTotalCostFromCoffee() {
@@ -99,7 +100,6 @@ public class Order {
         if (total > 0) totalCostFromCoffee = total; // if the drink data isn't populated, you'll get 0
         return total;
     }
-
     public double getTotalCostFromCoffee(boolean calc) {
         return (calc ? calcTotalCostFromCoffee() : totalCostFromCoffee);
     }
@@ -117,12 +117,23 @@ public class Order {
         if (total > 0) totalCostFromTea = total;
         return total;
     }
-
     public double getTotalCostFromTea(boolean calc) {
         return (calc ? calcTotalCostFromTea() : totalCostFromTea);
     }
     public void setTotalCostFromTea(double totalCostFromTea) {
         this.totalCostFromTea = totalCostFromTea;
+    }
+    // TOTAL
+    private double calcTotalCost() {
+        double total = calcTotalCostFromCoffee() + calcTotalCostFromTea();
+        if (total > 0) totalCost = total;
+        return total;
+    }
+    public double getTotalCost(boolean calc) {
+        return (calc ? calcTotalCost() : totalCost);
+    }
+    public void setTotalCost(double totalCost) {
+        this.totalCost = totalCost;
     }
 
     // CAFFEINE
@@ -137,7 +148,6 @@ public class Order {
         if (total > 0) totalCaffeineFromCoffee = total;
         return total;
     }
-
     public int getTotalCaffeineFromCoffee(boolean calc) {
         return (calc ? calcTotalCaffeineFromCoffee() : totalCaffeineFromCoffee);
     }
@@ -155,36 +165,18 @@ public class Order {
         if (total > 0) totalCaffeineFromTea = total;
         return total;
     }
-
     public int getTotalCaffeineFromTea(boolean calc) {
         return (calc ? calcTotalCaffeineFromTea() : totalCaffeineFromTea);
     }
     public void setTotalCaffeineFromTea(int totalCaffeineFromTea) {
         this.totalCaffeineFromTea = totalCaffeineFromTea;
     }
-
-    // TOTAL COST
-    private double calcTotalCost() {
-        double total = calcTotalCostFromCoffee() + calcTotalCostFromTea();
-        if (total > 0) totalCost = total;
-        return total;
-    }
-    // pass in true to calculate from list of drinks, false if just get attribute value
-    public double getTotalCost(boolean calc) {
-        return (calc ? calcTotalCost() : totalCost);
-    }
-    public void setTotalCost(double totalCost) {
-        this.totalCost = totalCost;
-    }
-
-    // TOTAL CAFFEINE
-    // returns caffeine amount in milligrams
+    // TOTAL
     private int calcTotalCaffeine() {
         int total = calcTotalCaffeineFromCoffee() + calcTotalCaffeineFromTea();
         if (total > 0) totalCaffeine = total;
         return total;
     }
-    // pass in true to calculate from list of drinks, false if just get attribute value4
     public int getTotalCaffeine(boolean calc) {
         return (calc ? calcTotalCaffeine() : totalCaffeine);
     }
