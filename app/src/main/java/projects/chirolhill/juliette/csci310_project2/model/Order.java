@@ -26,7 +26,11 @@ public class Order {
     public Order(String id) {
         this.id = id;
         drinks = new HashMap<>();
+        totalCostFromCoffee = 0;
+        totalCostFromTea = 0;
         totalCost = -1;
+        totalCaffeineFromCoffee = 0;
+        totalCaffeineFromTea = 0;
         totalCaffeine = -1;
     }
 
