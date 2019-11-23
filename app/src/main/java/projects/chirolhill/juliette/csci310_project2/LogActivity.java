@@ -190,6 +190,16 @@ public class LogActivity extends AppCompatActivity {
                 orderCaffeineLevel += (order.getTotalCaffeine(true) > 0 ? order.getTotalCaffeine(true) :
                         order.getTotalCaffeine(false) > 0 ? order.getTotalCaffeine(false) : 0);
                 dateToCaffeineMap.put(tempDate, dateToCaffeineMap.get(tempDate) + orderCaffeineLevel);
+                // coffee caffeine
+                int orderCaffeineLevelFromCoffee = 0;
+                orderCaffeineLevelFromCoffee += (order.getTotalCaffeineFromCoffee(true) > 0 ? order.getTotalCaffeineFromCoffee(true) :
+                        order.getTotalCaffeineFromCoffee(false) > 0 ? order.getTotalCaffeineFromCoffee(false) : 0);
+                dateToCoffeeCaffeineMap.put(tempDate, dateToCaffeineMap.get(tempDate) + orderCaffeineLevelFromCoffee);
+                // tea caffeine
+                int orderCaffeineLevelFromTea = 0;
+                orderCaffeineLevelFromTea += (order.getTotalCaffeineFromTea(true) > 0 ? order.getTotalCaffeineFromTea(true) :
+                        order.getTotalCaffeineFromTea(false) > 0 ? order.getTotalCaffeineFromTea(false) : 0);
+                dateToTeaCaffeineMap.put(tempDate, dateToTeaCaffeineMap.get(tempDate) + orderCaffeineLevelFromTea);
 
                 // EXPENDITURES
                 // attempt to calculate an expenditure value, either by refreshing or static; otherwise, assume 0
