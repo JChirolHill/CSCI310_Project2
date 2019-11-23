@@ -46,7 +46,7 @@ public class DateDoubleSeries implements XYSeries {
     }
 
     // useful for determining how high to set the max Y value on the graph
-    public double getmaxYValue() {
+    public double getMaxYValue() {
         if (maxYValue == null) {
             double tempMax = 0;
             for (int i = 0; i < ySeries.size(); i++) {
