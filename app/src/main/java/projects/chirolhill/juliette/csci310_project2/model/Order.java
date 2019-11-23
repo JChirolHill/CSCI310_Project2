@@ -96,7 +96,7 @@ public class Order {
             int quantity = entry.getValue().second;
             if (drink.isCoffee()) total += (drink.getPrice() * quantity);
         }
-        totalCostFromCoffee = total;
+        if (total > 0) totalCostFromCoffee = total; // if the drink data isn't populated, you'll get 0
         return total;
     }
 
@@ -114,7 +114,7 @@ public class Order {
             int quantity = entry.getValue().second;
             if (!drink.isCoffee()) total += (drink.getPrice() * quantity);
         }
-        totalCostFromTea = total;
+        if (total > 0) totalCostFromTea = total;
         return total;
     }
 
@@ -134,7 +134,7 @@ public class Order {
             int quantity = entry.getValue().second;
             if (drink.isCoffee()) total += (drink.getCaffeine() * quantity);
         }
-        totalCaffeineFromCoffee = total;
+        if (total > 0) totalCaffeineFromCoffee = total;
         return total;
     }
 
@@ -152,7 +152,7 @@ public class Order {
             int quantity = entry.getValue().second;
             if (!drink.isCoffee()) total += (drink.getCaffeine() * quantity);
         }
-        totalCaffeineFromTea = total;
+        if (total > 0) totalCaffeineFromTea = total;
         return total;
     }
 
@@ -166,7 +166,7 @@ public class Order {
     // TOTAL COST
     private double calcTotalCost() {
         double total = calcTotalCostFromCoffee() + calcTotalCostFromTea();
-        totalCost = total;
+        if (total > 0) totalCost = total;
         return total;
     }
     // pass in true to calculate from list of drinks, false if just get attribute value
@@ -181,7 +181,7 @@ public class Order {
     // returns caffeine amount in milligrams
     private int calcTotalCaffeine() {
         int total = calcTotalCaffeineFromCoffee() + calcTotalCaffeineFromTea();
-        totalCaffeine = total;
+        if (total > 0) totalCaffeine = total;
         return total;
     }
     // pass in true to calculate from list of drinks, false if just get attribute value4
