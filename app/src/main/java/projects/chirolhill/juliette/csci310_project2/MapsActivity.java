@@ -293,17 +293,13 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     /**
-     * Allows a click of a given marker's info window to trigger a directions query.
+     * For now, just removes leftover polylines.
      * @param marker
-     *
-     * POTENTIALLY REMOVE BECAUSE WE MIGHT SWITCH TO CLICKING WITHIN A DRAWER
-     */
+     **/
     @Override
     public void onInfoWindowClick(Marker marker) {
         // remove old polylines
         for (Polyline p : polylines) p.remove();
-
-//        calculateDirections(marker, "driving");
     }
 
     /**
@@ -349,11 +345,12 @@ public class MapsActivity extends FragmentActivity implements
      */
     public Trip setupTrip(final Marker marker) {
         final Trip trip = new Trip();
+        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 
         // a snackbar to display the "Cancel Trip" option
         final Snackbar cancelTripPopUp;
 
-        // a periodic task for checking the user's distance from the shop. runs every 10 seconds
+        // a periodic task for checking the user's distance from the shop. runs every 5 seconds
         final Runnable mapChecker = new Runnable() {
             @Override
             public void run() {
@@ -363,8 +360,16 @@ public class MapsActivity extends FragmentActivity implements
                 ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                 return;
             } else {
-                // compute the user's current location from the shop's
                 Location currLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+
+                // on-screen: zoom in, follow user's movement
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(new LatLng(currLocation.getLatitude(), currLocation.getLongitude()))
+                        .zoom(18)
+                        .build();
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                // compute the user's current location from the shop's
                 float[] distances = new float[1];
                 Location.distanceBetween(currLocation.getLatitude(), currLocation.getLongitude(),
                         marker.getPosition().latitude, marker.getPosition().longitude, distances);
@@ -374,6 +379,9 @@ public class MapsActivity extends FragmentActivity implements
                 if (distances[0] < 25) {
                     // TODO: dismiss the 'cancel trip' snackbar?
                     trip.setTimeArrived(new Date(System.currentTimeMillis()));
+
+                    // remove polylines
+                    for (Polyline p : polylines) p.remove();
 
                     // trip concluded --> display shop details
                     BasicShop selectedShop = new BasicShop(shopListing.get(marker));
@@ -394,7 +402,7 @@ public class MapsActivity extends FragmentActivity implements
                     return;
                 }
             }
-            handler.postDelayed(this, 10000); // check the user's location every 10 seconds
+            handler.postDelayed(this, 5000); // check the user's location every 5 seconds
             }
         };
 
@@ -402,6 +410,8 @@ public class MapsActivity extends FragmentActivity implements
             .setAction("End Trip", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // remove polylines
+                    for (Polyline p : polylines) p.remove();
                     // make map clickable again
                     mMap.getUiSettings().setAllGesturesEnabled(true);
                     handler.removeCallbacks(mapChecker);
