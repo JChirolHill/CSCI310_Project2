@@ -30,7 +30,7 @@ public class OrderTest {
         d1.setId("d1");
         d1.setCaffeine(52);
         d1.setPrice((float)15.32);
-        d2 = new Drink(true, "s0");
+        d2 = new Drink(false, "s0");
         d2.setId("d2");
         d2.setCaffeine(200);
         d2.setPrice((float)5.99);
@@ -165,7 +165,11 @@ public class OrderTest {
         assertEquals(-1, o2.getTotalCost(false), 0.009);
 
         // after set
+        o2.setTotalCostFromCoffee(4.50f);
+        o2.setTotalCostFromTea(1.25f);
         o2.setTotalCost(14);
+        assertEquals(4.50f, o2.getTotalCostFromCoffee(false), 0.009);
+        assertEquals(1.25f, o2.getTotalCostFromTea(false), 0.009);
         assertEquals(14, o2.getTotalCost(false), 0.009);
     }
 
@@ -175,7 +179,11 @@ public class OrderTest {
         assertEquals(-1, o2.getTotalCaffeine(false));
 
         // after set
+        o2.setTotalCaffeineFromCoffee(100);
+        o2.setTotalCaffeineFromTea(200);
         o2.setTotalCaffeine(300);
+        assertEquals(100, o2.getTotalCaffeineFromCoffee(false));
+        assertEquals(200, o2.getTotalCaffeineFromTea(false));
         assertEquals(300, o2.getTotalCaffeine(false));
     }
 
@@ -185,12 +193,16 @@ public class OrderTest {
         assertFalse(o2.addDrink(d1));
         assertEquals(1, o2.getNumItemsOrdered());
         assertEquals(52, o2.getTotalCaffeine(true));
+        assertEquals(52, o2.getTotalCaffeineFromCoffee(true));
+        assertEquals(0, o2.getTotalCaffeineFromTea(true));
         assertEquals(15.32f, o2.getTotalCost(true), 0.009);
 
         // add same order
         assertFalse(o2.addDrink(d1));
         assertEquals(2, o2.getNumItemsOrdered());
         assertEquals(104, o2.getTotalCaffeine(true));
+        assertEquals(104, o2.getTotalCaffeineFromCoffee(true));
+        assertEquals(0, o2.getTotalCaffeineFromTea(true));
         assertEquals(30.64f, o2.getTotalCost(true), 0.009);
 
         // add past the limit
@@ -198,6 +210,8 @@ public class OrderTest {
         assertTrue(o2.addDrink(d2));
         assertEquals(4, o2.getNumItemsOrdered());
         assertEquals(504, o2.getTotalCaffeine(true));
+        assertEquals(104, o2.getTotalCaffeineFromCoffee(true));
+        assertEquals(400, o2.getTotalCaffeineFromTea(true));
         assertEquals(42.62f, o2.getTotalCost(true), 0.009);
     }
 

@@ -106,9 +106,13 @@ public class Order {
         for (Map.Entry<String, Pair<Drink, Integer>> entry : drinks.entrySet()) {
             Drink drink = entry.getValue().first;
             int quantity = entry.getValue().second;
-            if (drink.isCoffee()) total += (drink.getPrice() * quantity);
+            if (drink.isCoffee()) {
+                total += (drink.getPrice() * quantity);
+            }
         }
-        if (total > 0) totalCostFromCoffee = total; // if the drink data isn't populated, you'll get 0
+        if (total > 0) {
+            totalCostFromCoffee = total; // if the drink data isn't populated, you'll get 0
+        }
         return total;
     }
     public double getTotalCostFromCoffee(boolean calc) {
@@ -123,9 +127,13 @@ public class Order {
         for (Map.Entry<String, Pair<Drink, Integer>> entry : drinks.entrySet()) {
             Drink drink = entry.getValue().first;
             int quantity = entry.getValue().second;
-            if (!drink.isCoffee()) total += (drink.getPrice() * quantity);
+            if (!drink.isCoffee()) {
+                total += (drink.getPrice() * quantity);
+            }
         }
-        if (total > 0) totalCostFromTea = total;
+        if (total > 0) {
+            totalCostFromTea = total;
+        }
         return total;
     }
     public double getTotalCostFromTea(boolean calc) {
@@ -137,7 +145,9 @@ public class Order {
     // TOTAL
     private double calcTotalCost() {
         double total = calcTotalCostFromCoffee() + calcTotalCostFromTea();
-        if (total > 0) totalCost = total;
+        if (total > 0) {
+            totalCost = total;
+        }
         return total;
     }
     public double getTotalCost(boolean calc) {
@@ -154,9 +164,13 @@ public class Order {
         for (Map.Entry<String, Pair<Drink, Integer>> entry : drinks.entrySet()) {
             Drink drink = entry.getValue().first;
             int quantity = entry.getValue().second;
-            if (drink.isCoffee()) total += (drink.getCaffeine() * quantity);
+            if (drink.isCoffee()) {
+                total += (drink.getCaffeine() * quantity);
+            }
         }
-        if (total > 0) totalCaffeineFromCoffee = total;
+        if (total > 0) {
+            totalCaffeineFromCoffee = total;
+        }
         return total;
     }
     public int getTotalCaffeineFromCoffee(boolean calc) {
@@ -171,9 +185,13 @@ public class Order {
         for (Map.Entry<String, Pair<Drink, Integer>> entry : drinks.entrySet()) {
             Drink drink = entry.getValue().first;
             int quantity = entry.getValue().second;
-            if (!drink.isCoffee()) total += (drink.getCaffeine() * quantity);
+            if (!drink.isCoffee()) {
+                total += (drink.getCaffeine() * quantity);
+            }
         }
-        if (total > 0) totalCaffeineFromTea = total;
+        if (total > 0) {
+            totalCaffeineFromTea = total;
+        }
         return total;
     }
     public int getTotalCaffeineFromTea(boolean calc) {
@@ -185,7 +203,9 @@ public class Order {
     // TOTAL
     private int calcTotalCaffeine() {
         int total = calcTotalCaffeineFromCoffee() + calcTotalCaffeineFromTea();
-        if (total > 0) totalCaffeine = total;
+        if (total > 0) {
+            totalCaffeine = total;
+        }
         return total;
     }
     public int getTotalCaffeine(boolean calc) {
