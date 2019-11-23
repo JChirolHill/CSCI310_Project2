@@ -390,8 +390,9 @@ public class MapsActivity extends FragmentActivity implements
                     i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
                     i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
                     startActivity(i);
-                    // TODO: figure out how to connect this trip to whatever orders they make?
+                    // TODO create some sort of "trip summary" box to go on bottom of page
 
+                    // TODO: figure out how to connect this trip to whatever orders they make?
                     // TODO check if shop is in DB and add if not?
                     trip.setId(Database.getInstance().addTrip(trip));
 
