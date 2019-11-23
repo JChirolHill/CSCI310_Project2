@@ -157,6 +157,9 @@ public class CreateOrderActivity extends AppCompatActivity {
                             .setAction(getResources().getString(R.string.proceed), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
+                                    // triggers the calculations and updates the fields in the order
+                                    order.getTotalCost(true);
+                                    order.getTotalCaffeine(true);
                                     proceedToOrder();
                                 }
                             }).show();

@@ -56,8 +56,8 @@ public class DatabaseOrder implements DatabaseAdapter {
                     totalCaffeineFromTea += drink.getCaffeine() * quantity;
                     totalCostFromTea += drink.getPrice() * quantity;
                 }
-                totalCost += (totalCostFromCoffee + totalCostFromTea);
-                totalCaffeine += (totalCaffeineFromCoffee + totalCaffeineFromTea);
+                totalCost = (totalCostFromCoffee + totalCostFromTea);
+                totalCaffeine = (totalCaffeineFromCoffee + totalCaffeineFromTea);
             }
         }
     }
