@@ -148,7 +148,7 @@ public class LogActivity extends AppCompatActivity {
 
     /**
      * Pulls out the necessary data for the graphs from the list of orders:
-     * - caffeineSeries: total daily caffeine consumption for the past week, plus current day (TODO: separate by beverage)
+     * - caffeineSeries: total daily caffeine consumption for the past week, plus current day
      * - expenditureSeries: total daily expenditures for the past week, plus current day
      * @param orders
      */
