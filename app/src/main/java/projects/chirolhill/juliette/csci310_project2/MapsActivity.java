@@ -401,8 +401,8 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     /**
-     * Calculates directions from current location to specified marker, and then create button
-     * for user to start a trip if desired.
+     * Sets up logic for the trip to the marker, calculates the directions, and triggers
+     * the necessary callbacks to update the UI.
      * Currently only provides one route (the fastest).
      */
     public void calculateDirectionsForTrip(Marker marker, String mode) {
