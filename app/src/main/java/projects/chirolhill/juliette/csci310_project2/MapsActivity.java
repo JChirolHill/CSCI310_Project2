@@ -12,6 +12,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -19,9 +20,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import android.os.Handler;
+import android.widget.ListView;
+import android.widget.TextView;
+
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,6 +53,7 @@ import java.util.Map;
 import java.util.Date;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
+import projects.chirolhill.juliette.csci310_project2.model.DirectionsStep;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.MapShop;
 import projects.chirolhill.juliette.csci310_project2.model.Shop;
@@ -62,7 +69,9 @@ public class MapsActivity extends FragmentActivity implements
         GoogleMap.OnMyLocationClickListener,
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener,
-        OnMapReadyCallback {
+        OnMapReadyCallback,
+        View.OnClickListener
+        {
     private final String TAG = MapsActivity.class.getSimpleName();
 
     //    private Button btnFindShops;
@@ -78,10 +87,44 @@ public class MapsActivity extends FragmentActivity implements
     private Marker routeDetailsMarker; // invisible, serves as an anchor for the route details info window
     final Handler handler = new Handler();
 
+    private BottomSheetBehavior mBottomSheetBehavior;
+    private TextView shopName;
+    private Button btnDrinks;
+    private Button btnDrive;
+    private Button btnWalk;
+    private Button btnTimer;
+    ListView lv;
+    List<String> steps_list;
+    ArrayAdapter<String> arrayAdapter;
+
+//    private ListView lv;
+//    private List<String> steps_list;
+//    private ArrayAdapter<String> adapter;
+//    private String[] steps_str_list;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        // Get reference of widgets from XML layout
+        lv = (ListView) findViewById(R.id.bottom_sheet_content);
+
+        // Initializing a new String Array
+        String[] steps_str_list = new String[] {
+                "Cape Gooseberry",
+                "Capuli cherry"
+        };
+
+        // Create a List from String Array elements
+        steps_list = new ArrayList<String>(Arrays.asList(steps_str_list));
+
+        // Create an ArrayAdapter from List
+        arrayAdapter = new ArrayAdapter<String>
+                (this, android.R.layout.simple_list_item_1, steps_list);
+
+        // DataBind ListView with items from ArrayAdapter
+        lv.setAdapter(arrayAdapter);
 
         shopListing = new HashMap<>();
 
@@ -117,25 +160,85 @@ public class MapsActivity extends FragmentActivity implements
         mapFragment.getMapAsync(this);
 
         polylines = new ArrayList<Polyline>();
+
+        // bottomSheet stuff
+        View bottomSheet = findViewById(R.id.bottom_sheet);
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+        shopName = findViewById(R.id.bottom_sheet_shop_name);
+        btnTimer = findViewById(R.id.btn_timer);
+        btnTimer.setOnClickListener(this);
+        btnDrinks = findViewById(R.id.btn_drinks);
+        btnDrinks.setOnClickListener(this);
+        btnDrive = findViewById(R.id.btn_drive);
+        btnDrive.setOnClickListener(this);
+        btnWalk = findViewById(R.id.btn_walk);
+        btnWalk.setOnClickListener(this);
+
+        btnDrinks.setVisibility(View.VISIBLE);
+        btnDrive.setVisibility(View.VISIBLE);
+        btnWalk.setVisibility(View.VISIBLE);
+
+        btnDrinks.setBackgroundColor(Color.TRANSPARENT);
+        btnDrive.setBackgroundColor(Color.TRANSPARENT);
+        btnWalk.setBackgroundColor(Color.TRANSPARENT);
+
+//        lv = findViewById(R.id.bottom_sheet_content);
+//        steps_str_list = new String[]{"k1", "k2"};
+//
+//        steps_list = new ArrayList<String>(Arrays.asList(steps_str_list));
+//        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, steps_list);
+//        lv.setAdapter(adapter);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btn_timer) {
+            if (btnTimer.getText().equals("Start Timer")) {
+                btnTimer.setText("Stop Timer");
+            }
+            else {
+                btnTimer.setText("Start Timer");
+            }
+        }
+        // TODO incorporate the trip logic here
+    }
+
+    public void recedeDisplay(){
+        if(mBottomSheetBehavior.getState() == 3){
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
+        else if(mBottomSheetBehavior.getState() == 4){
+            for (Polyline p : polylines) p.remove();
+            lv.setVisibility(View.GONE);
+            btnTimer.setVisibility(View.GONE);
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        }
     }
 
     @Override
     public void onBackPressed() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-        alertDialogBuilder.setMessage(getResources().getString(R.string.suresignout));
-        alertDialogBuilder.setCancelable(true);
+        if(mBottomSheetBehavior.getState() != 5) {
+            recedeDisplay();
+        }
+        else{
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setMessage(getResources().getString(R.string.suresignout));
+            alertDialogBuilder.setCancelable(true);
 
-        // want to log out, redirect to signin page
-        alertDialogBuilder.setPositiveButton(getResources().getString(R.string.logout), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent i = new Intent(getApplicationContext(), SignInActivity.class);
-                startActivity(i);
-            }
-        });
+            // want to log out, redirect to signin page
+            alertDialogBuilder.setPositiveButton(getResources().getString(R.string.logout), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent i = new Intent(getApplicationContext(), SignInActivity.class);
+                    startActivity(i);
+                }
+            });
 
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.show();
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
+        }
     }
 
     /**
@@ -205,6 +308,7 @@ public class MapsActivity extends FragmentActivity implements
                 @Override
                 public void onMapClick(LatLng latLng) {
                     for (Polyline p : polylines) p.remove();
+                    recedeDisplay();
                 }
             });
         }
@@ -227,8 +331,11 @@ public class MapsActivity extends FragmentActivity implements
         if (!mMap.getUiSettings().isScrollGesturesEnabled()) return true;
 
         // remove old polylines
-        for (Polyline p : polylines) p.remove();
+        for (Polyline p : polylines)
 
+//        lv.setText("");
+        btnDrive.setBackgroundColor(Color.TRANSPARENT);
+        btnWalk.setBackgroundColor(Color.TRANSPARENT);
         // needed to allow inner-class button listeners to access marker
         final Marker passableMarker = marker;
 
@@ -253,26 +360,11 @@ public class MapsActivity extends FragmentActivity implements
                             }
                         }).show();
             }
-            else { // customer: show option to view drinks
-                AlertDialog.Builder builder = new AlertDialog.Builder(this).setTitle(marker.getTitle());
+            else { // customer: view drinks, driving directions, walking directions
 
-                // Add the buttons
-                builder.setNeutralButton("Driving Directions", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
-                        // launch intent to view driving directions to shop here
-                        calculateDirections(passableMarker, "driving");
-                    }
-                });
-                builder.setNegativeButton("Walking Directions", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
-                        // launch intent to view walking directions to shop here
-                        calculateDirections(passableMarker, "walking");
-                    }
-                });
-                builder.setPositiveButton("View Drinks", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                btnDrinks.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View arg0) {
                         BasicShop selectedShop = new BasicShop(shopListing.get(marker));
 
                         // launch intent to view shop details here
@@ -282,10 +374,31 @@ public class MapsActivity extends FragmentActivity implements
                         startActivity(i);
                     }
                 });
+                btnDrive.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View arg0) {
+                        btnWalk.setBackgroundColor(Color.TRANSPARENT);
+                        btnDrive.setBackgroundColor(getResources().getColor(R.color.colorBackground));
+                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
+                        // launch intent to view driving directions to shop here
+                        calculateDirections(passableMarker, "driving");
 
-                // Create the AlertDialog
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                    }
+                });
+                btnWalk.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View arg0) {
+                        btnWalk.setBackgroundColor(getResources().getColor(R.color.colorBackground));
+                        btnDrive.setBackgroundColor(Color.TRANSPARENT);
+                        BasicShop selectedShop = new BasicShop(shopListing.get(marker));
+                        // launch intent to view driving directions to shop here
+                        calculateDirections(passableMarker, "walking");
+                    }
+                });
+
+                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                shopName.setText(marker.getTitle());
+
             }
         }
 
@@ -320,6 +433,7 @@ public class MapsActivity extends FragmentActivity implements
                 DirectionsResponse response = (DirectionsResponse) o;
                 drawPolyline(response);
                 Trip trip = setupTrip(finalMarker);
+                displaySteps(response);
             }
         });
 
@@ -439,6 +553,7 @@ public class MapsActivity extends FragmentActivity implements
      * Currently non-clickable, single line.
      */
     public void drawPolyline(DirectionsResponse response) {
+        for (Polyline p : polylines) p.remove();
         ArrayList<DirectionsRoute> routes = response.getRoutes();
         for (int i = 0; i < routes.size(); i++) { // testing on only ONE route/polyline for now
             List<LatLng> latlngs = PolyUtil.decode(routes.get(i).getEncodedPolyline());
@@ -467,6 +582,29 @@ public class MapsActivity extends FragmentActivity implements
                     .snippet(routes.get(i).getDuration()));
             routeDetailsMarker.showInfoWindow();
         }
+    }
+
+    public void displaySteps(DirectionsResponse response) {
+        ArrayList<DirectionsRoute> routes = response.getRoutes();
+        DirectionsRoute route = routes.get(0);
+        ArrayList<DirectionsStep> steps = route.getSteps();
+        String temp = "";
+        String cleanStep = "";
+        for (int i = 0; i < steps.size(); i++) {
+
+            cleanStep = steps.get(i).getStep().replaceAll("<[^>]*>", "");
+            cleanStep = cleanStep.replaceAll("Destination will be", System.getProperty("line.separator") + "Destination will be");
+            temp += cleanStep + System.getProperty("line.separator");
+//            Log.d(TAG, steps.get(i).getStep());
+            steps_list.add(steps.get(i).getStep());
+        }
+        lv.setVisibility(View.VISIBLE);
+        btnTimer.setVisibility(View.VISIBLE);
+        arrayAdapter.notifyDataSetChanged();
+
+//        lv.setText(temp);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
     }
 
     public void drawUpdatedList() {
