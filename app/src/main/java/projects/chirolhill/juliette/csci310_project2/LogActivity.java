@@ -9,13 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.androidplot.util.PixelUtils;
 import com.androidplot.xy.BarFormatter;
@@ -29,8 +23,6 @@ import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.YValueMarker;
 
-import java.lang.reflect.Array;
-import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
@@ -39,13 +31,11 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
-import java.util.Map;
 
 import projects.chirolhill.juliette.csci310_project2.model.Customer;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
@@ -65,10 +55,12 @@ public class LogActivity extends AppCompatActivity {
     private UserLog log;
     private List<Order> orders;
 
-    private DateIntegerSeries caffeineSeries;
+    private DateIntegerSeries coffeeCaffeineSeries;
+    private DateIntegerSeries teaCaffeineSeries;
     private XYPlot caffeineBarChart;
-    private BarRenderer caffineBarChartRenderer;
-    private DateDoubleSeries expenditureSeries;
+    private BarRenderer caffeineBarChartRenderer;
+    private DateDoubleSeries coffeeExpenditureSeries;
+    private DateDoubleSeries teaExpenditureSeries;
     private XYPlot moneyXYPlot;
     private LineAndPointRenderer moneyXYPlotRenderer;
 
@@ -142,8 +134,8 @@ public class LogActivity extends AppCompatActivity {
                                 moneyXYPlot = findViewById(R.id.moneyXYPlot);
 
                                 // setup charts and order list
-                                onCreateCaffeineBarChart(caffeineSeries);
-                                onCreateMoneyXYPlot(expenditureSeries);
+                                onCreateCaffeineBarChart(coffeeCaffeineSeries, teaCaffeineSeries);
+                                onCreateMoneyXYPlot(coffeeExpenditureSeries, teaExpenditureSeries);
                             }
                         }
                     });
@@ -156,19 +148,20 @@ public class LogActivity extends AppCompatActivity {
 
     /**
      * Pulls out the necessary data for the graphs from the list of orders:
-     * - caffeineSeries: total daily caffeine consumption for the past week, plus current day (TODO: separate by beverage)
+     * - caffeineSeries: total daily caffeine consumption for the past week, plus current day
      * - expenditureSeries: total daily expenditures for the past week, plus current day
      * @param orders
      */
     private void extractDataFromOrders(List<Order> orders) {
         ArrayList<LocalDate> orderedListOfMapDays = new ArrayList<LocalDate>();
-
-        HashMap<LocalDate, Integer> dateToCaffeineMap = new HashMap<LocalDate, Integer>();
-        HashMap<LocalDate, Double> dateToExpenditureMap = new HashMap<LocalDate, Double>();
+        HashMap<LocalDate, Integer> dateToCoffeeCaffeineMap = new HashMap<LocalDate, Integer>(), dateToTeaCaffeineMap = new HashMap<LocalDate, Integer>();
+        HashMap<LocalDate, Double> dateToCoffeeExpenditureMap = new HashMap<LocalDate, Double>(), dateToTeaExpenditureMap = new HashMap<LocalDate, Double>();
         for (int i = 0; i < 8; i++) {
             LocalDate date = ONE_WEEK_AGO.plusDays(i);
-            dateToCaffeineMap.put(date, 0);
-            dateToExpenditureMap.put(date, 0.0);
+            dateToCoffeeCaffeineMap.put(date, 0);
+            dateToTeaCaffeineMap.put(date, 0);
+            dateToCoffeeExpenditureMap.put(date, 0.0);
+            dateToTeaExpenditureMap.put(date, 0.0);
             orderedListOfMapDays.add(date);
         }
 
@@ -183,56 +176,76 @@ public class LogActivity extends AppCompatActivity {
 
             if (ONE_WEEK_AGO.isBefore(tempDate) || ONE_WEEK_AGO.isEqual(tempDate)) {
                 // CAFFEINE
-                // attempt to calculate a caffeine value, either by refreshing or static; otherwise, assume 0
-                int orderCaffeineLevel = 0;
-                orderCaffeineLevel += (order.getTotalCaffeine(true) > 0 ? order.getTotalCaffeine(true) :
-                        order.getTotalCaffeine(false) > 0 ? order.getTotalCaffeine(false) : 0);
-                dateToCaffeineMap.put(tempDate, dateToCaffeineMap.get(tempDate) + orderCaffeineLevel);
+                // coffee caffeine
+                int dailyCaffeineFromCoffee = 0;
+                dailyCaffeineFromCoffee += (order.getTotalCaffeineFromCoffee(true) > 0 ? order.getTotalCaffeineFromCoffee(true) :
+                        order.getTotalCaffeineFromCoffee(false) > 0 ? order.getTotalCaffeineFromCoffee(false) : 0);
+                dateToCoffeeCaffeineMap.put(tempDate, dateToCoffeeCaffeineMap.get(tempDate) + dailyCaffeineFromCoffee);
+                // tea caffeine
+                int dailyCaffeineFromTea = 0;
+                dailyCaffeineFromTea += (order.getTotalCaffeineFromTea(true) > 0 ? order.getTotalCaffeineFromTea(true) :
+                        order.getTotalCaffeineFromTea(false) > 0 ? order.getTotalCaffeineFromTea(false) : 0);
+                dateToTeaCaffeineMap.put(tempDate, dateToTeaCaffeineMap.get(tempDate) + dailyCaffeineFromTea);
 
                 // EXPENDITURES
-                // attempt to calculate an expenditure value, either by refreshing or static; otherwise, assume 0
-                double dailyExpenditureLevel = 0.0;
-                dailyExpenditureLevel += (order.getTotalCost(true) > 0 ? order.getTotalCost(true) :
-                        order.getTotalCost(false) > 0 ? order.getTotalCost(false) : 0.0);
-                dateToExpenditureMap.put(tempDate, dateToExpenditureMap.get(tempDate) + dailyExpenditureLevel);
+                // coffee cost
+                double dailyExpenditureFromCoffee = 0.0;
+                dailyExpenditureFromCoffee += (order.getTotalCostFromCoffee(true) > 0 ? order.getTotalCostFromCoffee(true) :
+                        order.getTotalCostFromCoffee(false) > 0 ? order.getTotalCostFromCoffee(false) : 0.0);
+                dateToCoffeeExpenditureMap.put(tempDate, dateToCoffeeExpenditureMap.get(tempDate) + dailyExpenditureFromCoffee);
+                // tea cost
+                double dailyExpenditureFromTea = 0.0;
+                dailyExpenditureFromTea += (order.getTotalCostFromTea(true) > 0 ? order.getTotalCostFromTea(true) :
+                        order.getTotalCostFromTea(false) > 0 ? order.getTotalCostFromTea(false) : 0.0);
+                dateToTeaExpenditureMap.put(tempDate, dateToTeaExpenditureMap.get(tempDate) + dailyExpenditureFromTea);
             }
         }
 
-        // TODO create two series: coffee AND tea
         // CAFFEINE SERIES
-        caffeineSeries = new DateIntegerSeries("Caffeine");
+        coffeeCaffeineSeries = new DateIntegerSeries("Coffee");
+        teaCaffeineSeries = new DateIntegerSeries("Tea");
         // for formatting, add an empty value at FRONT of series
-        caffeineSeries.add(Date.from(ONE_WEEK_AGO.minusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0);
+        coffeeCaffeineSeries.add(Date.from(ONE_WEEK_AGO.minusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0);
+        teaCaffeineSeries.add(Date.from(ONE_WEEK_AGO.minusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0);
         for (int i = 0; i < orderedListOfMapDays.size(); i++) {
             LocalDate localDate = orderedListOfMapDays.get(i);
-            Integer caffeine = dateToCaffeineMap.get(localDate);
+            Integer coffeeCaffeine = dateToCoffeeCaffeineMap.get(localDate);
+            Integer teaCaffeine = dateToTeaCaffeineMap.get(localDate);
+
             Long date =  Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime();
 
-            caffeineSeries.add(date, caffeine);
+            coffeeCaffeineSeries.add(date, coffeeCaffeine);
+            teaCaffeineSeries.add(date, teaCaffeine);
         }
         // for formatting, add an empty value to BACK of series
-        caffeineSeries.add(Date.from(ONE_WEEK_AGO.plusDays(8).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0);
+        coffeeCaffeineSeries.add(Date.from(ONE_WEEK_AGO.plusDays(8).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0);
+        teaCaffeineSeries.add(Date.from(ONE_WEEK_AGO.plusDays(8).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0);
 
-        // TODO create two series: coffee AND tea
         // EXPENDITURE SERIES
-        expenditureSeries = new DateDoubleSeries("Expenditures");
-        expenditureSeries.add(Date.from(ONE_WEEK_AGO.minusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0.0);
+        coffeeExpenditureSeries = new DateDoubleSeries("Coffee");
+        teaExpenditureSeries = new DateDoubleSeries("Tea");
+        // for formatting, add an empty value at FRONT of series
+        coffeeExpenditureSeries.add(Date.from(ONE_WEEK_AGO.minusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0.0);
+        teaExpenditureSeries.add(Date.from(ONE_WEEK_AGO.minusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0.0);
         for (int i = 0; i < orderedListOfMapDays.size(); i++) {
             LocalDate localDate = orderedListOfMapDays.get(i);
-            Double dailyExpenditure = dateToExpenditureMap.get(localDate);
+            Double coffeeExpenditure = dateToCoffeeExpenditureMap.get(localDate);
+            Double teaExpenditure = dateToTeaExpenditureMap.get(localDate);
+
             Long date =  Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime();
 
-            expenditureSeries.add(date, dailyExpenditure);
+            coffeeExpenditureSeries.add(date, coffeeExpenditure);
+            teaExpenditureSeries.add(date, teaExpenditure);
         }
         // for formatting, add an empty value to BACK of series
-        expenditureSeries.add(Date.from(ONE_WEEK_AGO.plusDays(8).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0.0);
+        coffeeExpenditureSeries.add(Date.from(ONE_WEEK_AGO.plusDays(8).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0.0);
+        teaExpenditureSeries.add(Date.from(ONE_WEEK_AGO.plusDays(8).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()).getTime(), 0.0);
     }
 
     /**
      * Setup code for the caffeine chart (formatting, incorporating data)
-     * TODO: support a second series, teaSeries
      */
-    private void onCreateCaffeineBarChart(DateIntegerSeries caffeineSeries) {
+    private void onCreateCaffeineBarChart(DateIntegerSeries coffeeCaffeineSeries, DateIntegerSeries teaCaffeineSeries) {
         // refreshes the chart (it will be loaded with default vals at this point)
         caffeineBarChart.clear();
         caffeineBarChart.redraw();
@@ -241,9 +254,10 @@ public class LogActivity extends AppCompatActivity {
         // overridden by very large values, in which case it's MAX_VALUE rounded to next
         // increment of 200, in increments of MAX_VALUE / 5
         int maxRange = 1000;
-        if (caffeineSeries.getmaxYValue() > 1000) {
-            if (caffeineSeries.getmaxYValue() % 200 != 0) maxRange = caffeineSeries.getmaxYValue() + (200 - (caffeineSeries.getmaxYValue() % 200));
-            else maxRange = caffeineSeries.getmaxYValue();
+        int combinedMaxYValue = coffeeCaffeineSeries.getMaxYValue() + teaCaffeineSeries.getMaxYValue();
+        if (combinedMaxYValue > 1000) {
+            if (combinedMaxYValue % 200 != 0) maxRange = combinedMaxYValue + (200 - (combinedMaxYValue % 200));
+            else maxRange = combinedMaxYValue;
         }
 
         caffeineBarChart.setRangeBoundaries(0, maxRange, BoundaryMode.FIXED);
@@ -254,15 +268,15 @@ public class LogActivity extends AppCompatActivity {
         // had to hard code the colors because they're apparently translated into ints in the backend,
         // but the ints DON'T properly translate back into the original hex string ...
         BarFormatter coffeeBarFormatter = new BarFormatter(Color.parseColor("#ac9782"), Color.WHITE);
-        // BarFormatter teaBarFormatter = new BarFormatter(Color.parseColor("#4d7d55"), Color.WHITE);
+        BarFormatter teaBarFormatter = new BarFormatter(Color.parseColor("#4d7d55"), Color.WHITE);
 
-        caffeineBarChart.addSeries(caffeineSeries, coffeeBarFormatter);
-        // caffeineBarChart.addSeries(teaSeries, teaBarFormatter);
+        caffeineBarChart.addSeries(coffeeCaffeineSeries, coffeeBarFormatter);
+        caffeineBarChart.addSeries(teaCaffeineSeries, teaBarFormatter);
 
-        // initialize bar caffineBarChartRenderer (must be done after set formatter and add series to the plot)
-        caffineBarChartRenderer = caffeineBarChart.getRenderer(BarRenderer.class);
-        caffineBarChartRenderer.setBarGroupWidth(BarRenderer.BarGroupWidthMode.FIXED_WIDTH, PixelUtils.dpToPix(25));
-        caffineBarChartRenderer.setBarOrientation(BarRenderer.BarOrientation.STACKED);
+        // initialize bar caffeineBarChartRenderer (must be done after set formatter and add series to the plot)
+        caffeineBarChartRenderer = caffeineBarChart.getRenderer(BarRenderer.class);
+        caffeineBarChartRenderer.setBarGroupWidth(BarRenderer.BarGroupWidthMode.FIXED_WIDTH, PixelUtils.dpToPix(25));
+        caffeineBarChartRenderer.setBarOrientation(BarRenderer.BarOrientation.STACKED);
 
         // X-AXIS = date values, formatted as "10/27"
         caffeineBarChart.getGraph().getLineLabelStyle(XYGraphWidget.Edge.BOTTOM).setFormat(new xAxisDateFormat());
@@ -285,9 +299,8 @@ public class LogActivity extends AppCompatActivity {
 
     /**
      * Setup code for the money chart (formatting, incorporating data)
-     * TODO: support a second line, teaExpenditures
      */
-    private void onCreateMoneyXYPlot(DateDoubleSeries expenditureSeries) {
+    private void onCreateMoneyXYPlot(DateDoubleSeries coffeeExpenditureSeries, DateDoubleSeries teaExpenditureSeries) {
         // refreshes the chart (it will be loaded with default vals at this point)
         moneyXYPlot.clear();
         moneyXYPlot.redraw();
@@ -296,9 +309,10 @@ public class LogActivity extends AppCompatActivity {
         // overridden by very large values, in which case it's MAX_VALUE rounded to next
         // increment of $2.50, in increments of MAX_VALUE / 8
         double maxRange = 20;
-        if (expenditureSeries.getmaxYValue() > 20) {
-            if (expenditureSeries.getmaxYValue() % 5 != 0) maxRange = expenditureSeries.getmaxYValue() + (5 - (expenditureSeries.getmaxYValue() % 5));
-            else maxRange = expenditureSeries.getmaxYValue();
+        double maxYValue = Double.max(coffeeExpenditureSeries.getMaxYValue(), teaExpenditureSeries.getMaxYValue());
+        if (maxYValue > 20) {
+            if (maxYValue % 5 != 0) maxRange = maxYValue + (5 - (maxYValue % 5));
+            else maxRange = maxYValue;
         }
 
         // formatting: add extra vals at beg/end (7 days +1 on each end = 9) to create a margin for the bars
@@ -313,17 +327,15 @@ public class LogActivity extends AppCompatActivity {
         coffeeLineFormatter.setInterpolationParams(new CatmullRomInterpolator.Params(20,
                 CatmullRomInterpolator.Type.Centripetal)); // smooths out the lines
         coffeeLineFormatter.setFillPaint(null); // to prevent lines from filling .. may break in the future?
-        /*
         LineAndPointFormatter teaLineFormatter = new LineAndPointFormatter(Color.parseColor("#4d7d55"),
                 null, null, null);
         teaLineFormatter.getLinePaint().setStrokeWidth(8);
         teaLineFormatter.setInterpolationParams(new CatmullRomInterpolator.Params(20,
                 CatmullRomInterpolator.Type.Centripetal)); // smooths out the lines
         teaLineFormatter.setFillPaint(null);
-        */
 
-        moneyXYPlot.addSeries(expenditureSeries, coffeeLineFormatter);
-        // moneyXYPlot.addSeries(teaSeries, teaLineFormatter);
+        moneyXYPlot.addSeries(coffeeExpenditureSeries, coffeeLineFormatter);
+        moneyXYPlot.addSeries(teaExpenditureSeries, teaLineFormatter);
 
         // initialize line and point renderer (must be done after set formatter and add series to the plot)
         moneyXYPlotRenderer = moneyXYPlot.getRenderer(LineAndPointRenderer.class);
