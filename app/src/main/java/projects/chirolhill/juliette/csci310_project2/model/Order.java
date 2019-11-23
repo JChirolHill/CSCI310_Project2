@@ -16,7 +16,11 @@ public class Order {
     private Trip trip;
     private String userID;
     private Date date;
+    private double totalCostFromCoffee;
+    private double totalCostFromTea;
     private double totalCost;
+    private int totalCaffeineFromCoffee;
+    private int totalCaffeineFromTea;
     private int totalCaffeine;
 
     public Order(String id) {
@@ -77,6 +81,38 @@ public class Order {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public double getTotalCostFromCoffee() {
+        return totalCostFromCoffee;
+    }
+
+    public void setTotalCostFromCoffee(double totalCostFromCoffee) {
+        this.totalCostFromCoffee = totalCostFromCoffee;
+    }
+
+    public double getTotalCostFromTea() {
+        return totalCostFromTea;
+    }
+
+    public void setTotalCostFromTea(double totalCostFromTea) {
+        this.totalCostFromTea = totalCostFromTea;
+    }
+
+    public int getTotalCaffeineFromCoffee() {
+        return totalCaffeineFromCoffee;
+    }
+
+    public void setTotalCaffeineFromCoffee(int totalCaffeineFromCoffee) {
+        this.totalCaffeineFromCoffee = totalCaffeineFromCoffee;
+    }
+
+    public int getTotalCaffeineFromTea() {
+        return totalCaffeineFromTea;
+    }
+
+    public void setTotalCaffeineFromTea(int totalCaffeineFromTea) {
+        this.totalCaffeineFromTea = totalCaffeineFromTea;
     }
 
     public void setTotalCost(double totalCost) {
