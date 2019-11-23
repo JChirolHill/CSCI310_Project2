@@ -47,6 +47,7 @@ import java.util.Map;
 import java.util.Date;
 
 import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
+import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.MapShop;
 import projects.chirolhill.juliette.csci310_project2.model.Shop;
 import projects.chirolhill.juliette.csci310_project2.model.Trip;
@@ -323,7 +324,6 @@ public class MapsActivity extends FragmentActivity implements
                 DirectionsResponse response = (DirectionsResponse) o;
                 drawPolyline(response);
                 Trip trip = setupTrip(finalMarker);
-                Log.d(TAG, "hi");
             }
         });
 
@@ -357,9 +357,7 @@ public class MapsActivity extends FragmentActivity implements
         final Runnable mapChecker = new Runnable() {
             @Override
             public void run() {
-            // TODO prevent user from doing anything else during a trip
             mMap.getUiSettings().setAllGesturesEnabled(false);
-
 
             if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -372,19 +370,22 @@ public class MapsActivity extends FragmentActivity implements
                         marker.getPosition().latitude, marker.getPosition().longitude, distances);
 
                 Log.d(TAG, "User is " + distances[0] + " meters from destination.");
-                // if user is within 10m of shop, conclude trip
-                if (distances[0] < 10) {
+                // if user is within 50m of shop, conclude trip
+                if (distances[0] < 50) {
                     // TODO: dismiss the 'cancel trip' snackbar?
                     trip.setTimeArrived(new Date(System.currentTimeMillis()));
 
                     // trip concluded --> display shop details
                     BasicShop selectedShop = new BasicShop(shopListing.get(marker));
+                    trip.setDestination(selectedShop.getId());
                     Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
                     i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
                     i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
                     startActivity(i);
-                    // TODO: set trip destination
                     // TODO: figure out how to connect this trip to whatever orders they make?
+
+                    // TODO check if shop is in DB and add if not?
+                    trip.setId(Database.getInstance().addTrip(trip));
 
                     // make map clickable again
                     mMap.getUiSettings().setAllGesturesEnabled(true);
@@ -458,6 +459,7 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     public void drawUpdatedList() {
+        // TODO: add a button that triggers this method, so that the user can move on map and get updated shops
         // add markers for all coffeeshops
         for (MapShop ms : yelpFetcher.getShops()) {
             String snippet = "Rating: " + Double.toString(ms.getRating());
