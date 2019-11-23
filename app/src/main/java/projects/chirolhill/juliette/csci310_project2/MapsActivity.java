@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -16,14 +15,12 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 import android.os.Handler;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,7 +30,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Dot;
@@ -69,8 +65,7 @@ public class MapsActivity extends FragmentActivity implements
         GoogleMap.OnMyLocationClickListener,
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener,
-        OnMapReadyCallback,
-        View.OnClickListener
+        OnMapReadyCallback
         {
     private final String TAG = MapsActivity.class.getSimpleName();
 
@@ -92,7 +87,7 @@ public class MapsActivity extends FragmentActivity implements
     private Button btnDrinks;
     private Button btnDrive;
     private Button btnWalk;
-    private Button btnTimer;
+    private Button btnStartStopTrip;
     ListView lv;
     List<String> steps_list;
     ArrayAdapter<String> arrayAdapter;
@@ -167,14 +162,14 @@ public class MapsActivity extends FragmentActivity implements
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         shopName = findViewById(R.id.bottom_sheet_shop_name);
-        btnTimer = findViewById(R.id.btn_timer);
-        btnTimer.setOnClickListener(this);
+        btnStartStopTrip = findViewById(R.id.btn_start_stop_trip);
+        // btnStartStopTrip.setOnClickListener(this);
         btnDrinks = findViewById(R.id.btn_drinks);
-        btnDrinks.setOnClickListener(this);
+        // btnDrinks.setOnClickListener(this);
         btnDrive = findViewById(R.id.btn_drive);
-        btnDrive.setOnClickListener(this);
+        // btnDrive.setOnClickListener(this);
         btnWalk = findViewById(R.id.btn_walk);
-        btnWalk.setOnClickListener(this);
+        // btnWalk.setOnClickListener(this);
 
         btnDrinks.setVisibility(View.VISIBLE);
         btnDrive.setVisibility(View.VISIBLE);
@@ -192,19 +187,6 @@ public class MapsActivity extends FragmentActivity implements
 //        lv.setAdapter(adapter);
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.btn_timer) {
-            if (btnTimer.getText().equals("Start Timer")) {
-                btnTimer.setText("Stop Timer");
-            }
-            else {
-                btnTimer.setText("Start Timer");
-            }
-        }
-        // TODO incorporate the trip logic here
-    }
-
     public void recedeDisplay(){
         if(mBottomSheetBehavior.getState() == 3){
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -212,9 +194,10 @@ public class MapsActivity extends FragmentActivity implements
         else if(mBottomSheetBehavior.getState() == 4){
             for (Polyline p : polylines) p.remove();
             lv.setVisibility(View.GONE);
-            btnTimer.setVisibility(View.GONE);
+            btnStartStopTrip.setVisibility(View.GONE);
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         }
+        mMap.setPadding(0, 0, 0, 0);
     }
 
     @Override
@@ -308,7 +291,18 @@ public class MapsActivity extends FragmentActivity implements
                 @Override
                 public void onMapClick(LatLng latLng) {
                     for (Polyline p : polylines) p.remove();
-                    recedeDisplay();
+                    // adjust the bottom margin depending on what's displayed down there
+                    switch(mBottomSheetBehavior.getState()) {
+                        case BottomSheetBehavior.STATE_HIDDEN:
+                            mMap.setPadding(0, 0, 0, 0);
+                            break;
+                        case BottomSheetBehavior.STATE_EXPANDED:
+                            mMap.setPadding(0, 0, 0, mBottomSheetBehavior.getPeekHeight()*2);
+                            break;
+                        case BottomSheetBehavior.STATE_HALF_EXPANDED:
+                            mMap.setPadding(0, 0, 0, mBottomSheetBehavior.getPeekHeight());
+                            break;
+                    }
                 }
             });
         }
@@ -361,7 +355,6 @@ public class MapsActivity extends FragmentActivity implements
                         }).show();
             }
             else { // customer: view drinks, driving directions, walking directions
-
                 btnDrinks.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View arg0) {
@@ -381,8 +374,8 @@ public class MapsActivity extends FragmentActivity implements
                         btnDrive.setBackgroundColor(getResources().getColor(R.color.colorBackground));
                         BasicShop selectedShop = new BasicShop(shopListing.get(marker));
                         // launch intent to view driving directions to shop here
-                        calculateDirections(passableMarker, "driving");
-
+                        calculateDirectionsForTrip(passableMarker, "driving");
+                        mMap.setPadding(0, 0, 0, mBottomSheetBehavior.getPeekHeight()*2);
                     }
                 });
                 btnWalk.setOnClickListener(new View.OnClickListener() {
@@ -392,13 +385,14 @@ public class MapsActivity extends FragmentActivity implements
                         btnDrive.setBackgroundColor(Color.TRANSPARENT);
                         BasicShop selectedShop = new BasicShop(shopListing.get(marker));
                         // launch intent to view driving directions to shop here
-                        calculateDirections(passableMarker, "walking");
+                        calculateDirectionsForTrip(passableMarker, "walking");
+                        mMap.setPadding(0, 0, 0, mBottomSheetBehavior.getPeekHeight()*2);
                     }
                 });
 
                 mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 shopName.setText(marker.getTitle());
-
+                mMap.setPadding(0, 0, 0, mBottomSheetBehavior.getPeekHeight());
             }
         }
 
@@ -420,19 +414,38 @@ public class MapsActivity extends FragmentActivity implements
      * for user to start a trip if desired.
      * Currently only provides one route (the fastest).
      */
-    public void calculateDirections(Marker marker, String mode) {
+    public void calculateDirectionsForTrip(Marker marker, String mode) {
         // DEBUG
-        Log.d(TAG, "calculateDirections: calculating directions.");
+        Log.d(TAG, "calculateDirectionsForTrip: calculating directions.");
 
         final Marker finalMarker = marker;
 
-        // to trigger polyline drawing
+        btnStartStopTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (btnStartStopTrip.getText().equals("Start Trip")) {
+                    handleTrip(finalMarker, true);
+
+                    // switch to a stop button
+                    btnStartStopTrip.setText("Stop Trip");
+                    btnStartStopTrip.setBackgroundColor((getResources().getColor(R.color.danger)));
+                }
+                else {
+                    handleTrip(finalMarker, false);
+
+                    // switch to a start button
+                    btnStartStopTrip.setText("Start Trip");
+                    btnStartStopTrip.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                }
+            }
+        });
+
+        // to trigger UI responses from the API data
         directionsFetcher.setCallback(new DirectionsFetcher.Callback() {
             @Override
             public void directionsCallback(Object o) {
                 DirectionsResponse response = (DirectionsResponse) o;
                 drawPolyline(response);
-                Trip trip = setupTrip(finalMarker);
                 displaySteps(response);
             }
         });
@@ -457,12 +470,8 @@ public class MapsActivity extends FragmentActivity implements
      * @param marker
      * @return
      */
-    public Trip setupTrip(final Marker marker) {
+    public Trip handleTrip(final Marker marker, boolean start) {
         final Trip trip = new Trip();
-        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-
-        // a snackbar to display the "Cancel Trip" option
-        final Snackbar cancelTripPopUp;
 
         // a periodic task for checking the user's distance from the shop. runs every 5 seconds
         final Runnable mapChecker = new Runnable() {
@@ -496,6 +505,7 @@ public class MapsActivity extends FragmentActivity implements
 
                     // remove polylines
                     for (Polyline p : polylines) p.remove();
+                    marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
 
                     // trip concluded --> display shop details
                     BasicShop selectedShop = new BasicShop(shopListing.get(marker));
@@ -521,29 +531,19 @@ public class MapsActivity extends FragmentActivity implements
             }
         };
 
-        cancelTripPopUp = Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_INDEFINITE)
-            .setAction("End Trip", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // remove polylines
-                    for (Polyline p : polylines) p.remove();
-                    // make map clickable again
-                    mMap.getUiSettings().setAllGesturesEnabled(true);
-                    handler.removeCallbacks(mapChecker);
-                }
-            })
-            .setActionTextColor(Color.RED);
+        if (!start) {
+            // remove polylines
+            for (Polyline p : polylines) p.remove();
+            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+            // make map clickable again
+            mMap.getUiSettings().setAllGesturesEnabled(true);
+            handler.removeCallbacks(mapChecker);
+        } else {
+            trip.setTimeDiscover(new Date(System.currentTimeMillis()));
+            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
 
-        Snackbar.make(findViewById(R.id.map), marker.getTitle(), Snackbar.LENGTH_INDEFINITE)
-            .setAction("Start Trip", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    trip.setTimeDiscover(new Date(System.currentTimeMillis()));
-
-                    cancelTripPopUp.show();
-                    handler.post(mapChecker);
-                }
-            }).show();
+            handler.post(mapChecker);
+        }
 
         return trip;
     }
@@ -599,12 +599,11 @@ public class MapsActivity extends FragmentActivity implements
             steps_list.add(steps.get(i).getStep());
         }
         lv.setVisibility(View.VISIBLE);
-        btnTimer.setVisibility(View.VISIBLE);
+        btnStartStopTrip.setVisibility(View.VISIBLE);
         arrayAdapter.notifyDataSetChanged();
 
 //        lv.setText(temp);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-
     }
 
     public void drawUpdatedList() {
