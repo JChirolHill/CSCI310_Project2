@@ -48,7 +48,7 @@ public class YelpFetcher {
     }
 
     // performs the json request
-    public void requestJSONParse(String reqURL) {
+    private void requestJSONParse(String reqURL) {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, reqURL, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
