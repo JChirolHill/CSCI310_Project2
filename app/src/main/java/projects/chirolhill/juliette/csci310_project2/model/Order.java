@@ -21,18 +21,29 @@ public class Order {
 
     public Order(String id) {
         this.id = id;
-        drinks = new HashMap<>();
-        totalCost = -1;
-        totalCaffeine = -1;
+        this.drinks = new HashMap<>();
+        this.shopID = null;
+        this.trip = null;
+        this.userID = null;
+        this.date = null;
+        this.totalCost = -1;
+        this.totalCaffeine = -1;
     }
 
     public Order(String id, String shopID, String tripID, String userID, Date date) {
         this.id = id;
         this.shopID = shopID;
-        this.trip = new Trip(tripID);
+        if(tripID != null) {
+            this.trip = new Trip(tripID);
+        }
+        else {
+            this.trip = null;
+        }
+        this.totalCost = -1;
+        this.totalCaffeine = -1;
         this.userID = userID;
         this.date = date;
-        drinks = new HashMap<>();
+        this.drinks = new HashMap<>();
     }
 
     public String getId() {

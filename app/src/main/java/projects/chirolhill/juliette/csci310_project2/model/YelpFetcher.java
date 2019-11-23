@@ -80,7 +80,7 @@ public class YelpFetcher {
         queue.add(req);
     }
 
-    public void parse(JSONObject response) {
+    private void parse(JSONObject response) {
         try {
             JSONArray jsonshops = response.getJSONArray("businesses");
             for(int i=0; i<jsonshops.length(); i++) {
