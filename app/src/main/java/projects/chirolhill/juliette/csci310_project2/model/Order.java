@@ -1,8 +1,8 @@
 package projects.chirolhill.juliette.csci310_project2.model;
 
-import android.util.Pair;
 
-import java.io.Serializable;
+import android.support.v4.util.Pair;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,22 +25,33 @@ public class Order {
 
     public Order(String id) {
         this.id = id;
-        drinks = new HashMap<>();
-        totalCostFromCoffee = 0;
-        totalCostFromTea = 0;
-        totalCost = -1;
-        totalCaffeineFromCoffee = 0;
-        totalCaffeineFromTea = 0;
-        totalCaffeine = -1;
+        this.drinks = new HashMap<>();
+        this.shopID = null;
+        this.trip = null;
+        this.userID = null;
+        this.date = null;
+        this.totalCostFromCoffee = 0;
+        this.totalCostFromTea = 0;
+        this.totalCost = -1;
+        this.totalCaffeineFromCoffee = 0;
+        this.totalCaffeineFromTea = 0;
+        this.totalCaffeine = -1;
     }
 
     public Order(String id, String shopID, String tripID, String userID, Date date) {
         this.id = id;
         this.shopID = shopID;
-        this.trip = new Trip(tripID);
+        if(tripID != null) {
+            this.trip = new Trip(tripID);
+        }
+        else {
+            this.trip = null;
+        }
+        this.totalCost = -1;
+        this.totalCaffeine = -1;
         this.userID = userID;
         this.date = date;
-        drinks = new HashMap<>();
+        this.drinks = new HashMap<>();
     }
 
     public String getId() {
