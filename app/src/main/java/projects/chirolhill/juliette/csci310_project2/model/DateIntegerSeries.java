@@ -18,7 +18,6 @@ public class DateIntegerSeries implements XYSeries {
     private String title;
     private Integer maxYValue;
 
-    // TODO: some sort of data "default" logic for when we have incomplete weeks of data for a user
     public DateIntegerSeries(String title) {
         this.title = title;
         this.xSeries = new ArrayList<Long>();
