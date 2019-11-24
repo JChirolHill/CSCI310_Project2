@@ -29,22 +29,54 @@ public class DateDoubleSeriesTest {
 
     @Test
     public void add() {
-
+        int oldSize = this.testSeries.size();
+        this.testSeries.add(
+                Date.from(ONE_WEEK_AGO
+                        .plusDays(9)
+                        .atStartOfDay()
+                        .atZone(ZoneId.systemDefault()).toInstant())
+                        .getTime(), 0.5);
+        assertEquals(oldSize+1, this.testSeries.size());
+        this.testSeries.add(
+                Date.from(ONE_WEEK_AGO
+                        .plusDays(10)
+                        .atStartOfDay()
+                        .atZone(ZoneId.systemDefault()).toInstant())
+                        .getTime(), 10.5);
+        assertEquals(oldSize+2, this.testSeries.size());
     }
 
     @Test
     public void getTitle() {
-
+        assertEquals(this.title, this.testSeries.getTitle());
     }
 
     @Test
     public void getX() {
-
+        // healthy input
+        assertEquals(
+                (long) Date.from(ONE_WEEK_AGO
+                    .atStartOfDay()
+                    .atZone(ZoneId.systemDefault()).toInstant())
+                    .getTime(),
+                (long) this.testSeries.getX(0)
+        );
+        assertEquals(
+                (long) Date.from(ONE_WEEK_AGO
+                        .plusDays(7)
+                        .atStartOfDay()
+                        .atZone(ZoneId.systemDefault()).toInstant())
+                        .getTime(),
+                (long) this.testSeries.getX(7)
+        );
     }
 
     @Test
     public void getY() {
-
+        // healthy input
+        assertEquals(0.5, this.testSeries.getY(0));
+        assertEquals(1.5, this.testSeries.getY(1));
+        assertEquals(7.5, this.testSeries.getY(7));
     }
 
     @Test
