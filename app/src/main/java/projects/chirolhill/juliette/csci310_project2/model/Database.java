@@ -254,6 +254,7 @@ public class Database {
                         });
                     }
                     else {
+                        currOrder.setTrip(null); // NEED TO ADD THIS LINE OF CODE HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         cb.dbCallback(currOrder);
                     }
                 }
