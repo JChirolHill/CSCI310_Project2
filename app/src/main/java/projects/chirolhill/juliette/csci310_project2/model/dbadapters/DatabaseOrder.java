@@ -1,6 +1,6 @@
 package projects.chirolhill.juliette.csci310_project2.model.dbadapters;
 
-import android.util.Pair;
+import android.support.v4.util.Pair;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -19,7 +19,11 @@ public class DatabaseOrder implements DatabaseAdapter {
     public String tripID;
     public String customerID;
     public String date;
+    public double totalCostFromCoffee;
+    public double totalCostFromTea;
     public double totalCost;
+    public int totalCaffeineFromCoffee;
+    public int totalCaffeineFromTea;
     public int totalCaffeine;
 
     public DatabaseOrder() {}
@@ -30,6 +34,12 @@ public class DatabaseOrder implements DatabaseAdapter {
         this.customerID = o.getUser();
         this.tripID = o.getTrip().getId();
         this.drinks = new HashMap<>();
+        this.totalCostFromCoffee = 0;
+        this.totalCostFromTea = 0;
+        this.totalCost = 0;
+        this.totalCaffeineFromCoffee = 0;
+        this.totalCaffeineFromTea = 0;
+        this.totalCaffeine = 0;
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         this.date = dateFormat.format(o.getDate());
@@ -37,8 +47,17 @@ public class DatabaseOrder implements DatabaseAdapter {
         if(o.getDrinks() != null) {
             for(Map.Entry<String, Pair<Drink, Integer>> entry : o.getDrinks().entrySet()) {
                 drinks.put(entry.getKey(), entry.getValue().second);
-                totalCost += entry.getValue().first.getPrice() * entry.getValue().second;
-                totalCaffeine += entry.getValue().first.getCaffeine() * entry.getValue().second;
+                Drink drink = entry.getValue().first;
+                int quantity = entry.getValue().second;
+                if (drink.isCoffee()) {
+                    totalCaffeineFromCoffee += drink.getCaffeine() * quantity;
+                    totalCostFromCoffee += drink.getPrice() * quantity;
+                } else {
+                    totalCaffeineFromTea += drink.getCaffeine() * quantity;
+                    totalCostFromTea += drink.getPrice() * quantity;
+                }
+                totalCost = (totalCostFromCoffee + totalCostFromTea);
+                totalCaffeine = (totalCaffeineFromCoffee + totalCaffeineFromTea);
             }
         }
     }
@@ -49,7 +68,11 @@ public class DatabaseOrder implements DatabaseAdapter {
         o.setShop(shopID);
         o.setTrip(new Trip(tripID));
         o.setUser(customerID);
+        o.setTotalCostFromCoffee(totalCostFromCoffee);
+        o.setTotalCostFromTea(totalCostFromTea);
         o.setTotalCost(totalCost);
+        o.setTotalCaffeineFromCoffee(totalCaffeineFromCoffee);
+        o.setTotalCaffeineFromTea(totalCaffeineFromTea);
         o.setTotalCaffeine(totalCaffeine);
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");

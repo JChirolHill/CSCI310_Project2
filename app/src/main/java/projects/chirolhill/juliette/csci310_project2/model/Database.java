@@ -3,7 +3,7 @@ package projects.chirolhill.juliette.csci310_project2.model;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.util.Pair;
+import android.support.v4.util.Pair;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
