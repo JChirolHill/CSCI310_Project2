@@ -441,7 +441,6 @@ public class MapsActivity extends FragmentActivity implements
                     Log.d(TAG, "User is " + distances[0] + " meters from destination.");
                     // if user is within 25m of shop, conclude trip
                     if (distances[0] < 25) {
-                        // TODO: dismiss the 'cancel trip' snackbar?
                         trip.setTimeArrived(new Date(System.currentTimeMillis()));
 
                         // remove polylines
