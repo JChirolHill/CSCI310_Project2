@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
@@ -33,7 +34,7 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class TestSignInFailPoorlyFormedEmail {
+public class TestMapBackButtonLogout {
 
     @Rule
     public ActivityTestRule<SignInActivity> mActivityTestRule = new ActivityTestRule<>(SignInActivity.class);
@@ -44,15 +45,7 @@ public class TestSignInFailPoorlyFormedEmail {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void testSignInFailPoorlyFormedEmail() {
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+    public void testMapBackButtonLogout() {
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.btnSignIn),
@@ -64,9 +57,6 @@ public class TestSignInFailPoorlyFormedEmail {
                         isDisplayed()));
         appCompatButton.perform(click());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
@@ -80,16 +70,8 @@ public class TestSignInFailPoorlyFormedEmail {
                                         withId(R.id.email_layout),
                                         0),
                                 0)));
-        textInputEditText.perform(scrollTo(), replaceText("abs@"), closeSoftKeyboard());
+        textInputEditText.perform(scrollTo(), replaceText("a@a.com"), closeSoftKeyboard());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.button_next),
@@ -101,15 +83,55 @@ public class TestSignInFailPoorlyFormedEmail {
                                 2)));
         appCompatButton2.perform(scrollTo(), click());
 
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.textinput_error), withText("That email address isn't correct"),
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ViewInteraction textInputEditText6 = onView(
+                allOf(withId(R.id.password),
                         childAtPosition(
                                 childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                        withId(R.id.password_layout),
                                         0),
-                                0),
-                        isDisplayed()));
-        textView.check(matches(withText("That email address isn't correct")));
+                                0)));
+        textInputEditText6.perform(scrollTo(), replaceText("aaaaaa"), closeSoftKeyboard());
+
+        ViewInteraction appCompatButton3 = onView(
+                allOf(withId(R.id.button_done),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.widget.ScrollView")),
+                                        0),
+                                4)));
+        appCompatButton3.perform(scrollTo(), click());
+
+        try {
+            Thread.sleep(7000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        pressBack();
+
+        ViewInteraction appCompatButton4 = onView(
+                allOf(withId(android.R.id.button1), withText("Log Out"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.buttonPanel),
+                                        0),
+                                3)));
+        appCompatButton4.perform(scrollTo(), click());
+
+       try {
+            Thread.sleep(7000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        onView(withId(R.id.btnSignIn)).check(matches(isDisplayed()));
+
     }
 
     private static Matcher<View> childAtPosition(

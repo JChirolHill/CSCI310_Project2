@@ -33,7 +33,7 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class TestUserLogOutPass {
+public class TestFromProfileLogout {
 
     @Rule
     public ActivityTestRule<SignInActivity> mActivityTestRule = new ActivityTestRule<>(SignInActivity.class);
@@ -65,7 +65,7 @@ public class TestUserLogOutPass {
         onView(withId(R.id.button_done)).perform(scrollTo(), click());
 
         try {
-            Thread.sleep(3000);
+            Thread.sleep(7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -74,6 +74,12 @@ public class TestUserLogOutPass {
         onView(withId(R.id.imgProfile)).perform((click()));
 
         onView(withId(R.id.btnLogout)).perform(click());
+
+        try {
+            Thread.sleep(7000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         onView(withId(R.id.btnSignIn)).check(matches(isDisplayed()));
     }

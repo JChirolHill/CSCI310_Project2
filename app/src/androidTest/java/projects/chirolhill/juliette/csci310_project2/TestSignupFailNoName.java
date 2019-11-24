@@ -61,6 +61,11 @@ public class TestSignupFailNoName {
 
         onView(withId(R.id.button_create)).perform(scrollTo(), click());
 
+        try {
+            Thread.sleep(7000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         ViewInteraction textView = onView(
                 allOf(withId(R.id.textinput_error), withText("You can't leave this empty."),

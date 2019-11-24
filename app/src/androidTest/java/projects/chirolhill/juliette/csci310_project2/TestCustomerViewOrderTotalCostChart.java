@@ -106,7 +106,7 @@ public class TestCustomerViewOrderTotalCostChart {
         appCompatButton3.perform(scrollTo(), click());
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -138,7 +138,7 @@ public class TestCustomerViewOrderTotalCostChart {
         appCompatButton4.perform(click());
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

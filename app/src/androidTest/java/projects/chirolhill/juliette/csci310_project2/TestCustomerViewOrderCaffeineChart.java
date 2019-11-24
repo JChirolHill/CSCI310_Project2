@@ -74,17 +74,6 @@ public class TestCustomerViewOrderCaffeineChart {
         textInputEditText.perform(scrollTo(), replaceText("a@a.com"), closeSoftKeyboard());
 
 
-
-        ViewInteraction textInputEditText3 = onView(
-                allOf(withId(R.id.email),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.email_layout),
-                                        0),
-                                0),
-                        isDisplayed()));
-        textInputEditText3.perform(closeSoftKeyboard());
-
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.button_next),
                         childAtPosition(
@@ -95,9 +84,6 @@ public class TestCustomerViewOrderCaffeineChart {
                                 2)));
         appCompatButton2.perform(scrollTo(), click());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
@@ -122,11 +108,8 @@ public class TestCustomerViewOrderCaffeineChart {
                                 4)));
         appCompatButton3.perform(scrollTo(), click());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
-            Thread.sleep(5000);
+            Thread.sleep(7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -141,9 +124,6 @@ public class TestCustomerViewOrderCaffeineChart {
                         isDisplayed()));
         imageButton.perform(click());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
@@ -160,15 +140,11 @@ public class TestCustomerViewOrderCaffeineChart {
                         isDisplayed()));
         appCompatButton4.perform(click());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
-            Thread.sleep(5000);
+            Thread.sleep(7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
 
         onView(withId(R.id.caffeineBarChart)).check(matches(isDisplayed()));
 

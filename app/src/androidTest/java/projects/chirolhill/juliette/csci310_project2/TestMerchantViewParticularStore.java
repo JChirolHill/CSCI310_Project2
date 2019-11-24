@@ -48,14 +48,6 @@ public class TestMerchantViewParticularStore {
 
     @Test
     public void testMerchantViewParticularStore() {
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.btnSignIn),
@@ -67,11 +59,8 @@ public class TestMerchantViewParticularStore {
                         isDisplayed()));
         appCompatButton.perform(click());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
-            Thread.sleep(5000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -86,16 +75,6 @@ public class TestMerchantViewParticularStore {
         textInputEditText.perform(scrollTo(), replaceText("z@z.com"), closeSoftKeyboard());
 
 
-        ViewInteraction textInputEditText3 = onView(
-                allOf(withId(R.id.email),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.email_layout),
-                                        0),
-                                0),
-                        isDisplayed()));
-        textInputEditText3.perform(closeSoftKeyboard());
-
         ViewInteraction appCompatButtonNext = onView(
                 allOf(withId(R.id.button_next),
                         childAtPosition(
@@ -107,11 +86,8 @@ public class TestMerchantViewParticularStore {
         appCompatButtonNext.perform(scrollTo(), click());
 
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
-            Thread.sleep(7000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -136,9 +112,6 @@ public class TestMerchantViewParticularStore {
                                 4)));
         appCompatButton2.perform(scrollTo(), click());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
             Thread.sleep(7000);
         } catch (InterruptedException e) {
@@ -155,9 +128,6 @@ public class TestMerchantViewParticularStore {
                         isDisplayed()));
         imageButton.perform(click());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
             Thread.sleep(7000);
         } catch (InterruptedException e) {
@@ -174,9 +144,6 @@ public class TestMerchantViewParticularStore {
                         isDisplayed()));
         appCompatButton3.perform(click());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
             Thread.sleep(7000);
         } catch (InterruptedException e) {
@@ -191,9 +158,6 @@ public class TestMerchantViewParticularStore {
                 .atPosition(1);
         constraintLayout.perform(click());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
             Thread.sleep(7000);
         } catch (InterruptedException e) {

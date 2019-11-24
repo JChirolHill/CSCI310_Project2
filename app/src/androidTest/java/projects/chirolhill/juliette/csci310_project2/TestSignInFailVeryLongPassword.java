@@ -33,7 +33,7 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class TestCustomerViewOrderHistory {
+public class TestSignInFailVeryLongPassword {
 
     @Rule
     public ActivityTestRule<SignInActivity> mActivityTestRule = new ActivityTestRule<>(SignInActivity.class);
@@ -44,7 +44,7 @@ public class TestCustomerViewOrderHistory {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void testCustomerViewOrderHistory() {
+    public void testSignInFailVeryLongPassword() {
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.btnSignIn),
@@ -62,25 +62,14 @@ public class TestCustomerViewOrderHistory {
             e.printStackTrace();
         }
 
-        ViewInteraction textInputEditText = onView(
+        ViewInteraction textInputEditText7 = onView(
                 allOf(withId(R.id.email),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.email_layout),
                                         0),
                                 0)));
-        textInputEditText.perform(scrollTo(), replaceText("a@a.com"), closeSoftKeyboard());
-
-
-        ViewInteraction textInputEditText3 = onView(
-                allOf(withId(R.id.email),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.email_layout),
-                                        0),
-                                0),
-                        isDisplayed()));
-        textInputEditText3.perform(closeSoftKeyboard());
+        textInputEditText7.perform(scrollTo(), replaceText("a@a.com"), closeSoftKeyboard());
 
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.button_next),
@@ -98,14 +87,21 @@ public class TestCustomerViewOrderHistory {
             e.printStackTrace();
         }
 
-        ViewInteraction textInputEditText4 = onView(
+        ViewInteraction textInputEditText8 = onView(
                 allOf(withId(R.id.password),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.password_layout),
                                         0),
                                 0)));
-        textInputEditText4.perform(scrollTo(), replaceText("aaaaaa"), closeSoftKeyboard());
+        textInputEditText8.perform(scrollTo(), replaceText("aaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" +
+                "aaaaaaaaaaaaaaa"), closeSoftKeyboard());
+
+
 
         ViewInteraction appCompatButton3 = onView(
                 allOf(withId(R.id.button_done),
@@ -122,63 +118,15 @@ public class TestCustomerViewOrderHistory {
             e.printStackTrace();
         }
 
-        ViewInteraction imageButton = onView(
-                allOf(withId(R.id.imgProfile),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        imageButton.perform(click());
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        ViewInteraction appCompatButton4 = onView(
-                allOf(withId(R.id.btnDetails),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.support.design.widget.CoordinatorLayout")),
-                                        1),
-                                12),
-                        isDisplayed()));
-        appCompatButton4.perform(click());
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        ViewInteraction appCompatButton5 = onView(
-                allOf(withId(R.id.btnViewOrders),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.support.v4.widget.NestedScrollView")),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatButton5.perform(click());
-
-        try {
-            Thread.sleep(7000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         ViewInteraction textView = onView(
-                allOf(withId(R.id.textTitleViewOrders),
+                allOf(withId(R.id.textinput_error), withText("Incorrect password."),
                         childAtPosition(
                                 childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class),
-                                        1),
+                                        IsInstanceOf.<View>instanceOf(android.widget.LinearLayout.class),
+                                        0),
                                 0),
                         isDisplayed()));
-        textView.check(matches(withText("Your Orders")));
+        textView.check(matches(withText("Incorrect password.")));
     }
 
     private static Matcher<View> childAtPosition(

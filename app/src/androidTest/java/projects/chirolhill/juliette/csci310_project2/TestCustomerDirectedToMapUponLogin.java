@@ -46,14 +46,6 @@ public class TestCustomerDirectedToMapUponLogin {
 
     @Test
     public void testCustomerDirectedToMapUponLogin() {
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.btnSignIn),
@@ -66,7 +58,7 @@ public class TestCustomerDirectedToMapUponLogin {
         appCompatButton.perform(click());
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -79,17 +71,6 @@ public class TestCustomerDirectedToMapUponLogin {
                                         0),
                                 0)));
         textInputEditText.perform(scrollTo(), replaceText("a@a.com"), closeSoftKeyboard());
-
-
-        ViewInteraction textInputEditText3 = onView(
-                allOf(withId(R.id.email), withText("a@a.com"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.email_layout),
-                                        0),
-                                0),
-                        isDisplayed()));
-        textInputEditText3.perform(closeSoftKeyboard());
 
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.button_next),

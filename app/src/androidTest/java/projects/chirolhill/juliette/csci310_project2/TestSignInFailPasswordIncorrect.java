@@ -45,17 +45,9 @@ public class TestSignInFailPasswordIncorrect {
 
     @Test
     public void testUnsuccessfulSignIn() {
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(7000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.btnSignIn), withText("Begin"),
+                allOf(withId(R.id.btnSignIn),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.support.design.widget.CoordinatorLayout")),
@@ -64,11 +56,8 @@ public class TestSignInFailPasswordIncorrect {
                         isDisplayed()));
         appCompatButton.perform(click());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
-            Thread.sleep(7000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -80,47 +69,17 @@ public class TestSignInFailPasswordIncorrect {
                                         withId(R.id.email_layout),
                                         0),
                                 0)));
-        textInputEditText.perform(scrollTo(), replaceText("a@a.c"), closeSoftKeyboard());
+        textInputEditText.perform(scrollTo(), replaceText("a@a.com"), closeSoftKeyboard());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
+
         try {
-            Thread.sleep(7000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        ViewInteraction textInputEditText2 = onView(
-                allOf(withId(R.id.email), withText("a@a.c"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.email_layout),
-                                        0),
-                                0)));
-        textInputEditText2.perform(scrollTo(), replaceText("a@a.com"));
-
-        ViewInteraction textInputEditText3 = onView(
-                allOf(withId(R.id.email), withText("a@a.com"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.email_layout),
-                                        0),
-                                0),
-                        isDisplayed()));
-        textInputEditText3.perform(closeSoftKeyboard());
-
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
-        try {
-            Thread.sleep(7000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
         ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.button_next), withText("Next"),
+                allOf(withId(R.id.button_next),
                         childAtPosition(
                                 allOf(withId(R.id.email_top_layout),
                                         childAtPosition(
@@ -129,11 +88,8 @@ public class TestSignInFailPasswordIncorrect {
                                 2)));
         appCompatButton2.perform(scrollTo(), click());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
-            Thread.sleep(7000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -148,7 +104,7 @@ public class TestSignInFailPasswordIncorrect {
         textInputEditText4.perform(scrollTo(), replaceText("qqq"), closeSoftKeyboard());
 
         ViewInteraction appCompatButton3 = onView(
-                allOf(withId(R.id.button_done), withText("Sign in"),
+                allOf(withId(R.id.button_done),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.ScrollView")),
@@ -156,9 +112,6 @@ public class TestSignInFailPasswordIncorrect {
                                 4)));
         appCompatButton3.perform(scrollTo(), click());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
             Thread.sleep(7000);
         } catch (InterruptedException e) {

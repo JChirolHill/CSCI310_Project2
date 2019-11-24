@@ -20,7 +20,6 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
@@ -31,7 +30,7 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class TestSignupFailNoEmail {
+public class TestBeginButtonPromptsEmail {
 
     @Rule
     public ActivityTestRule<SignInActivity> mActivityTestRule = new ActivityTestRule<>(SignInActivity.class);
@@ -42,11 +41,18 @@ public class TestSignupFailNoEmail {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void testSignupFailNoEmail() {
+    public void testBeginButtonPromptsEmail() {
 
-        onView(withId(R.id.btnSignIn)).perform(click());
 
-        onView(withId(R.id.button_next)).perform(scrollTo(), click());
+        ViewInteraction appCompatButton = onView(
+                allOf(withId(R.id.btnSignIn),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("android.support.design.widget.CoordinatorLayout")),
+                                        1),
+                                1),
+                        isDisplayed()));
+        appCompatButton.perform(click());
 
         try {
             Thread.sleep(7000);
@@ -54,7 +60,25 @@ public class TestSignupFailNoEmail {
             e.printStackTrace();
         }
 
-        onView(withId(R.id.textinput_error)).check(matches(withText("Enter your email address to continue")));
+        onView(withId(R.id.email_layout)).check(matches(isDisplayed()));
+    }
 
+    private static Matcher<View> childAtPosition(
+            final Matcher<View> parentMatcher, final int position) {
+
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Child at position " + position + " in parent ");
+                parentMatcher.describeTo(description);
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                ViewParent parent = view.getParent();
+                return parent instanceof ViewGroup && parentMatcher.matches(parent)
+                        && view.equals(((ViewGroup) parent).getChildAt(position));
+            }
+        };
     }
 }

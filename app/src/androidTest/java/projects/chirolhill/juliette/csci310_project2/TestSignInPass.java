@@ -63,7 +63,7 @@ public class TestSignInPass {
         onView(withId(R.id.button_done)).perform(scrollTo(), click());
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

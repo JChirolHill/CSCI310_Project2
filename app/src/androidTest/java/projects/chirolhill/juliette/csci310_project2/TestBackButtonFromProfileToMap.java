@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.replaceText;
@@ -26,6 +27,7 @@ import static android.support.test.espresso.action.ViewActions.scrollTo;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withClassName;
+import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
@@ -33,7 +35,7 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class TestCustomerViewOrderHistory {
+public class TestBackButtonFromProfileToMap {
 
     @Rule
     public ActivityTestRule<SignInActivity> mActivityTestRule = new ActivityTestRule<>(SignInActivity.class);
@@ -44,8 +46,7 @@ public class TestCustomerViewOrderHistory {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void testCustomerViewOrderHistory() {
-
+    public void testBackButtonFromProfileToMap() {
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.btnSignIn),
                         childAtPosition(
@@ -56,6 +57,9 @@ public class TestCustomerViewOrderHistory {
                         isDisplayed()));
         appCompatButton.perform(click());
 
+        // Added a sleep statement to match the app's execution delay.
+        // The recommended way to handle such scenarios is to use Espresso idling resources:
+        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
@@ -71,16 +75,6 @@ public class TestCustomerViewOrderHistory {
                                 0)));
         textInputEditText.perform(scrollTo(), replaceText("a@a.com"), closeSoftKeyboard());
 
-
-        ViewInteraction textInputEditText3 = onView(
-                allOf(withId(R.id.email),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.email_layout),
-                                        0),
-                                0),
-                        isDisplayed()));
-        textInputEditText3.perform(closeSoftKeyboard());
 
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.button_next),
@@ -133,36 +127,12 @@ public class TestCustomerViewOrderHistory {
         imageButton.perform(click());
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        ViewInteraction appCompatButton4 = onView(
-                allOf(withId(R.id.btnDetails),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.support.design.widget.CoordinatorLayout")),
-                                        1),
-                                12),
-                        isDisplayed()));
-        appCompatButton4.perform(click());
-
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        ViewInteraction appCompatButton5 = onView(
-                allOf(withId(R.id.btnViewOrders),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.support.v4.widget.NestedScrollView")),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatButton5.perform(click());
+        pressBack();
 
         try {
             Thread.sleep(7000);
@@ -170,15 +140,15 @@ public class TestCustomerViewOrderHistory {
             e.printStackTrace();
         }
 
-        ViewInteraction textView = onView(
-                allOf(withId(R.id.textTitleViewOrders),
+        ViewInteraction imageView = onView(
+                allOf(withContentDescription("My Location"),
                         childAtPosition(
                                 childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class),
-                                        1),
+                                        IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
+                                        2),
                                 0),
                         isDisplayed()));
-        textView.check(matches(withText("Your Orders")));
+        imageView.check(matches(isDisplayed()));
     }
 
     private static Matcher<View> childAtPosition(

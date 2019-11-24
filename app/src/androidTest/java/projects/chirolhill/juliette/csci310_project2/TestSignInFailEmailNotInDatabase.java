@@ -81,9 +81,6 @@ public class TestSignInFailEmailNotInDatabase {
                                 0)));
         textInputEditText.perform(scrollTo(), replaceText("8@9.com"), closeSoftKeyboard());
 
-        // Added a sleep statement to match the app's execution delay.
-        // The recommended way to handle such scenarios is to use Espresso idling resources:
-        // https://google.github.io/android-testing-support-library/docs/espresso/idling-resource/index.html
         try {
             Thread.sleep(7000);
         } catch (InterruptedException e) {
@@ -91,7 +88,7 @@ public class TestSignInFailEmailNotInDatabase {
         }
 
         ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.button_next), withText("Next"),
+                allOf(withId(R.id.button_next),
                         childAtPosition(
                                 allOf(withId(R.id.email_top_layout),
                                         childAtPosition(
@@ -99,6 +96,13 @@ public class TestSignInFailEmailNotInDatabase {
                                                 0)),
                                 2)));
         appCompatButton2.perform(scrollTo(), click());
+
+
+        try {
+            Thread.sleep(7000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         ViewInteraction textView = onView(
                 allOf(withText("Sign up"),

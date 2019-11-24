@@ -87,6 +87,12 @@ public class TestUpdateUsernamePass {
 
         onView(withId((R.id.btnSave))).perform(click());
 
+        try {
+            Thread.sleep(7000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         onView(withId(R.id.textUsername)).check(matches(withText("Dee")));
 
         //Change name back to Cee
@@ -101,6 +107,12 @@ public class TestUpdateUsernamePass {
         onView(withId(R.id.editUsername)).perform(replaceText("Cee"));
 
         onView(withId((R.id.btnSave))).perform(click());
+
+        try {
+            Thread.sleep(7000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         onView(withId(R.id.textUsername)).check(matches(withText("Cee")));
 

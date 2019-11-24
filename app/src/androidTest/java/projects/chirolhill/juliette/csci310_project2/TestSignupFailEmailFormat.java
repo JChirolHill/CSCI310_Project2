@@ -52,6 +52,12 @@ public class TestSignupFailEmailFormat {
 
         onView(withId(R.id.button_next)).perform(scrollTo(), click());
 
+        try {
+            Thread.sleep(7000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         onView(withId(R.id.textinput_error)).check(matches(withText("That email address isn't correct")));
     }
 }
