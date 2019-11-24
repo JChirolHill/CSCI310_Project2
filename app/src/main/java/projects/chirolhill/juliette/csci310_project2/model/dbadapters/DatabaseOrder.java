@@ -32,7 +32,7 @@ public class DatabaseOrder implements DatabaseAdapter {
         this.id = o.getId();
         this.shopID = o.getShop();
         this.customerID = o.getUser();
-        this.tripID = o.getTrip().getId();
+        this.tripID = o.getTrip() != null ? o.getTrip().getId() : null;
         this.drinks = new HashMap<>();
         this.totalCostFromCoffee = 0;
         this.totalCostFromTea = 0;
