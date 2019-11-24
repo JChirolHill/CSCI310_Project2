@@ -48,13 +48,11 @@ public class DateIntegerSeries implements XYSeries {
 
     // useful for determining how high to set the max Y value on the graph
     public int getMaxYValue() {
-        if (maxYValue == null) {
-            int tempMax = 0;
-            for (int i = 0; i < ySeries.size(); i++) {
-                if (ySeries.get(i) > tempMax) tempMax = ySeries.get(i);
-            }
-            this.maxYValue = tempMax;
+        int tempMax = 0;
+        for (int i = 0; i < ySeries.size(); i++) {
+            if (ySeries.get(i) > tempMax) tempMax = ySeries.get(i);
         }
+        this.maxYValue = tempMax;
         return this.maxYValue;
     }
 }
