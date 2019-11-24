@@ -194,30 +194,12 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //renderEditable();
-
                 Database.getInstance().setCallback(new Database.Callback() {
                     @Override
                     public void dbCallback(Object o) {
                         if (o != null) {
                             currShop = (Shop) o;
-//                            drinkCounter = 0;
-//                            final int numDrinks = currShop.getDrinks().size();
-//                            if(currShop.getDrinks() != null) {
-//                                Database.getInstance().setCallback(new Database.Callback() {
-//                                    @Override
-//                                    public void dbCallback(Object o) {
-//                                        currShop.addDrink((Drink)o);
-//                                    }
-//                                });
-//
-//                                for(Drink d : ((Shop) currShop).getDrinks()) {
-//                                    ++drinkCounter;
-//                                    Database.getInstance().getDrink(d.getId());
-//                                }
-//                            }
-//
-//                            if(drinkCounter == numDrinks) {
+
                             Intent i = new Intent(getApplicationContext(), CreateOrderActivity.class);
                             i.putExtra("EXTRA_EDITABLE", true);
                             i.putExtra(Shop.PREF_SHOP, currShop);
@@ -238,9 +220,6 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                 Database.getInstance().getShop(currOrder.getShop());
             }
         });
-
-//        findViewsById();
-//        setDateTimeField();
     }
 
     @Override
