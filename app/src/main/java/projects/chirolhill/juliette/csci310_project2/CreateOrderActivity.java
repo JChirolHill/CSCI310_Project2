@@ -113,30 +113,26 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
         drinks = new ArrayList<>();
         dateFormat = new SimpleDateFormat("MMM d, yyyy");
 
-        // get shop and drink from intent
-        Intent i = getIntent();
-
-        editable = (boolean)i.getSerializableExtra("EXTRA_EDITABLE");
-        date = (Date)i.getSerializableExtra("EXTRA_DATE");
-        drinkStr = (String)i.getSerializableExtra("EXTRA_DRINKS");
-        Drink passedIn = (Drink) i.getSerializableExtra(Drink.EXTRA_DRINK);
+        // get user id from prefs
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         userID = prefs.getString(User.PREF_USER_ID, "Invalid ID");
 
+        // get shop and drink from intent
+        Intent i = getIntent();
+        Drink passedIn = (Drink) i.getSerializableExtra(Drink.EXTRA_DRINK);
         currShop = (Shop) i.getSerializableExtra(Shop.PREF_SHOP);
+        order = new Order(null, currShop.getId(), null, prefs.getString(User.PREF_USER_ID, "Invalid ID"), new Date());
 
         for (Drink d : currShop.getDrinks()) {
             drinks.add(d);
         }
-        order = new Order(null, currShop.getId(), null, prefs.getString(User.PREF_USER_ID, "Invalid ID"), new Date());
 
-        // add drink that was passed in to this order
-        if(passedIn != null) {
-            order.addDrink(passedIn);
-        }
-
+        editable = (boolean)i.getSerializableExtra("EXTRA_EDITABLE");
         if(editable) {
-            //split by space
+            date = (Date)i.getSerializableExtra("EXTRA_DATE");
+
+            drinkStr = (String)i.getSerializableExtra("EXTRA_DRINKS");
+            // parse drinks from intent (split by space)
             String[] drinksStr = drinkStr.split("\\s+");
             for(String s: drinksStr){
                 String[] drinkArr = s.split(",");
@@ -145,24 +141,36 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
                     order.addDrink(new Drink(drinkArr[0], currShop.getId()));
                 }
             }
-            displayInfo();
+
+            if(order.getTrip() != null) {
+                try {
+                    // set both spinners based on those values
+                    tripHrs = order.getTrip().getTravelTime() / 60;
+                    tripMins = order.getTrip().getTravelTime() % 60;
+                }
+                catch (NullPointerException npe){
+                    tripHrs = 0;
+                    tripMins = 0;
+                }
+            }
+            else { // default to 0hr0min
+                tripHrs = 0;
+                tripMins = 0;
+            }
         }
 
-        // add a trip if the order is new
-        if(order.getTrip() == null){
-            order.setTrip(new Trip(currShop.getName(), new Date()));
+        // add drink that was passed in to this order
+        if(passedIn != null) {
+            order.addDrink(passedIn);
         }
-
-//        // set up date if from profile
-//        if(date != null){
-//            editDate =
-//        }
 
         // render appropriately depending on the readonly state
         if(!editable) {
+            displayInfo();
             renderReadOnly();
         }
         else {
+            //displayInfo();
             renderEditable();
         }
 
@@ -269,12 +277,14 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String valueStr = parent.getItemAtPosition(position).toString();
-                tripHrs = Integer.valueOf(valueStr.charAt(0));
+                tripHrs = Integer.valueOf(valueStr.substring(0,1));
+                order.setTrip(new Trip(currShop.getId(), tripHrs * 60 + tripMins));
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 tripHrs = 0;
+                order.setTrip(new Trip(currShop.getId(), tripHrs * 60 + tripMins));
             }
         });
 
@@ -284,18 +294,22 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
                 String valueStr = parent.getItemAtPosition(position).toString();
                 if(valueStr.length() == 5) {
                     tripMins = Integer.valueOf(valueStr.substring(0,1));
+                    order.setTrip(new Trip(currShop.getId(), tripHrs * 60 + tripMins));
                 }
                 else if(valueStr.length() == 6){
                     tripMins = Integer.valueOf(valueStr.substring(0,2));
+                    order.setTrip(new Trip(currShop.getId(), tripHrs * 60 + tripMins));
                 }
-                else{
+                else {
                     tripMins = 0;
+                    order.setTrip(new Trip(currShop.getId(), tripHrs * 60 + tripMins));
                 }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 tripMins = 0;
+                order.setTrip(new Trip(currShop.getId(), tripHrs * 60 + tripMins));
             }
         });
     }
@@ -314,29 +328,7 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
         if(order.getDrinks().size() > 0) {
             textError.setVisibility(View.GONE);
 
-            // use calendar to add an interval to date
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(order.getTrip().getTimeDiscover());
-
-            // manipulate date
-            cal.add(Calendar.HOUR, tripHrs);
-            cal.add(Calendar.MINUTE, tripMins);
-
-            // convert calendar to date
-            Date modifiedDate = cal.getTime();
-            order.getTrip().setTimeArrived(modifiedDate);
-
-            // add trip to database
-            order.getTrip().setId(Database.getInstance().addTrip(order.getTrip()));
-
-            // add date to order if editable
-            if(editable) {
-                Date tempDate = editDate.getText()....
-                order.setDate(tempDate);
-            }
-
             // add order to database
-            order.setTrip(new Trip(currShop.getId(), ));
             order.setId(Database.getInstance().addOrder(order));
 
             // get user from database
@@ -371,7 +363,7 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
 
     private void displayInfo() {
         // update total caffeine
-        if(customer.getLog() != null) {
+        if(customer != null && customer.getLog() != null) {
             totalCaffeineToday = customer.getLog().getTotalCaffeineLevel() + order.getTotalCaffeine(true);
         }
         else {
@@ -389,6 +381,11 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
         }
         else {
             textTotalCaffeineToday.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+        }
+
+        if(editable) {
+            spinnerTripHrs.setSelection(tripHrs);
+            spinnerTripMins.setSelection(tripMins);
         }
     }
 
@@ -441,7 +438,7 @@ public class CreateOrderActivity extends AppCompatActivity implements View.OnCli
         textTripPrompt.setVisibility(View.VISIBLE);
         spinnerTripHrs.setVisibility(View.VISIBLE);
         spinnerTripMins.setVisibility(View.VISIBLE);
-        textCreateOrderTitle.setText("Edit Order");
+        textCreateOrderTitle.setText(getResources().getString(R.string.editOrder));
     }
 
     @Override

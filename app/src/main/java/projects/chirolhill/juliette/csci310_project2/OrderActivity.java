@@ -226,7 +226,7 @@ public class OrderActivity extends AppCompatActivity implements View.OnClickList
                             Map<String, Pair<Drink, Integer>> map = currOrder.getDrinks();
                             StringBuilder sb = new StringBuilder();
                             for(Map.Entry<String, Pair<Drink, Integer>> entry : map.entrySet()){
-                                sb.append(entry.getKey()).append(",").append(entry.getValue().second).append(" ");
+                                sb.append(entry.getKey()).append(",").append(entry.getValue().second/2).append(" ");
                             }
 
                             i.putExtra("EXTRA_DRINKS", sb.toString());
