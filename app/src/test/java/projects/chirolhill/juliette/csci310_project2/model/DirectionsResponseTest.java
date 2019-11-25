@@ -7,7 +7,8 @@ import static org.junit.Assert.*;
 
 public class DirectionsResponseTest {
 
-
+    private DirectionsResponse directionsResponse;
+    private String mode;
 
     @Before
     public void setUp() throws Exception {
