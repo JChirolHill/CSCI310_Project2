@@ -1,19 +1,16 @@
 package projects.chirolhill.juliette.csci310_project2;
 
-import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.support.v4.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,10 +18,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -41,9 +36,7 @@ public class OrderActivity extends AppCompatActivity {
 
     private TextView textOrderTitle;
     private TextView totalMoneySpent;
-    private EditText editTotalMoneySpent;
     private TextView textCaffeineLevel;
-    private EditText editCaffeineLevel;
     private TextView textDate;
     private ListView listDrinks;
     private Button btnOk;
@@ -67,9 +60,7 @@ public class OrderActivity extends AppCompatActivity {
 
         textOrderTitle = findViewById(R.id.textOrderTitle);
         totalMoneySpent = findViewById(R.id.textTotalMoneySpent);
-        editTotalMoneySpent = findViewById(R.id.editTotalMoneySpent);
         textCaffeineLevel = findViewById(R.id.textCaffeineLevel);
-        editCaffeineLevel = findViewById(R.id.editCaffeineLevel);
         textDate = findViewById(R.id.textDate);
         listDrinks = findViewById(R.id.listDrinks);
         btnOk = findViewById(R.id.btnOk);
@@ -97,9 +88,7 @@ public class OrderActivity extends AppCompatActivity {
                 dateFormat = new SimpleDateFormat("MMM d, yyyy");
                 textDate.setText(dateFormat.format(currOrder.getDate()));
                 totalMoneySpent.setText(getResources().getString(R.string.dollarCost, currOrder.getTotalCost(false)));
-                editTotalMoneySpent.setText(getString(R.string.dollarCost, currOrder.getTotalCost(false) ));
                 textCaffeineLevel.setText(getResources().getString(R.string.milligrams, currOrder.getTotalCaffeine(false)));
-                editCaffeineLevel.setText(getResources().getString(R.string.milligrams, currOrder.getTotalCaffeine(false)));
 
                 // load in all the drinks
                 for(Map.Entry<String, Pair<Drink, Integer>> entry : currOrder.getDrinks().entrySet()) {
@@ -194,9 +183,7 @@ public class OrderActivity extends AppCompatActivity {
                         dateFormat = new SimpleDateFormat("MMM d, yyyy");
                         textDate.setText(dateFormat.format(currOrder.getDate()));
                         totalMoneySpent.setText(getResources().getString(R.string.dollarCost, currOrder.getTotalCost(false)));
-                        editTotalMoneySpent.setText(getString(R.string.dollarCost, currOrder.getTotalCost(false) ));
                         textCaffeineLevel.setText(getResources().getString(R.string.milligrams, currOrder.getTotalCaffeine(false)));
-                        editCaffeineLevel.setText(getResources().getString(R.string.milligrams, currOrder.getTotalCaffeine(false)));
 
                         // load in all the drinks
                         for(Map.Entry<String, Pair<Drink, Integer>> entry : currOrder.getDrinks().entrySet()) {
@@ -229,8 +216,6 @@ public class OrderActivity extends AppCompatActivity {
         totalMoneySpent.setVisibility(View.VISIBLE);
         textCaffeineLevel.setVisibility(View.VISIBLE);
         textDate.setVisibility(View.VISIBLE);
-        editTotalMoneySpent.setVisibility(View.GONE);
-        editCaffeineLevel.setVisibility(View.GONE);
         btnEdit.setVisibility(View.VISIBLE);
     }
 

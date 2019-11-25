@@ -51,16 +51,6 @@
         app:layout_constraintBaseline_toBaselineOf="@id/textTotalMoneySpentPrompt"
         app:layout_constraintStart_toEndOf="@id/textTotalMoneySpentPrompt"
         android:layout_marginStart="24dp"/>
-    <EditText
-        android:id="@+id/editTotalMoneySpent"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintBaseline_toBaselineOf="@id/textTotalMoneySpentPrompt"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/textTotalMoneySpentPrompt">
-    </EditText>
 
     <TextView
         android:id="@+id/textCaffeineLevelPrompt"
@@ -78,16 +68,6 @@
         android:layout_marginStart="24dp"
         app:layout_constraintStart_toEndOf="@id/textCaffeineLevelPrompt"
         app:layout_constraintBaseline_toBaselineOf="@id/textCaffeineLevelPrompt"/>
-    <EditText
-        android:id="@+id/editCaffeineLevel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textCaffeineLevelPrompt"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/textCaffeineLevelPrompt">
-    </EditText>
 
     <TextView
         android:id="@+id/textItemsOrderedPrompt"
