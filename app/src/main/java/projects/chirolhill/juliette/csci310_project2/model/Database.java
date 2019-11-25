@@ -239,7 +239,7 @@ public class Database {
                     currOrder = (Order)dataSnapshot.getValue(DatabaseOrder.class).revertToOriginal();
 
                     // retrieve trip information if exists
-                    if(currOrder.getTrip() != null && currOrder.getTrip().getId() != null) {
+                    if(currOrder.getTrip().getId() != null) {
                         dbTripsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
