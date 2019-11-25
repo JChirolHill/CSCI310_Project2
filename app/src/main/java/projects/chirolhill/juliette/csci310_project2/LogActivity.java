@@ -167,6 +167,7 @@ public class LogActivity extends AppCompatActivity {
 
         // loop through orders, comparing their days and adding values accordingly
         for (Order order : orders) {
+            if (order == null) continue;
             // dates (in milliseconds) from orders are clocked to start of day and converted to dates
             LocalDateTime tempDateResetTime = order.getDate().toInstant()
                     .atZone(ZoneId.systemDefault())
