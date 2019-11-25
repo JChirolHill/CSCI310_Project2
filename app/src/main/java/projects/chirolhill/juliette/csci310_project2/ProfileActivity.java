@@ -153,17 +153,19 @@ public class ProfileActivity extends AppCompatActivity {
                     renderEditable(u);
                 }
                 else { // save to db and switch to view mode
-                    User u;
+                    final User u;
                     if(radioIsMerchant.getCheckedRadioButtonId() == R.id.radio_yes) {
                         u = new Merchant();
                     }
                     else {
                         u = new Customer();
                     }
+
                     SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
                     u.setuID(prefs.getString(User.PREF_USER_ID, ""));
                     u.setUsername(editUsername.getText().toString().trim());
                     u.setEmail(textEmail.getText().toString().trim());
+                    final boolean wasMerchant = prefs.getBoolean(User.PREF_IS_MERCHANT, false);
 
                     SharedPreferences.Editor prefEditor = prefs.edit();
                     prefEditor.putString(User.PREF_USERNAME, u.getUsername());
@@ -171,19 +173,45 @@ public class ProfileActivity extends AppCompatActivity {
                     prefEditor.putBoolean(User.PREF_IS_MERCHANT, u.isMerchant());
                     prefEditor.commit();
 
-                    String addResult = Database.getInstance().addUser(u);
-                    if(addResult == null) { // no errors, successfully added to db
-                        if(origReadonly) { // originally readonly, just revert to readonly
-                            renderReadOnly();
+                    // persist any shops/drinks from this user
+                    Database.getInstance().setCallback(new Database.Callback() {
+                        @Override
+                        public void dbCallback(Object o) {
+                            // only persists shop/order data if remain same type of user
+                            if(wasMerchant && u.isMerchant()) {
+                                Merchant m = (Merchant)o;
+                                if(m != null) {
+                                    for(Map.Entry<String, Shop> s : m.getShops().entrySet()) {
+                                        ((Merchant)u).addShop(s.getValue());
+                                    }
+                                }
+                            }
+                            else if(!wasMerchant && !u.isMerchant()) {
+                                Customer c = (Customer)o;
+                                if(c != null) {
+                                    for(Map.Entry<String, Order> order : c.getLog().getOrders().entrySet()) {
+                                        ((Customer)u).getLog().addOrder(order.getValue());
+                                    }
+                                }
+                            }
+
+                            // add user to database and check result
+                            String addResult = Database.getInstance().addUser(u);
+                            if(addResult == null) { // no errors, successfully added to db
+                                if(origReadonly) { // originally readonly, just revert to readonly
+                                    renderReadOnly();
+                                }
+                                else { // go to maps activity
+                                    Intent i = new Intent(getApplicationContext(), MapsActivity.class);
+                                    startActivity(i);
+                                }
+                            }
+                            else { // some errors
+                                textError.setText(addResult);
+                            }
                         }
-                        else { // go to maps activity
-                            Intent i = new Intent(getApplicationContext(), MapsActivity.class);
-                            startActivity(i);
-                        }
-                    }
-                    else { // some errors
-                        textError.setText(addResult);
-                    }
+                    });
+                    Database.getInstance().getUser(u.getuID());
                 }
                 readonly = !readonly;
             }
