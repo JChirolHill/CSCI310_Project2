@@ -19,6 +19,7 @@ import android.widget.TextView;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -175,6 +176,22 @@ public class ViewOrdersActivity extends AppCompatActivity {
 //            textTripDuration.setText();
 
             return convertView;
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+            this.setNotifyOnChange(false);
+
+            //sort from latest to earliest
+            this.sort(new Comparator<Order>() {
+                @Override
+                public int compare(Order lhs, Order rhs) {
+                    return rhs.getDate().compareTo(lhs.getDate());
+                }
+            });
+
+            this.setNotifyOnChange(true);
         }
     }
 }

@@ -137,6 +137,7 @@ public class ShopInfoActivity extends AppCompatActivity {
                     Intent i = new Intent(getApplicationContext(), CreateOrderActivity.class);
                     i.putExtra(Shop.PREF_SHOP, shop);
                     i.putExtra(Drink.EXTRA_DRINK, drinks.get(position));
+                    i.putExtra(CreateOrderActivity.EXTRA_CREATE, true);
                     startActivity(i);
                 }
             }

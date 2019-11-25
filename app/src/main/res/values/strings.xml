@@ -12,7 +12,7 @@
     <string name="createAccountTitle">Profile Details</string>
     <string name="viewAccountTitle">View Profile</string>
     <string name="viewLogTitle">Log</string>
-    <string name="viewLogOrders">Your Orders</string>
+    <string name="viewLogOrders">Order Listing</string>
     <string name="createAccountSubtitle">Please fill in your account details</string>
     <string name="usernamePrompt">Username:</string>
     <string name="emailPrompt">Email:</string>
@@ -74,12 +74,12 @@
     <string name="title_activity_order">OrderActivity</string>
     <string name="title_activity_order_confirmation">Order Confirmation</string>
     <string name="viewOrder">View Order</string>
-    <string name="editOrder">Edit Order</string>
     <string name="totalMoneySpent">Total Cost:</string>
     <string name="itemsOrdered">Items Ordered:</string>
     <string name="caffeineLevel">Total Caffeine (mg):</string>
     <string name="title_activity_shop_listing">ShopListing</string>
     <string name="date">Date:</string>
+    <string name="tripInterval">Trip Interval:</string>
     <string name="ok">Ok</string>
     <string name="dollarCost">$%1$.2f</string>
 
@@ -97,6 +97,7 @@
     <string name="title_activity_create_order">CreateOrderActivity</string>
     <string name="plus">+</string>
     <string name="createOrder">Create Order</string>
+    <string name="editOrder">Edit Order</string>
     <string name="items">%1$d Items</string>
     <string name="totalCaffeineOrder">Total Caffeine in Order: %1$d mg</string>
     <string name="totalCaffeineToday">Total Caffeine Today: %1$d mg</string>

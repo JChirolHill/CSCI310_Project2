@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class Order {
     public static final String PREF_ORDER_ID = "pref_order_id";
+    public static final String EXTRA_ORDER_DATE = "extra_order_date";
 
     private String id;
     private Map<String, Pair<Drink, Integer>> drinks; // store drinks and number of orders

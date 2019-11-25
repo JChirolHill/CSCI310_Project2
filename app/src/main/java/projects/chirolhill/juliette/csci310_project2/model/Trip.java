@@ -24,11 +24,26 @@ public class Trip {
 
         // use calendar to add an interval to date
         Calendar cal = Calendar.getInstance();
-        cal.setTime(timeDiscover);
+        timeDiscover = cal.getTime();
 
         // manipulate date
         cal.add(Calendar.HOUR, minutes / 60);
         cal.add(Calendar.MINUTE, minutes % 60);
+
+        // convert calendar to date
+        timeArrived = cal.getTime();
+    }
+
+    public Trip(String destination, int hours, int minutes) {
+        this.destination = destination;
+        timeArrived = new Date();
+        // use calendar to add an interval to date
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(timeDiscover);
+
+        // manipulate date
+        cal.add(Calendar.HOUR, hours);
+        cal.add(Calendar.MINUTE, minutes);
 
         // convert calendar to date
         timeArrived = cal.getTime();
@@ -74,7 +89,7 @@ public class Trip {
     // returns travel time in minutes
     private int calcTravelTime() {
         // getTime returns in milliseconds
-        return (int)(timeArrived.getTime() - timeDiscover.getTime()) * 60 * 1000;
+        return (int)(timeArrived.getTime() - timeDiscover.getTime()) / 60 / 1000;
     }
 
     public int getTravelTime() {
