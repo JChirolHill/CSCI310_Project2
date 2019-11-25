@@ -69,7 +69,7 @@ public class TestCustomerViewOrderHistory {
                                         withId(R.id.email_layout),
                                         0),
                                 0)));
-        textInputEditText.perform(scrollTo(), replaceText("a@a.com"), closeSoftKeyboard());
+        textInputEditText.perform(scrollTo(), replaceText("hi@hi.com"), closeSoftKeyboard());
 
 
         ViewInteraction textInputEditText3 = onView(
@@ -105,7 +105,7 @@ public class TestCustomerViewOrderHistory {
                                         withId(R.id.password_layout),
                                         0),
                                 0)));
-        textInputEditText4.perform(scrollTo(), replaceText("aaaaaa"), closeSoftKeyboard());
+        textInputEditText4.perform(scrollTo(), replaceText("hhhhhh"), closeSoftKeyboard());
 
         ViewInteraction appCompatButton3 = onView(
                 allOf(withId(R.id.button_done),
@@ -170,15 +170,17 @@ public class TestCustomerViewOrderHistory {
             e.printStackTrace();
         }
 
+
         ViewInteraction textView = onView(
-                allOf(withId(R.id.textTitleViewOrders),
+                allOf(withId(R.id.textTitleViewOrders), withText("Order Listing"),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class),
                                         1),
                                 0),
                         isDisplayed()));
-        textView.check(matches(withText("Your Orders")));
+        textView.check(matches(isDisplayed()));
+
     }
 
     private static Matcher<View> childAtPosition(
