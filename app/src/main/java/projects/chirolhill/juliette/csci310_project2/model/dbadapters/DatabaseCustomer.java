@@ -49,7 +49,6 @@ public class DatabaseCustomer implements DatabaseAdapter {
             }
         }
 
-
         return c;
     }
 }
