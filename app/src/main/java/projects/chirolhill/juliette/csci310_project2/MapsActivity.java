@@ -15,11 +15,11 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -170,6 +170,7 @@ public class MapsActivity extends FragmentActivity implements
                 btnTimer.setText("Start Timer");
             }
         }
+        // TODO incorporate the trip logic here
     }
 
     public void recedeDisplay(){
@@ -557,9 +558,6 @@ public class MapsActivity extends FragmentActivity implements
 
 
     public void drawUpdatedList() {
-        // TODO: add a button that triggers this method, so that the user can move on map and get updated shops
-
-
         // add markers for all coffeeshops
         for (MapShop ms : yelpFetcher.getShops()) {
             String snippet = "Rating: " + Double.toString(ms.getRating());

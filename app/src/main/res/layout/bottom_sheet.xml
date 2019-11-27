@@ -12,6 +12,7 @@
 
 
     <LinearLayout
+        android:id="@+id/layout_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -94,6 +95,6 @@
         android:foreground="?attr/selectableItemBackground"
         android:text="Start Timer"
         android:textColor="#fff"
-        android:visibility="gone"
+
         />
 </LinearLayout>
