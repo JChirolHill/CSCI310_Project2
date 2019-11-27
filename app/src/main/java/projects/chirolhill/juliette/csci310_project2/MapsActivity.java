@@ -250,7 +250,7 @@ public class MapsActivity extends FragmentActivity implements
             mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng latLng) {
-                    for (Polyline p : polylines) p.remove();
+                    if (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN) for (Polyline p : polylines) p.remove();
                     // adjust the bottom margin depending on what's displayed down there
 
 //                    if(mBottomSheetBehavior.getState() == 3){
@@ -463,6 +463,7 @@ public class MapsActivity extends FragmentActivity implements
             public void onClick(View v) {
                 if (btnStartStopTrip.getText().equals("Start Trip")) {
                     handleTrip(finalMarker, mapChecker, trip, true);
+                    mBottomSheetBehavior.setHideable(false);
 
                     // switch to a stop button
                     btnStartStopTrip.setText("Stop Trip");
@@ -470,6 +471,7 @@ public class MapsActivity extends FragmentActivity implements
                 }
                 else {
                     handleTrip(finalMarker, mapChecker, trip, false);
+                    mBottomSheetBehavior.setHideable(true);
 
                     // get rid of the bottom bar, trip is over so store is no longer main focus
                     recedeDisplay();
