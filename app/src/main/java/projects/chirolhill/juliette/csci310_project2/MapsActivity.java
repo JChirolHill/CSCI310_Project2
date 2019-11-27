@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -31,6 +33,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Dot;
@@ -275,6 +278,7 @@ public class MapsActivity extends FragmentActivity implements
             mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng latLng) {
+                    for (Polyline p : polylines) p.remove();
                     recedeDisplay();
                 }
             });
@@ -362,12 +366,8 @@ public class MapsActivity extends FragmentActivity implements
                         calculateDirections(passableMarker, "walking");
                     }
                 });
-
-
                 mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 shopName.setText(marker.getTitle());
-
-
             }
         }
 
@@ -396,16 +396,13 @@ public class MapsActivity extends FragmentActivity implements
         final Marker finalMarker = marker;
 
         // to trigger polyline drawing
-        directionsFetcher .setCallback(new DirectionsFetcher.Callback() {
+        directionsFetcher.setCallback(new DirectionsFetcher.Callback() {
             @Override
             public void directionsCallback(Object o) {
                 DirectionsResponse response = (DirectionsResponse) o;
                 drawPolyline(response);
-
                 Trip trip = setupTrip(finalMarker);
-
                 displaySteps(response);
-
             }
         });
 
@@ -592,6 +589,3 @@ public class MapsActivity extends FragmentActivity implements
 
     }
 }
-
-
-
