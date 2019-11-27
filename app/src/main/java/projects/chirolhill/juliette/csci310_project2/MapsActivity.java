@@ -155,18 +155,19 @@ public class MapsActivity extends FragmentActivity implements
     }
 
     public void recedeDisplay(){
-        if(mBottomSheetBehavior.getState() == 3){
+        if(mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
             mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            mMap.setPadding(0, 0, 0, mBottomSheetBehavior.getPeekHeight());
         }
-        else if(mBottomSheetBehavior.getState() == 4){
+        else if(mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED){
             if(btnStartStopTrip.getText()!="Stop Trip") {
                 for (Polyline p : polylines) p.remove();
                 bottomSheetContent.setVisibility(View.GONE);
                 btnStartStopTrip.setVisibility(View.GONE);
                 mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             }
+            mMap.setPadding(0, 0, 0, 0);
         }
-        mMap.setPadding(0, 0, 0, 0);
     }
 
     @Override
@@ -208,7 +209,6 @@ public class MapsActivity extends FragmentActivity implements
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
-        // mMap.getUiSettings().setScrollGesturesEnabled(false);
 
         if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -232,15 +232,6 @@ public class MapsActivity extends FragmentActivity implements
                 currLatLng = new LatLng(34.0224, 118.2851);
                 Log.d(TAG, "Location Info: No location :(");
             }
-
-            /*
-            MarkerOptions marker = new MarkerOptions()
-                    .position(currLatLng)
-                    .title("You are here!")
-                    .snippet("Your current location")
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-            mMap.addMarker(marker);
-             */
 
             // Moving Camera to a Location with animation
             CameraPosition cameraPosition = new CameraPosition.Builder()
