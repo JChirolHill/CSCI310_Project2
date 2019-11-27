@@ -84,17 +84,14 @@
         </android.support.v4.widget.NestedScrollView>
     </LinearLayout>
 
-
-
     <Button
-        android:id="@+id/btn_timer"
+        android:id="@+id/btn_start_stop_trip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorAccent"
         android:foreground="?attr/selectableItemBackground"
-        android:text="Start Timer"
+        android:text="Start Trip"
         android:textColor="#fff"
-
         />
+
 </LinearLayout>
