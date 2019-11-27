@@ -407,18 +407,81 @@ public class MapsActivity extends FragmentActivity implements
 
         final Marker finalMarker = marker;
 
+        // TRIP STUFF
+        final Trip trip = new Trip();
+        // a periodic task for checking the user's distance from the shop. runs every 5 seconds
+        final Runnable mapChecker = new Runnable() {
+            @Override
+            public void run() {
+                // prevent the user from messing with map while trip is happening
+                mMap.getUiSettings().setAllGesturesEnabled(false);
+
+                if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    return;
+                } else {
+                    Location currLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
+
+                    // on-screen: zoom in, follow user's movement
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(new LatLng(currLocation.getLatitude(), currLocation.getLongitude()))
+                            .zoom(18)
+                            .build();
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                    // compute the user's current location from the shop's
+                    float[] distances = new float[1];
+                    Location.distanceBetween(currLocation.getLatitude(), currLocation.getLongitude(),
+                            finalMarker.getPosition().latitude, finalMarker.getPosition().longitude, distances);
+
+                    Log.d(TAG, "User is " + distances[0] + " meters from destination.");
+                    // if user is within 25m of shop, conclude trip
+                    if (distances[0] < 25) {
+                        // TODO: dismiss the 'cancel trip' snackbar?
+                        trip.setTimeArrived(new Date(System.currentTimeMillis()));
+
+                        // remove polylines
+                        for (Polyline p : polylines) p.remove();
+                        finalMarker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+
+                        // trip concluded --> display shop details
+                        BasicShop selectedShop = new BasicShop(shopListing.get(finalMarker));
+                        trip.setDestination(selectedShop.getId());
+                        Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
+                        i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
+                        i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
+                        startActivity(i);
+                        // TODO create some sort of "trip summary" box to go on bottom of page
+
+                        // TODO: figure out how to connect this trip to whatever orders they make?
+                        // TODO check if shop is in DB and add if not?
+                        trip.setId(Database.getInstance().addTrip(trip));
+
+                        // make map clickable again
+                        mMap.getUiSettings().setAllGesturesEnabled(true);
+
+                        handler.removeCallbacks(this);
+                        return;
+                    }
+                }
+                handler.postDelayed(this, 5000); // check the user's location every 5 seconds
+            }
+        };
         btnStartStopTrip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (btnStartStopTrip.getText().equals("Start Trip")) {
-                    handleTrip(finalMarker, true);
+                    handleTrip(finalMarker, mapChecker, trip, true);
 
                     // switch to a stop button
                     btnStartStopTrip.setText("Stop Trip");
                     btnStartStopTrip.setBackgroundColor((getResources().getColor(R.color.danger)));
                 }
                 else {
-                    handleTrip(finalMarker, false);
+                    handleTrip(finalMarker, mapChecker, trip, false);
+
+                    // get rid of the bottom bar, trip is over so store is no longer main focus
+                    recedeDisplay();
 
                     // switch to a start button
                     btnStartStopTrip.setText("Start Trip");
@@ -427,6 +490,7 @@ public class MapsActivity extends FragmentActivity implements
             }
         });
 
+        // DIRECTIONS STUFF
         // to trigger UI responses from the API data
         directionsFetcher.setCallback(new DirectionsFetcher.Callback() {
             @Override
@@ -455,84 +519,22 @@ public class MapsActivity extends FragmentActivity implements
      * allows the user to cancel, and records the data for the trip itself.
      * NOTE: if the trip is cancelled, an empty trip object is still returned.
      * @param marker
+     * @param start: whether to start the trip or stop it
      * @return
      */
-    public Trip handleTrip(final Marker marker, boolean start) {
-        final Trip trip = new Trip();
-
-        // a periodic task for checking the user's distance from the shop. runs every 5 seconds
-        final Runnable mapChecker = new Runnable() {
-            @Override
-            public void run() {
-            mMap.getUiSettings().setAllGesturesEnabled(false);
-
-            if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-                return;
-            } else {
-                Location currLocation = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-
-                // on-screen: zoom in, follow user's movement
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(currLocation.getLatitude(), currLocation.getLongitude()))
-                        .zoom(18)
-                        .build();
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-                // compute the user's current location from the shop's
-                float[] distances = new float[1];
-                Location.distanceBetween(currLocation.getLatitude(), currLocation.getLongitude(),
-                        marker.getPosition().latitude, marker.getPosition().longitude, distances);
-
-                Log.d(TAG, "User is " + distances[0] + " meters from destination.");
-                // if user is within 25m of shop, conclude trip
-                if (distances[0] < 25) {
-                    // TODO: dismiss the 'cancel trip' snackbar?
-                    trip.setTimeArrived(new Date(System.currentTimeMillis()));
-
-                    // remove polylines
-                    for (Polyline p : polylines) p.remove();
-                    marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-
-                    // trip concluded --> display shop details
-                    BasicShop selectedShop = new BasicShop(shopListing.get(marker));
-                    trip.setDestination(selectedShop.getId());
-                    Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
-                    i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
-                    i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
-                    startActivity(i);
-                    // TODO create some sort of "trip summary" box to go on bottom of page
-
-                    // TODO: figure out how to connect this trip to whatever orders they make?
-                    // TODO check if shop is in DB and add if not?
-                    trip.setId(Database.getInstance().addTrip(trip));
-
-                    // make map clickable again
-                    mMap.getUiSettings().setAllGesturesEnabled(true);
-
-                    handler.removeCallbacks(this);
-                    return;
-                }
-            }
-            handler.postDelayed(this, 5000); // check the user's location every 5 seconds
-            }
-        };
-
-        if (!start) {
+    public void handleTrip(final Marker marker, final Runnable mapChecker, final Trip trip, boolean start) {
+        if (!start) { // STOP the trip
             // remove polylines
             for (Polyline p : polylines) p.remove();
             marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
             // make map clickable again
             mMap.getUiSettings().setAllGesturesEnabled(true);
             handler.removeCallbacks(mapChecker);
-        } else {
+        } else { // START the trip
             trip.setTimeDiscover(new Date(System.currentTimeMillis()));
             marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-
             handler.post(mapChecker);
         }
-
-        return trip;
     }
 
     /**
