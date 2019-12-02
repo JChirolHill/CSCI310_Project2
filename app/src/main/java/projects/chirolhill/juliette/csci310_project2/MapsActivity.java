@@ -64,7 +64,6 @@ public class MapsActivity extends FragmentActivity implements
         GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
         GoogleMap.OnMarkerClickListener,
-        GoogleMap.OnInfoWindowClickListener,
         OnMapReadyCallback
         {
     private final String TAG = MapsActivity.class.getSimpleName();
@@ -243,29 +242,13 @@ public class MapsActivity extends FragmentActivity implements
             // get coffeeshop data from volley
             yelpFetcher.fetch(currLatLng.latitude, currLatLng.longitude);
 
-            // needed for OnInfoWindowClickListener() to work
-            mMap.setOnInfoWindowClickListener(this);
-
-            // to remove leftover polylines between clicks
+            // adjust the bottom margin depending on what's displayed down there
             mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                 @Override
                 public void onMapClick(LatLng latLng) {
-                    if (mBottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN) for (Polyline p : polylines) p.remove();
-                    // adjust the bottom margin depending on what's displayed down there
-
-//                    if(mBottomSheetBehavior.getState() == 3){
-//                        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-//                    }
-//                    else if(mBottomSheetBehavior.getState() == 4){
-//                        for (Polyline p : polylines) p.remove();
-//                        bottomSheetContent.setVisibility(View.GONE);
-//                        btnStartStopTrip.setVisibility(View.GONE);
-//                        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-//                    }
-//                    mMap.setPadding(0, 0, 0, 0);
-
                     switch(mBottomSheetBehavior.getState()) {
                         case BottomSheetBehavior.STATE_HIDDEN:
+                            for (Polyline p : polylines) p.remove();
                             mMap.setPadding(0, 0, 0, 0);
                             break;
                         case BottomSheetBehavior.STATE_EXPANDED:
@@ -375,16 +358,6 @@ public class MapsActivity extends FragmentActivity implements
         }
 
         return false; // moves camera to the selected marker
-    }
-
-    /**
-     * For now, just removes leftover polylines.
-     * @param marker
-     **/
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        // remove old polylines
-        for (Polyline p : polylines) p.remove();
     }
 
     /**
