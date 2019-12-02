@@ -516,8 +516,9 @@ public class MapsActivity extends FragmentActivity implements
      */
     public void handleTrip(final Marker marker, final Runnable mapChecker, final Trip trip, boolean start) {
         if (!start) { // STOP the trip
-            // remove polylines
+            // remove polylines and old ETA popup
             for (Polyline p : polylines) p.remove();
+            routeDetailsMarker.remove();
             marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
             // make map clickable again
             mMap.getUiSettings().setAllGesturesEnabled(true);
