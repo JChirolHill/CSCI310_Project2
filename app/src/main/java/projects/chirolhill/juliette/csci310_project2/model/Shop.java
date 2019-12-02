@@ -82,4 +82,16 @@ public class Shop extends BasicShop {
     public Drink getTopDrink() {
         return calcTopDrink();
     }
+
+    private double calcRevenue() {
+        double revenue = 0;
+        for(Drink d : drinks) {
+            revenue += d.getPrice() * d.getTimesOrdered();
+        }
+        return revenue;
+    }
+
+    public double getRevenue() {
+        return calcRevenue();
+    }
 }
