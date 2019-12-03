@@ -203,7 +203,7 @@ public class MapsActivity extends FragmentActivity implements
      * installed Google Play services and returned to the app.
      */
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(GoogleMap googleMap)  {
         mMap = googleMap;
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
@@ -553,7 +553,6 @@ public class MapsActivity extends FragmentActivity implements
             shopListing.put(marker, ms);
         }
     }
-
 
     public void displaySteps(DirectionsResponse response) {
         ArrayList<DirectionsRoute> routes = response.getRoutes();
