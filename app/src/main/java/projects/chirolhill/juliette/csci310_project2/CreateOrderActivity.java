@@ -115,10 +115,11 @@ public class CreateOrderActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         userID = prefs.getString(User.PREF_USER_ID, "Invalid ID");
 
-        // get shop and drink from intent
+        // get shop and drink and order from intent
         Intent i = getIntent();
         currShop = (Shop) i.getSerializableExtra(Shop.PREF_SHOP);
         order = new Order(null, currShop.getId(), null, prefs.getString(User.PREF_USER_ID, "Invalid ID"), new Date());
+        order.setTrip((Trip)i.getSerializableExtra(Order.EXTRA_ORDER_TRIP));
 
         for (Drink d : currShop.getDrinks()) {
             drinks.add(d);
@@ -357,6 +358,11 @@ public class CreateOrderActivity extends AppCompatActivity {
                 Database.getInstance().getUser(userID);
             }
             else { // update existing order
+                // if create new trip
+                if(order.getTrip().getId() == null) { // create new trip id in database
+                    order.getTrip().setId(Database.getInstance().addTrip(order.getTrip()));
+                }
+
                 Database.getInstance().addOrder(order);
 
                 Intent i = new Intent(getApplicationContext(), OrderActivity.class);
