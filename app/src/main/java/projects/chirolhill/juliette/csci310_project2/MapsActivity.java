@@ -371,6 +371,7 @@ public class MapsActivity extends FragmentActivity implements
         Log.d(TAG, "calculateDirectionsForTrip: calculating directions.");
 
         final Marker finalMarker = marker;
+        final String finalMode = mode;
 
         // TRIP STUFF
         final Trip trip = new Trip();
@@ -380,6 +381,13 @@ public class MapsActivity extends FragmentActivity implements
             public void run() {
                 // prevent the user from messing with map while trip is happening
                 mMap.getUiSettings().setAllGesturesEnabled(false);
+                if (finalMode == "driving") {
+                    btnWalk.setVisibility(View.INVISIBLE);
+                    btnWalk.setEnabled(false);
+                } else {
+                    btnDrive.setVisibility(View.INVISIBLE);
+                    btnDrive.setEnabled(false);
+                }
 
                 if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -498,6 +506,13 @@ public class MapsActivity extends FragmentActivity implements
             marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
             // make map clickable again
             mMap.getUiSettings().setAllGesturesEnabled(true);
+            if (!btnWalk.isEnabled()) {
+                btnWalk.setVisibility(View.VISIBLE);
+                btnWalk.setEnabled(true);
+            } else {
+                btnDrive.setVisibility(View.VISIBLE);
+                btnDrive.setEnabled(true);
+            }
             handler.removeCallbacks(mapChecker);
         } else { // START the trip
             trip.setTimeDiscover(new Date(System.currentTimeMillis()));
