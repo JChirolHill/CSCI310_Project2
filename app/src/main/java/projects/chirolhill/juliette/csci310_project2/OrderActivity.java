@@ -143,6 +143,7 @@ public class OrderActivity extends AppCompatActivity {
                             i.putExtra(Shop.PREF_SHOP, currShop);
                             i.putExtra(Order.EXTRA_ORDER_DATE, currOrder.getDate());
                             i.putExtra(Order.PREF_ORDER_ID, currOrder.getId());
+                            i.putExtra(Order.EXTRA_ORDER_TRIP, currOrder.getTrip());
 
                             Map<String, Pair<Drink, Integer>> map = currOrder.getDrinks();
                             StringBuilder sb = new StringBuilder();
