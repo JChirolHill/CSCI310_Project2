@@ -418,6 +418,8 @@ public class MapsActivity extends FragmentActivity implements
 
                         // TODO: figure out how to connect this trip to whatever orders they make?
                         // TODO check if shop is in DB and add if not?
+                        // save the trip object, pass it into the intent for shop info activity and
+                        // then create order activity
                         trip.setId(Database.getInstance().addTrip(trip));
 
                         // make map clickable again
