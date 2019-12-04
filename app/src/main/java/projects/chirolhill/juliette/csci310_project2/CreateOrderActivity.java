@@ -135,6 +135,7 @@ public class CreateOrderActivity extends AppCompatActivity {
         if(!create) { // edit existing order
             order.setId(i.getStringExtra(Order.PREF_ORDER_ID));
             date = (Date)i.getSerializableExtra(Order.EXTRA_ORDER_DATE);
+            order.setDate(date);
 
             // parse drinks from intent (split by space)
             drinkStr = (String)i.getSerializableExtra(OrderActivity.EXTRA_DRINKS_STRING);
@@ -254,7 +255,7 @@ public class CreateOrderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Calendar cal = Calendar.getInstance();
-                cal.setTime(order.getDate());
+                cal.setTime(date);
                 new DatePickerDialog(CreateOrderActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
