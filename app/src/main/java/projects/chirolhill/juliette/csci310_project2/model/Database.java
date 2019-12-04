@@ -3,7 +3,7 @@ package projects.chirolhill.juliette.csci310_project2.model;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.util.Pair;
+import android.support.v4.util.Pair;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -239,7 +239,7 @@ public class Database {
                     currOrder = (Order)dataSnapshot.getValue(DatabaseOrder.class).revertToOriginal();
 
                     // retrieve trip information if exists
-                    if(currOrder.getTrip() != null && currOrder.getTrip().getId() != null) {
+                    if(currOrder.getTrip().getId() != null) {
                         dbTripsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -254,6 +254,7 @@ public class Database {
                         });
                     }
                     else {
+                        currOrder.setTrip(null); // NEED TO ADD THIS LINE OF CODE HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                         cb.dbCallback(currOrder);
                     }
                 }

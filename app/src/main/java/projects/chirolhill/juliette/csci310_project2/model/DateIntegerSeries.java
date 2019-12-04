@@ -18,7 +18,6 @@ public class DateIntegerSeries implements XYSeries {
     private String title;
     private Integer maxYValue;
 
-    // TODO: some sort of data "default" logic for when we have incomplete weeks of data for a user
     public DateIntegerSeries(String title) {
         this.title = title;
         this.xSeries = new ArrayList<Long>();
@@ -49,13 +48,11 @@ public class DateIntegerSeries implements XYSeries {
 
     // useful for determining how high to set the max Y value on the graph
     public int getMaxYValue() {
-        if (maxYValue == null) {
-            int tempMax = 0;
-            for (int i = 0; i < ySeries.size(); i++) {
-                if (ySeries.get(i) > tempMax) tempMax = ySeries.get(i);
-            }
-            this.maxYValue = tempMax;
+        int tempMax = 0;
+        for (int i = 0; i < ySeries.size(); i++) {
+            if (ySeries.get(i) > tempMax) tempMax = ySeries.get(i);
         }
+        this.maxYValue = tempMax;
         return this.maxYValue;
     }
 }

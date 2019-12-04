@@ -55,10 +55,9 @@ public class DirectionsFetcher {
      */
     public void fetch(double originLat, double originLng, double destLat, double destLng, String mode) {
         // CLEAR RESULTS OF PREVIOUS REQUEST
-         this.mostRecentResponse = null;
-         this.mostRecentRequestURL = null;
+        this.mostRecentResponse = null;
+        this.mostRecentRequestURL = null;
 
-        //TODO support parameters for mode (either driving or walking) and multiple routes
         this.mostRecentRequestURL = BASE_URL + "origin=" + Double.toString(originLat) + "," + Double.toString(originLng)
                 + "&destination=" + Double.toString(destLat) + "," + Double.toString(destLng)
                 + (mode.equals("walking") ? "&mode=walking" : "&mode=driving") + "&key=" + API_KEY;

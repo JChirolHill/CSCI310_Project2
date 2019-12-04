@@ -1,6 +1,6 @@
 package projects.chirolhill.juliette.csci310_project2.model.dbadapters;
 
-import android.util.Pair;
+import android.support.v4.util.Pair;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -32,7 +32,7 @@ public class DatabaseOrder implements DatabaseAdapter {
         this.id = o.getId();
         this.shopID = o.getShop();
         this.customerID = o.getUser();
-        this.tripID = o.getTrip().getId();
+        this.tripID = o.getTrip() != null ? o.getTrip().getId() : null;
         this.drinks = new HashMap<>();
         this.totalCostFromCoffee = 0;
         this.totalCostFromTea = 0;

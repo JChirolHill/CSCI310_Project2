@@ -16,7 +16,6 @@ public class DatabaseShop implements DatabaseAdapter {
     public String imgURL;
     public String address;
     public boolean pendingApproval;
-    public List<String> verificationDocs;
     public List<String> drinks;
 
     public DatabaseShop() { }
@@ -30,7 +29,6 @@ public class DatabaseShop implements DatabaseAdapter {
         this.imgURL = s.getImgURL();
         this.address = s.getAddress();
         this.pendingApproval = s.isPendingApproval();
-        this.verificationDocs = s.getVerificationDocs();
         this.drinks = new ArrayList<>();
         for(Drink d : s.getDrinks()) {
             drinks.add(d.getId());
@@ -46,7 +44,6 @@ public class DatabaseShop implements DatabaseAdapter {
         s.setImgURL(this.imgURL);
         s.setAddress(this.address);
         s.setPendingApproval(this.pendingApproval);
-        s.setVerificationDocs(this.verificationDocs);
         if(this.drinks != null) {
             for(String drinkID : this.drinks) {
                 s.addDrink(new Drink(drinkID, s.getId()));

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -25,11 +27,11 @@ import android.widget.ImageButton;
 import android.os.Handler;
 import android.widget.TextView;
 
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Dot;
@@ -203,7 +205,7 @@ public class MapsActivity extends FragmentActivity implements
      * installed Google Play services and returned to the app.
      */
     @Override
-    public void onMapReady(GoogleMap googleMap)  {
+    public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
@@ -315,12 +317,11 @@ public class MapsActivity extends FragmentActivity implements
                             }
                         }).show();
             }
-
             else { // customer: view drinks, driving directions, walking directions
+
                 btnDrinks.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View arg0) {
-
                         BasicShop selectedShop = new BasicShop(shopListing.get(marker));
                         // launch intent to view shop details here
                         Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
@@ -575,3 +576,4 @@ public class MapsActivity extends FragmentActivity implements
 
     }
 }
+

@@ -1,8 +1,6 @@
 package projects.chirolhill.juliette.csci310_project2.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Shop extends BasicShop {
@@ -10,15 +8,13 @@ public class Shop extends BasicShop {
 
     private Set<Drink> drinks;
     private String ownerID;
-    private List<String> verificationDocs;
     private boolean pendingApproval;
 
     public Shop(String ownerID, BasicShop basicShop) {
         super(basicShop);
         this.ownerID = ownerID;
-        drinks = new HashSet<>();
-        verificationDocs = new ArrayList<>();
-        pendingApproval = true;
+        this.drinks = new HashSet<>();
+        this.pendingApproval = true;
     }
 
     public Set<Drink> getDrinks() {
@@ -27,18 +23,6 @@ public class Shop extends BasicShop {
 
     public String getOwnerID() {
         return ownerID;
-    }
-
-    public List<String> getVerificationDocs() {
-        return verificationDocs;
-    }
-
-    public void addVerificationDoc(String doc) {
-        this.verificationDocs.add(doc);
-    }
-
-    public void setVerificationDocs(List<String> verificationDocs) {
-        this.verificationDocs = verificationDocs;
     }
 
     public boolean isPendingApproval() {
@@ -50,7 +34,7 @@ public class Shop extends BasicShop {
     }
 
     public void addDrink(Drink d) {
-        drinks.add(d);
+        this.drinks.add(d);
     }
 
     public void updateDrink(Drink d) {
@@ -73,10 +57,8 @@ public class Shop extends BasicShop {
     }
 
     // return true at successful change of ownership
-    public boolean changeOwnership(String newOwnerID, List<String> verifDocs) {
-        if(newOwnerID != null && !verifDocs.isEmpty()) {
-            verificationDocs.clear();
-            verificationDocs = verifDocs;
+    public boolean changeOwnership(String newOwnerID) {
+        if(newOwnerID != null) {
             ownerID = newOwnerID;
             return true;
         }
@@ -99,5 +81,17 @@ public class Shop extends BasicShop {
 
     public Drink getTopDrink() {
         return calcTopDrink();
+    }
+
+    private double calcRevenue() {
+        double revenue = 0;
+        for(Drink d : drinks) {
+            revenue += d.getPrice() * d.getTimesOrdered();
+        }
+        return revenue;
+    }
+
+    public double getRevenue() {
+        return calcRevenue();
     }
 }

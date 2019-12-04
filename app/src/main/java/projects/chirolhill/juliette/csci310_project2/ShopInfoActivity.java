@@ -38,8 +38,9 @@ public class ShopInfoActivity extends AppCompatActivity {
     private ImageView imageShop;
     private RatingBar ratingBar;
     private TextView textPrice;
-//    private TextView textTotalRevenue;
+    private TextView textTotalRevenue;
 //    private TextView textTotalOrders;
+    private TextView textPopDrink;
     private TextView textItems;
     private TextView textAddress;
     private ListView listDrinks;
@@ -51,6 +52,8 @@ public class ShopInfoActivity extends AppCompatActivity {
     private DrinkListAdapter drinkAdapter;
     private List<Drink> drinks;
     private boolean isMerchant;
+    private Drink topDrink;
+    private double revenue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +66,9 @@ public class ShopInfoActivity extends AppCompatActivity {
         imageShop = findViewById(R.id.imageShop);
         ratingBar = findViewById(R.id.ratingBar);
         textPrice = findViewById(R.id.textPrice);
-//        textTotalRevenue = findViewById(R.id.textTotalRevenue);
+        textTotalRevenue = findViewById(R.id.textTotalRevenue);
 //        textTotalOrders = findViewById(R.id.textTotalOrders);
+        textPopDrink = findViewById(R.id.textPopDrink);
         textItems = findViewById(R.id.textItems);
         textAddress = findViewById(R.id.textAddress);
         listDrinks = findViewById(R.id.list);
@@ -89,6 +93,10 @@ public class ShopInfoActivity extends AppCompatActivity {
         else if(i.getSerializableExtra(Shop.PREF_SHOP) != null) { // comes from merchant looking at shop stats
             currShop = (Shop)i.getSerializableExtra(Shop.PREF_SHOP);
             showStats = true;
+
+            // calc top drink and revenue
+            topDrink = ((Shop)currShop).getTopDrink();
+            revenue = ((Shop)currShop).getRevenue();
         }
 
         // load content onto layout
@@ -99,6 +107,12 @@ public class ShopInfoActivity extends AppCompatActivity {
         Picasso.get().load(currShop.getImgURL()).into(imageShop);
         if(isMerchant) {
             btnAddDrink.setVisibility(View.VISIBLE);
+            textTotalRevenue.setText(getResources().getString(R.string.totalRevenue, (float)revenue));
+            textTotalRevenue.setVisibility(View.VISIBLE);
+            if(topDrink != null) {
+                textPopDrink.setText(getResources().getString(R.string.popDrink, topDrink.getName()));
+                textPopDrink.setVisibility(View.VISIBLE);
+            }
             textItems.setVisibility(View.GONE);
         }
 
@@ -137,6 +151,7 @@ public class ShopInfoActivity extends AppCompatActivity {
                     Intent i = new Intent(getApplicationContext(), CreateOrderActivity.class);
                     i.putExtra(Shop.PREF_SHOP, shop);
                     i.putExtra(Drink.EXTRA_DRINK, drinks.get(position));
+                    i.putExtra(CreateOrderActivity.EXTRA_CREATE, true);
                     startActivity(i);
                 }
             }
@@ -233,6 +248,7 @@ public class ShopInfoActivity extends AppCompatActivity {
             TextView textType = convertView.findViewById(R.id.listDrinkType);
             TextView textCaffeine = convertView.findViewById(R.id.listDrinkCaffeine);
             TextView textPrice = convertView.findViewById(R.id.listDrinkPrice);
+            TextView textMostPop = convertView.findViewById(R.id.listMostPop);
 //            ImageView image = convertView.findViewById(R.id.listShopImage);
 
             Drink d = getItem(position);
@@ -242,6 +258,12 @@ public class ShopInfoActivity extends AppCompatActivity {
             if(isMerchant) {
                 textTimesOrdered.setVisibility(View.VISIBLE);
                 textTimesOrdered.setText(getResources().getString(R.string.totalOrders, d.getTimesOrdered()));
+                if(topDrink != null && topDrink.getId().equals(d.getId())) {
+                    textMostPop.setVisibility(View.VISIBLE);
+                }
+                else {
+                    textMostPop.setVisibility(View.GONE);
+                }
             }
             else {
                 textTimesOrdered.setVisibility(View.GONE);
