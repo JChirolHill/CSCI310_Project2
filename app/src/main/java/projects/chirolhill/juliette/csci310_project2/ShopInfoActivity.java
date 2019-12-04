@@ -114,6 +114,8 @@ public class ShopInfoActivity extends AppCompatActivity {
                 textPopDrink.setVisibility(View.VISIBLE);
             }
             textItems.setVisibility(View.GONE);
+        } else {
+            btnAddDrink.setVisibility(View.GONE);
         }
 
         // fetch shop from database if exists
