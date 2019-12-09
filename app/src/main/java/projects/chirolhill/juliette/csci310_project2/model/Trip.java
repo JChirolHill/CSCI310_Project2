@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+// TODO implement Serializable to make it pass-able through intents
 public class Trip {
     private String id;
     private String destination;

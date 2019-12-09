@@ -429,7 +429,7 @@ public class MapsActivity extends FragmentActivity implements
                         // TODO check if shop is in DB and add if not?
                         // save the trip object, pass it into the intent for shop info activity and
                         // then create order activity
-                        trip.setId(Database.getInstance().addTrip(trip));
+                        // trip.setId(Database.getInstance().addTrip(trip));
 
                         // make map clickable again
                         mMap.getUiSettings().setAllGesturesEnabled(true);
