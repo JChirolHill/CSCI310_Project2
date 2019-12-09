@@ -313,6 +313,9 @@ public class MapsActivity extends FragmentActivity implements
     public boolean onMarkerClick (final Marker marker) {
         // if the map is "frozen", user is on a trip and markers shouldn't be clickable either
         if (!mMap.getUiSettings().isScrollGesturesEnabled()) return true;
+        // disable the find nearby shops button
+        btnFindShops.setEnabled(false);
+        btnFindShops.setVisibility(View.INVISIBLE);
 
         // remove old polylines
         for (Polyline p : polylines) p.remove();
