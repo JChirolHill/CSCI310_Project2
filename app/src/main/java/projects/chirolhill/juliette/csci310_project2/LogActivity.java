@@ -73,6 +73,7 @@ public class LogActivity extends AppCompatActivity {
         setContentView(R.layout.activity_log);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getResources().getString(R.string.viewLogTitle));
 
         // "View Orders" button launches intent to ViewOrdersActivity
         btnViewOrders = findViewById(R.id.btnViewOrders);
