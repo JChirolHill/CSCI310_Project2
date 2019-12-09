@@ -18,6 +18,13 @@ To log out, press the back button a certain number of times (depending on what v
 
 As a customer, when you are logging and order, click the drink item in the list to increment the number of drinks added to the log. To make the quantity of that item zero in the log, press and hold the drink item.
 
+### Improvements added during 2.5 Sprint:
+1. The Customer can view the trip information after a store is selected from the map.
+2. Once the Customer starts their trip to the selected store, they will receive a popupmnotification when they reach their store.
+3. Merchants can see the stats of their store-- total revenue for the store, and the best seller of the store. 
+4. Improved various UI design elements.
+
+
 ### Note:
 ~~Since claiming a store (as a merchant) requires taking a picture of verification documents, the emulator will crash if you try to take a picture with it (by clicking the Capture button on the Claim Shop Activity).  If you would like to test the claiming a shop functionality, we can provide a demo or please use a real Android device to run the app.~~
 
