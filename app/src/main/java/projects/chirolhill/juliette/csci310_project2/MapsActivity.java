@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Toast;
 import android.widget.ImageButton;
 import android.os.Handler;
 import android.widget.TextView;
@@ -64,14 +65,14 @@ import projects.chirolhill.juliette.csci310_project2.model.DirectionsResponse;
 import projects.chirolhill.juliette.csci310_project2.model.DirectionsRoute;
 
 public class MapsActivity extends FragmentActivity implements
-        GoogleMap.OnMyLocationButtonClickListener,
-        GoogleMap.OnMyLocationClickListener,
         GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnCameraIdleListener,
+        GoogleMap.OnCameraMoveListener,
         OnMapReadyCallback
         {
     private final String TAG = MapsActivity.class.getSimpleName();
 
-    //    private Button btnFindShops;
+    private Button btnFindShops;
     private ImageButton imgProfile;
     private LocationManager locationManager;
     private Location myLocation;
@@ -92,6 +93,7 @@ public class MapsActivity extends FragmentActivity implements
     private TextView bottomSheetContent;
     private Button btnStartStopTrip;
 
+    private LatLng centerPoint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,16 +117,21 @@ public class MapsActivity extends FragmentActivity implements
             }
         });
 
-        // PLEASE DON'T DELETE FOR NOW :)
-//        btnFindShops = findViewById(R.id.btnFindShops);
-//
-//        btnFindShops.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mMap.clear();
-//                yelpFetcher.fetch(currLatLng.latitude, currLatLng.longitude);
-//            }
-//        });
+        // refresh button for nearby shops, initially disabled
+        btnFindShops = findViewById(R.id.btnFindShops);
+        btnFindShops.setVisibility(View.INVISIBLE);
+        btnFindShops.setEnabled(false);
+
+        btnFindShops.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMap.clear();
+                centerPoint = mMap.getCameraPosition().target;
+                yelpFetcher.fetch(centerPoint.latitude, centerPoint.longitude);
+                btnFindShops.setVisibility(View.INVISIBLE);
+                btnFindShops.setEnabled(false);
+            }
+        });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -218,9 +225,9 @@ public class MapsActivity extends FragmentActivity implements
         } else {
             // Write code here if permission already given.
             mMap.setMyLocationEnabled(true);
-            mMap.setOnMyLocationButtonClickListener(this);
-            mMap.setOnMyLocationClickListener(this);
             mMap.setOnMarkerClickListener(this);
+            mMap.setOnCameraIdleListener(this);
+            mMap.setOnCameraMoveListener(this);
 
             // Add a marker in current spot and move the camera
             currLatLng = null;
@@ -244,6 +251,8 @@ public class MapsActivity extends FragmentActivity implements
 
             // get coffeeshop data from volley
             yelpFetcher.fetch(currLatLng.latitude, currLatLng.longitude);
+
+            centerPoint = currLatLng;
 
             // adjust the bottom margin depending on what's displayed down there
             mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -273,15 +282,31 @@ public class MapsActivity extends FragmentActivity implements
         }
     }
 
+    /**
+     * Displays the "Find Nearby Shops" button if user has moved screen 2.5kms away from previous centerpoint of screen.
+     */
     @Override
-    public void onMyLocationClick(@NonNull Location location) {
-//        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
+    public void onCameraIdle() {
+        if (mMap == null || centerPoint == null) return;
+
+        LatLng oldCenterPoint = centerPoint;
+        centerPoint = mMap.getCameraPosition().target;
+        float[] distances = new float[1];
+        Location.distanceBetween(oldCenterPoint.latitude, oldCenterPoint.longitude,
+                centerPoint.latitude, centerPoint.longitude, distances);
+        if (distances[0] >= 2500) {
+            btnFindShops.setVisibility(View.VISIBLE);
+            btnFindShops.setEnabled(true);
+        }
     }
 
+    /**
+     * Keeps the "Find Nearby Shops" button invisible while camera is mid-movement.
+     */
     @Override
-    public boolean onMyLocationButtonClick() {
-//        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        return false; // (the camera animates to the user's current position).
+    public void onCameraMove() {
+        btnFindShops.setEnabled(false);
+        btnFindShops.setVisibility(View.INVISIBLE);
     }
 
     @Override
