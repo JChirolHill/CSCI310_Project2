@@ -48,7 +48,7 @@ public class ProfileActivity extends AppCompatActivity {
     public static final String EXTRA_READONLY = "profile_extra_view"; // display as view or update
     public static final String EXTRA_CREATE_PROFILE = "profile_create_profile"; // called from signin activity
 
-    private TextView textTitle;
+//    private TextView textTitle;
     private TextView textSubtitle;
     private TextView textUsernamePrompt;
     private TextView textUsername;
@@ -76,8 +76,9 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getResources().getString(R.string.createAccountTitle));
 
-        textTitle = findViewById(R.id.textProfileTitle);
+//        textTitle = findViewById(R.id.textProfileTitle);
         textSubtitle = findViewById(R.id.textProfileSubtitle);
         textUsernamePrompt = findViewById(R.id.textUsernamePrompt);
         textUsername = findViewById(R.id.textUsername);
@@ -115,7 +116,7 @@ public class ProfileActivity extends AppCompatActivity {
         editUsername.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                textTitle.setText(getString(R.string.textTitle, v.getText().toString()));
+//                textTitle.setText(getString(R.string.textTitle, v.getText().toString()));
 
                 return false;
             }
@@ -254,7 +255,7 @@ public class ProfileActivity extends AppCompatActivity {
         textUsername.setText(prefs.getString(User.PREF_USERNAME, "Invalid Username"));
         textEmail.setText(prefs.getString(User.PREF_EMAIL, "Invalid Email"));
         textTypeUser.setText(prefs.getBoolean(User.PREF_IS_MERCHANT, false) ? R.string.merchant : R.string.customer);
-        textTitle.setText(R.string.viewAccountTitle);
+//        textTitle.setText(R.string.viewAccountTitle);
         btnSave.setText(R.string.edit);
         btnSave.setBackground(getResources().getDrawable(R.drawable.button_background_brown));
 
@@ -275,12 +276,12 @@ public class ProfileActivity extends AppCompatActivity {
             radioIsMerchant.setVisibility(View.VISIBLE);
         }
 
-        textTitle.setText(R.string.createAccountTitle);
+//        textTitle.setText(R.string.createAccountTitle);
         editUsername.setText(u.getUsername());
         textEmail.setText(u.getEmail());
         radioBtnNo.setChecked(!u.isMerchant());
         radioBtnYes.setChecked(u.isMerchant());
-        textTitle.setText(R.string.createAccountTitle);
+//        textTitle.setText(R.string.createAccountTitle);
         btnSave.setText(R.string.save);
         btnSave.setBackground(getResources().getDrawable(R.drawable.button_background_green));
     }
