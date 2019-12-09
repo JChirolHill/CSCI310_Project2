@@ -8,21 +8,12 @@
     tools:context=".ShopInfoActivity"
     tools:showIn="@layout/activity_shop_info">
     <TextView
-        android:id="@+id/textShopName"
+        android:id="@+id/textAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="32sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
-
-    <TextView
-        android:id="@+id/textAddress"
-        android:includeFontPadding="false"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        app:layout_constraintTop_toBottomOf="@id/textShopName"/>
 
     <TextView
         android:id="@+id/textTotalRevenue"

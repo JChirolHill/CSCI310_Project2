@@ -36,7 +36,6 @@ public class ShopInfoActivity extends AppCompatActivity {
     private final String TAG = ShopInfoActivity.class.getSimpleName();
     public static final String PREF_READ_ONLY = "pref_read_only";
 
-    private TextView textShopName;
     private ImageView imageShop;
     private RatingBar ratingBar;
     private TextView textPrice;
@@ -64,7 +63,6 @@ public class ShopInfoActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        textShopName = findViewById(R.id.textShopName);
         imageShop = findViewById(R.id.imageShop);
         ratingBar = findViewById(R.id.ratingBar);
         textPrice = findViewById(R.id.textPrice);
@@ -102,7 +100,7 @@ public class ShopInfoActivity extends AppCompatActivity {
         }
 
         // load content onto layout
-        textShopName.setText(currShop.getName());
+        getSupportActionBar().setTitle(currShop.getName());
         ratingBar.setRating((float)currShop.getRating());
         textPrice.setText(currShop.getPriceRange());
         textAddress.setText(currShop.getAddress());
