@@ -18,12 +18,11 @@ To log out, press the back button a certain number of times (depending on what v
 
 As a customer, when you are logging and order, click the drink item in the list to increment the number of drinks added to the log. To make the quantity of that item zero in the log, press and hold the drink item.
 
+### Note:
+~~Since claiming a store (as a merchant) requires taking a picture of verification documents, the emulator will crash if you try to take a picture with it (by clicking the Capture button on the Claim Shop Activity).  If you would like to test the claiming a shop functionality, we can provide a demo or please use a real Android device to run the app. ~~
 
-### ~~Note:
-Since claiming a store (as a merchant) requires taking a picture of verification documents, the emulator will crash if you try to take a picture with it (by clicking the Capture button on the Claim Shop Activity).  If you would like to test the claiming a shop functionality, we can provide a demo or please use a real Android device to run the app. ~~
-
-### ~~Note2:
-When you first log in as a Customer, the only store that is currently claimed and has a drinks menu is the Philz Coffee in Palo Alto, CA. Also, because the map is calling the Yelp API for open stores, you will not see this store during the times that the shop is not actually open.~~
+### Note2:
+~~When you first log in as a Customer, the only store that is currently claimed and has a drinks menu is the Philz Coffee in Palo Alto, CA. Also, because the map is calling the Yelp API for open stores, you will not see this store during the times that the shop is not actually open.~~
 
 ### Note 3:
 When a Merchant adds a new shop, it must first be verified by our team before that shop is added to that Merchant. Therefore if you want to add a new shop to an existing Merchant to test this functionality, please let our team know about it, and we can approve it on our end.
