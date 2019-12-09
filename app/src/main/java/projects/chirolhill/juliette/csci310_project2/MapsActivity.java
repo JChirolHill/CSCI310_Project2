@@ -542,13 +542,15 @@ public class MapsActivity extends FragmentActivity implements
             }
             handler.removeCallbacks(mapChecker);
             // display a trip summary
-            BasicShop selectedShop = new BasicShop(shopListing.get(marker));
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Trip Summary")
-                    .setMessage("Destination: " + selectedShop.getName() + "\n"
-                    + "Duration: " + trip.getTravelTime() + " minutes");
-            AlertDialog tripSummary = builder.create();
-            tripSummary.show();
+            if (trip.getTimeArrived() != null) {
+                BasicShop selectedShop = new BasicShop(shopListing.get(marker));
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Trip Summary")
+                        .setMessage("Destination: " + selectedShop.getName() + "\n"
+                                + "Duration: " + trip.getTravelTime() + " minutes");
+                AlertDialog tripSummary = builder.create();
+                tripSummary.show();
+            }
         } else { // START the trip
             trip.setTimeDiscover(new Date(System.currentTimeMillis()));
             marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));

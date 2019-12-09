@@ -90,7 +90,11 @@ public class Trip implements Serializable {
     // returns travel time in minutes
     private int calcTravelTime() {
         // getTime returns in milliseconds
-        return (int)(timeArrived.getTime() - timeDiscover.getTime()) / 60 / 1000;
+        if (timeArrived != null && timeDiscover != null) {
+            return (int)(timeArrived.getTime() - timeDiscover.getTime()) / 60 / 1000;
+        } else {
+            return 0;
+        }
     }
 
     public int getTravelTime() {
