@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Toast;
 import android.widget.ImageButton;
 import android.os.Handler;
 import android.widget.TextView;
@@ -67,6 +68,7 @@ public class MapsActivity extends FragmentActivity implements
         GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener,
         GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnCameraIdleListener,
         OnMapReadyCallback
         {
     private final String TAG = MapsActivity.class.getSimpleName();
@@ -92,6 +94,8 @@ public class MapsActivity extends FragmentActivity implements
     private TextView bottomSheetContent;
     private Button btnStartStopTrip;
 
+    private LatLng centerPoint;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,16 +118,21 @@ public class MapsActivity extends FragmentActivity implements
             }
         });
 
-        // PLEASE DON'T DELETE FOR NOW :)
-//        btnFindShops = findViewById(R.id.btnFindShops);
-//
-//        btnFindShops.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                mMap.clear();
-//                yelpFetcher.fetch(currLatLng.latitude, currLatLng.longitude);
-//            }
-//        });
+        // refresh button for nearby shops, initially disabled
+        btnFindShops = findViewById(R.id.btnFindShops);
+        btnFindShops.setVisibility(View.INVISIBLE);
+        btnFindShops.setEnabled(false);
+
+        btnFindShops.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMap.clear();
+                centerPoint = mMap.getCameraPosition().target;
+                yelpFetcher.fetch(centerPoint.latitude, centerPoint.longitude);
+                btnFindShops.setVisibility(View.INVISIBLE);
+                btnFindShops.setEnabled(false);
+            }
+        });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -220,6 +229,7 @@ public class MapsActivity extends FragmentActivity implements
             mMap.setOnMyLocationButtonClickListener(this);
             mMap.setOnMyLocationClickListener(this);
             mMap.setOnMarkerClickListener(this);
+            mMap.setOnCameraIdleListener(this);
 
             // Add a marker in current spot and move the camera
             currLatLng = null;
@@ -243,6 +253,8 @@ public class MapsActivity extends FragmentActivity implements
 
             // get coffeeshop data from volley
             yelpFetcher.fetch(currLatLng.latitude, currLatLng.longitude);
+
+            centerPoint = currLatLng;
 
             // adjust the bottom margin depending on what's displayed down there
             mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -269,6 +281,24 @@ public class MapsActivity extends FragmentActivity implements
                     }
                 }
             });
+        }
+    }
+
+    /**
+     * Displays the "Find Nearby Shops" button if user has moved screen 2.5kms away from previous centerpoint of screen.
+     */
+    @Override
+    public void onCameraIdle() {
+        if (mMap == null || centerPoint == null) return;
+
+        LatLng oldCenterPoint = centerPoint;
+        centerPoint = mMap.getCameraPosition().target;
+        float[] distances = new float[1];
+        Location.distanceBetween(oldCenterPoint.latitude, oldCenterPoint.longitude,
+                centerPoint.latitude, centerPoint.longitude, distances);
+        if (distances[0] >= 2500) {
+            btnFindShops.setVisibility(View.VISIBLE);
+            btnFindShops.setEnabled(true);
         }
     }
 
