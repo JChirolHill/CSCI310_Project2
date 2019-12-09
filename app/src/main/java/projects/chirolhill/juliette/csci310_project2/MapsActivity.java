@@ -429,7 +429,6 @@ public class MapsActivity extends FragmentActivity implements
                         trip.setId(Database.getInstance().addTrip(trip));
                         i.putExtra(Order.EXTRA_ORDER_TRIP, trip);
                         startActivity(i);
-                        // TODO create some sort of "trip summary" box to go on bottom of page?
 
                         // make map clickable again
                         mMap.getUiSettings().setAllGesturesEnabled(true);
