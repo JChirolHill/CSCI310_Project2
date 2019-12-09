@@ -22,8 +22,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/find_shops"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        />
 
     <ImageButton
         android:id="@+id/imgProfile"
