@@ -30,7 +30,6 @@ import projects.chirolhill.juliette.csci310_project2.model.Shop;
 import projects.chirolhill.juliette.csci310_project2.model.User;
 
 public class ClaimShopActivity extends AppCompatActivity {
-    private TextView textClaimHeader;
     private Button btnCapture;
     private ImageView imgVerifDocs;
     private Button btnSubmit;
@@ -54,7 +53,6 @@ public class ClaimShopActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        textClaimHeader = findViewById(R.id.textClaimHeader);
         btnCapture = findViewById(R.id.btnCapture);
         imgVerifDocs = findViewById(R.id.imageVerifDocs);
         btnSubmit = findViewById(R.id.btnSubmit);
@@ -70,7 +68,6 @@ public class ClaimShopActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         basicShop = (BasicShop)i.getSerializableExtra(BasicShop.PREF_BASIC_SHOP);
-        textClaimHeader.setText(getResources().getString(R.string.claim, basicShop.getName()));
 
         getSupportActionBar().setTitle(getResources().getString(R.string.claim, basicShop.getName()));
 

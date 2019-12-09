@@ -32,7 +32,6 @@ import projects.chirolhill.juliette.csci310_project2.model.User;
 public class ShopListing extends AppCompatActivity {
     private static final String TAG = ShopListing.class.getSimpleName();
 
-    private TextView textListDescr;
     private ListView listShops;
 
     private ShopListAdapter shopAdapter;
@@ -47,7 +46,6 @@ public class ShopListing extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getResources().getString(R.string.shopsown));
 
-        textListDescr = findViewById(R.id.textListDescr);
         listShops = findViewById(R.id.list);
 
         shops = new ArrayList<>();

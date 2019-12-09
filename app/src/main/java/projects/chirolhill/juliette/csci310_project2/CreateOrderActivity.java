@@ -73,16 +73,15 @@ public class CreateOrderActivity extends AppCompatActivity {
     private boolean create;
     private String drinkStr;
 
+    private Toolbar toolbar;
     private DateFormat dateFormat;
     private EditText editDate;
     private Spinner spinnerTripHrs;
     private Spinner spinnerTripMins;
     private Integer tripHrs;
     private Integer tripMins;
-    private DatePickerDialog datePickerDialog;
     private TextView textDatePrompt;
     private TextView textTripPrompt;
-    private TextView textCreateOrderTitle;
     private TextView textNumItems;
     private TextView textTotalCaffeineOrder;
     private TextView textTotalCaffeineToday;
@@ -95,11 +94,9 @@ public class CreateOrderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_order);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(getResources().getString(R.string.createOrder));
 
-        textCreateOrderTitle = findViewById(R.id.textCreateOrderTitle);
         textNumItems = findViewById(R.id.textNumItems);
         textTotalCaffeineOrder = findViewById(R.id.textCaffeineOrder);
         textTotalCaffeineToday = findViewById(R.id.textCaffeineToday);
@@ -478,6 +475,7 @@ public class CreateOrderActivity extends AppCompatActivity {
      * Hides ability to edit date
      */
     private void renderReadOnly() {
+        getSupportActionBar().setTitle(getResources().getString(R.string.createOrder));
         textDatePrompt.setVisibility(View.GONE);
         editDate.setVisibility(View.GONE);
     }
@@ -493,6 +491,6 @@ public class CreateOrderActivity extends AppCompatActivity {
         textTripPrompt.setVisibility(View.VISIBLE);
         spinnerTripHrs.setVisibility(View.VISIBLE);
         spinnerTripMins.setVisibility(View.VISIBLE);
-        textCreateOrderTitle.setText(getResources().getString(R.string.editOrder));
+        getSupportActionBar().setTitle(getResources().getString(R.string.editOrder));
     }
 }

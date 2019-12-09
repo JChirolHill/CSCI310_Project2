@@ -37,7 +37,6 @@ public class OrderActivity extends AppCompatActivity {
     public static final String EXTRA_READONLY = "extra_order_readonly"; // display as view or update
     public static final String EXTRA_DRINKS_STRING = "extra_drinks_string";
 
-    private TextView textOrderTitle;
     private TextView totalMoneySpent;
     private TextView textCaffeineLevel;
     private TextView textDate;
@@ -62,7 +61,6 @@ public class OrderActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getResources().getString(R.string.viewOrder));
 
-        textOrderTitle = findViewById(R.id.textOrderTitle);
         totalMoneySpent = findViewById(R.id.textTotalMoneySpent);
         textCaffeineLevel = findViewById(R.id.textCaffeineLevel);
         textDate = findViewById(R.id.textDate);
@@ -224,7 +222,6 @@ public class OrderActivity extends AppCompatActivity {
      */
     private void renderReadOnly() {
         readonly = true;
-        textOrderTitle.setText(getResources().getString(R.string.viewOrder));
         btnOk.setText(getResources().getString(R.string.ok));
 
         totalMoneySpent.setVisibility(View.VISIBLE);

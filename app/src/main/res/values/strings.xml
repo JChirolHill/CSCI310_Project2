@@ -87,6 +87,7 @@
 
     <!-- Drink activity -->
     <string name="title_activity_drink">DrinkActivity</string>
+    <string name="editDrink">Edit Drink</string>
     <string name="addDrinkTitle">Add a Drink</string>
     <string name="toshop">To Shop:</string>
     <string name="caffeineContent">Caffeine Content (mg):</string>

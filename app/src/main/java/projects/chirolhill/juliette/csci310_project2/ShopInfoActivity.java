@@ -270,6 +270,7 @@ public class ShopInfoActivity extends AppCompatActivity {
                 }
             }
             else {
+                textMostPop.setVisibility(View.GONE);
                 textTimesOrdered.setVisibility(View.GONE);
             }
             textType.setText(d.isCoffee() ? getResources().getString(R.string.coffee) : getResources().getString(R.string.tea));

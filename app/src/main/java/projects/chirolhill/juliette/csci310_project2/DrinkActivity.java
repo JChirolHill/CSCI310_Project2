@@ -42,6 +42,7 @@ public class DrinkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_drink);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getResources().getString(R.string.addDrinkTitle));
 
         textToShopValue = findViewById(R.id.textToShopValue);
         editName = findViewById(R.id.editName);
@@ -62,6 +63,7 @@ public class DrinkActivity extends AppCompatActivity {
 
         // set up layout if edit drink
         if(!createDrink) {
+            getSupportActionBar().setTitle(getResources().getString(R.string.editDrink));
             drink = (Drink)i.getSerializableExtra(Drink.EXTRA_DRINK);
             editName.setText(drink.getName());
             editPrice.setText(Float.toString(drink.getPrice()));
