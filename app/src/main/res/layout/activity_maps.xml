@@ -14,15 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MapsActivity"/>
-    <!--<Button-->
-        <!--android:id="@+id/btnFindShops"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/find_shops"-->
-        <!--android:layout_marginLeft="8dp"-->
-        <!--android:layout_marginTop="8dp"/>-->
+
     <ImageButton
         android:id="@+id/imgProfile"
         android:layout_width="72dp"
@@ -34,22 +26,5 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"/>
 
-
-    <!--    <android.support.v4.widget.NestedScrollView-->
-    <!--        android:id="@+id/bottom_sheet"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="250dp"-->
-    <!--        android:background="@color/colorPrimary"-->
-    <!--        app:layout_behavior="@string/bottom_sheet_behavior"-->
-    <!--        app:behavior_hideable="true"-->
-    <!--        app:behavior_peekHeight="55dp">-->
-    <!--            <TextView-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="match_parent"-->
-    <!--                android:padding="16dp"-->
-    <!--                android:textSize="16sp"-->
-    <!--                android:text="BOTTOMBOTTOMBOTTOMBOTT"/>-->
-
-    <!--        </android.support.v4.widget.NestedScrollView>-->
     <include layout="@layout/bottom_sheet" />
 </android.support.design.widget.CoordinatorLayout>
