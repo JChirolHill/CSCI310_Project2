@@ -10,16 +10,6 @@
     android:id="@+id/layoutCreateOrder">
 
     <TextView
-        android:id="@+id/textCreateOrderTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="32sp"
-        android:text="@string/createOrder"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <TextView
         android:id="@+id/textDatePrompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,7 +21,7 @@
         android:text="@string/date"
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textCreateOrderTitle" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/editDate"

@@ -9,22 +9,12 @@
     tools:showIn="@layout/activity_claim_shop"
     android:layout_margin="8dp">
 
-    <TextView
-        android:id="@+id/textClaimHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="32dp"
-        android:text="@string/claim"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
     <android.support.constraint.ConstraintLayout
         android:id="@+id/layoutClaimShop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        app:layout_constraintTop_toBottomOf="@id/textClaimHeader">
+        app:layout_constraintTop_toTopOf="parent">
         <TextView
             android:id="@+id/textVerifDocsPrompt"
             android:layout_width="wrap_content"

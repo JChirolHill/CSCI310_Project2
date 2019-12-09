@@ -97,6 +97,7 @@ public class CreateOrderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_order);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getResources().getString(R.string.createOrder));
 
         textCreateOrderTitle = findViewById(R.id.textCreateOrderTitle);
         textNumItems = findViewById(R.id.textNumItems);

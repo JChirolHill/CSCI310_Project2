@@ -9,16 +9,6 @@
     tools:showIn="@layout/activity_order">
 
     <TextView
-        android:id="@+id/textOrderTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/viewOrder"
-        android:textAlignment="center"
-        android:textSize="30sp"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/textDatePrompt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,7 +16,7 @@
         android:text="@string/date"
         android:layout_marginStart="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textOrderTitle" />
+        app:layout_constraintTop_toTopOf="parent"/>
     <TextView
         android:id="@+id/textDate"
         android:layout_width="wrap_content"

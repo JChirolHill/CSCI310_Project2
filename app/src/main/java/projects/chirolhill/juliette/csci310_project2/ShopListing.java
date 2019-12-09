@@ -45,6 +45,7 @@ public class ShopListing extends AppCompatActivity {
         setContentView(R.layout.activity_shop_listing);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getResources().getString(R.string.shopsown));
 
         textListDescr = findViewById(R.id.textListDescr);
         listShops = findViewById(R.id.list);

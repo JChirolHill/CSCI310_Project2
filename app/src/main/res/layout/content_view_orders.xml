@@ -7,21 +7,13 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".ViewOrdersActivity"
     tools:showIn="@layout/activity_view_orders">
-    <TextView
-        android:id="@+id/textTitleViewOrders"
-        android:textSize="30sp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/viewLogOrders"
-        android:textAlignment="center"
-        android:padding="8dp"/>
 
     <ListView
         android:id="@+id/listOrders"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:divider="@null"
-        app:layout_constraintTop_toBottomOf="@id/textTitleViewOrders"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

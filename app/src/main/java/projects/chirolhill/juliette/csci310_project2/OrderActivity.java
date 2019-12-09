@@ -60,6 +60,7 @@ public class OrderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_order);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getResources().getString(R.string.viewOrder));
 
         textOrderTitle = findViewById(R.id.textOrderTitle);
         totalMoneySpent = findViewById(R.id.textTotalMoneySpent);

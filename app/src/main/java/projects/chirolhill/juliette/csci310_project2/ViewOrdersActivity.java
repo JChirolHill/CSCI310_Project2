@@ -50,6 +50,7 @@ public class ViewOrdersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_orders);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getResources().getString(R.string.viewLogOrders));
 
         listOrders = findViewById(R.id.listOrders);
 
