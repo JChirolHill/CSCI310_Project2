@@ -65,8 +65,6 @@ import projects.chirolhill.juliette.csci310_project2.model.DirectionsResponse;
 import projects.chirolhill.juliette.csci310_project2.model.DirectionsRoute;
 
 public class MapsActivity extends FragmentActivity implements
-        GoogleMap.OnMyLocationButtonClickListener,
-        GoogleMap.OnMyLocationClickListener,
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnCameraIdleListener,
         GoogleMap.OnCameraMoveListener,
@@ -227,8 +225,6 @@ public class MapsActivity extends FragmentActivity implements
         } else {
             // Write code here if permission already given.
             mMap.setMyLocationEnabled(true);
-            mMap.setOnMyLocationButtonClickListener(this);
-            mMap.setOnMyLocationClickListener(this);
             mMap.setOnMarkerClickListener(this);
             mMap.setOnCameraIdleListener(this);
             mMap.setOnCameraMoveListener(this);
@@ -311,17 +307,6 @@ public class MapsActivity extends FragmentActivity implements
     public void onCameraMove() {
         btnFindShops.setEnabled(false);
         btnFindShops.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void onMyLocationClick(@NonNull Location location) {
-//        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public boolean onMyLocationButtonClick() {
-//        Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        return false; // (the camera animates to the user's current position).
     }
 
     @Override
