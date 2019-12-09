@@ -71,6 +71,7 @@ public class MapsActivity extends FragmentActivity implements
         {
     private final String TAG = MapsActivity.class.getSimpleName();
 
+    private Button btnFindShops;
     private ImageButton imgProfile;
     private LocationManager locationManager;
     private Location myLocation;
