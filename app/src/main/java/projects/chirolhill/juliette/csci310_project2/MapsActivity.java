@@ -69,6 +69,7 @@ public class MapsActivity extends FragmentActivity implements
         GoogleMap.OnMyLocationClickListener,
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnCameraIdleListener,
+        GoogleMap.OnCameraMoveListener,
         OnMapReadyCallback
         {
     private final String TAG = MapsActivity.class.getSimpleName();
@@ -230,6 +231,7 @@ public class MapsActivity extends FragmentActivity implements
             mMap.setOnMyLocationClickListener(this);
             mMap.setOnMarkerClickListener(this);
             mMap.setOnCameraIdleListener(this);
+            mMap.setOnCameraMoveListener(this);
 
             // Add a marker in current spot and move the camera
             currLatLng = null;
@@ -300,6 +302,15 @@ public class MapsActivity extends FragmentActivity implements
             btnFindShops.setVisibility(View.VISIBLE);
             btnFindShops.setEnabled(true);
         }
+    }
+
+    /**
+     * Keeps the "Find Nearby Shops" button invisible while camera is mid-movement.
+     */
+    @Override
+    public void onCameraMove() {
+        btnFindShops.setEnabled(false);
+        btnFindShops.setVisibility(View.INVISIBLE);
     }
 
     @Override
