@@ -55,9 +55,9 @@
     <string name="logOrder">Log Order</string>
     <string name="undo">Undo</string>
     <string name="drinkDeleted">Drink Deleted</string>
-    <string name="totalRevenue">Total Revenue: $%1$.2f</string>
+    <string name="totalRevenue">Sales: $%1$.2f</string>
     <string name="totalOrders">Total Orders: %1$d</string>
-    <string name="popDrink">Most Popular Drink: %1$s</string>
+    <string name="popDrink">Favorite: %1$s</string>
     <string name="mostPopDrink">Most Popular Drink!</string>
 
     <!-- Claim shop activity -->

@@ -30,6 +30,9 @@ import projects.chirolhill.juliette.csci310_project2.model.Order;
 import projects.chirolhill.juliette.csci310_project2.model.User;
 import projects.chirolhill.juliette.csci310_project2.model.UserLog;
 
+/**
+ * This activity displays all the orders this customer has made as a list of orders
+ */
 public class ViewOrdersActivity extends AppCompatActivity {
     public static final int REQUEST_CODE_VIEW_ORDER = 2;
 
@@ -70,6 +73,7 @@ public class ViewOrdersActivity extends AppCompatActivity {
         });
         Database.getInstance().getUser(userID);
 
+        // when click on an order, go to the view order to get the total
         listOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -114,6 +118,10 @@ public class ViewOrdersActivity extends AppCompatActivity {
 //        });
     }
 
+    /**
+     * Triggered whenever return from viewing a specific order
+     * Updates the orders just in case orders were edited
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_VIEW_ORDER) {
@@ -124,6 +132,9 @@ public class ViewOrdersActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Updates the displayed drinks based on the orders this customer has in the database
+     */
     private void populateOrders() {
         orderAdapter.clear();
 
@@ -150,6 +161,10 @@ public class ViewOrdersActivity extends AppCompatActivity {
         Database.getInstance().getUser(userID);
     }
 
+    /**
+     * Inner class to render all orders in a list
+     * Renders all the orders as list items
+     */
     private class OrderListAdapter extends ArrayAdapter<Order> {
         public OrderListAdapter(Context context, int resource, List<Order> objects) {
             super(context, resource, objects);

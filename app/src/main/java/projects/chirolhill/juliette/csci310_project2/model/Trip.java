@@ -1,12 +1,12 @@
 package projects.chirolhill.juliette.csci310_project2.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-// TODO implement Serializable to make it pass-able through intents
-public class Trip {
+public class Trip implements Serializable {
     private String id;
     private String destination;
     private Date timeDiscover;

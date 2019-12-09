@@ -51,7 +51,11 @@ import projects.chirolhill.juliette.csci310_project2.model.UserLog;
 import static projects.chirolhill.juliette.csci310_project2.R.color.colorPrimaryDark;
 import static projects.chirolhill.juliette.csci310_project2.R.color.colorAccent;
 
-
+/**
+ * This activity allows for creating and editing an order.
+ * Creating functionality reached from an intent from ShopInfoActivity
+ * Editing functionality reached from an intent from OrderActivity
+ */
 public class CreateOrderActivity extends AppCompatActivity {
     private static final String TAG = CreateOrderActivity.class.getSimpleName();
     public static final String EXTRA_CREATE = "extra_create";
@@ -115,11 +119,11 @@ public class CreateOrderActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences("Settings", Context.MODE_PRIVATE);
         userID = prefs.getString(User.PREF_USER_ID, "Invalid ID");
 
-        // get shop and drink from intent
+        // get shop and drink and order from intent
         Intent i = getIntent();
         currShop = (Shop) i.getSerializableExtra(Shop.PREF_SHOP);
         order = new Order(null, currShop.getId(), null, prefs.getString(User.PREF_USER_ID, "Invalid ID"), new Date());
-
+        order.setTrip((Trip)i.getSerializableExtra(Order.EXTRA_ORDER_TRIP));
         for (Drink d : currShop.getDrinks()) {
             drinks.add(d);
         }
@@ -130,10 +134,12 @@ public class CreateOrderActivity extends AppCompatActivity {
             order.addDrink(passedIn);
         }
 
+        // render based on whether editing order or creating order
         create = (boolean)i.getSerializableExtra(EXTRA_CREATE);
         if(!create) { // edit existing order
             order.setId(i.getStringExtra(Order.PREF_ORDER_ID));
             date = (Date)i.getSerializableExtra(Order.EXTRA_ORDER_DATE);
+            order.setDate(date);
 
             // parse drinks from intent (split by space)
             drinkStr = (String)i.getSerializableExtra(OrderActivity.EXTRA_DRINKS_STRING);
@@ -151,6 +157,7 @@ public class CreateOrderActivity extends AppCompatActivity {
                 }
             }
 
+            // if trip exists, set spinners accordingly
             if(order.getTrip() != null) {
                 try {
                     // set both spinners based on those values
@@ -162,7 +169,7 @@ public class CreateOrderActivity extends AppCompatActivity {
                     tripMins = 0;
                 }
             }
-            else { // default to 0hr0min
+            else { // default spinners to 0hr0min
                 tripHrs = 0;
                 tripMins = 0;
             }
@@ -253,7 +260,7 @@ public class CreateOrderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Calendar cal = Calendar.getInstance();
-                cal.setTime(order.getDate());
+                cal.setTime(date);
                 new DatePickerDialog(CreateOrderActivity.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -320,6 +327,10 @@ public class CreateOrderActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Called when return from OrderActivity
+     * Dummy function
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_ORDER_CONFIRMATION) {
@@ -329,6 +340,11 @@ public class CreateOrderActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Processes the order
+     * Adds order to database and launches intent to view order activity (OrderActivity)
+     * Triggered if user submits a valid order
+     */
     private void proceedToOrder() {
         // ordered at least one item
         if(order.getDrinks().size() > 0) {
@@ -357,6 +373,11 @@ public class CreateOrderActivity extends AppCompatActivity {
                 Database.getInstance().getUser(userID);
             }
             else { // update existing order
+                // if create new trip
+                if(order.getTrip().getId() == null) { // create new trip id in database
+                    order.getTrip().setId(Database.getInstance().addTrip(order.getTrip()));
+                }
+
                 Database.getInstance().addOrder(order);
 
                 Intent i = new Intent(getApplicationContext(), OrderActivity.class);
@@ -372,6 +393,10 @@ public class CreateOrderActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Basic updates based on UI and model values
+     * Called when setup and whenever user clicks on a drink
+     */
     private void displayInfo() {
         // update total caffeine
         if(customer != null && customer.getLog() != null) {
@@ -402,6 +427,10 @@ public class CreateOrderActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Inner class for drink adapter to display the list of drinks for this shop
+     * Renders the list items in the list of drinks
+     */
     private class DrinkListAdapter extends ArrayAdapter<Drink> {
         public DrinkListAdapter(Context context, int resource, List<Drink> objects) {
             super(context, resource, objects);
@@ -439,11 +468,19 @@ public class CreateOrderActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Render so as to CREATE an order
+     * Hides ability to edit date
+     */
     private void renderReadOnly() {
         textDatePrompt.setVisibility(View.GONE);
         editDate.setVisibility(View.GONE);
     }
 
+    /**
+     * Render so as to EDIT an order
+     * Show ability to edit date
+     */
     private void renderEditable() {
         textDatePrompt.setVisibility(View.VISIBLE);
         editDate.setVisibility(View.VISIBLE);

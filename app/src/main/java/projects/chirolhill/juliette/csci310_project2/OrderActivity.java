@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,6 +27,10 @@ import projects.chirolhill.juliette.csci310_project2.model.Drink;
 import projects.chirolhill.juliette.csci310_project2.model.Order;
 import projects.chirolhill.juliette.csci310_project2.model.Shop;
 
+/**
+ * This activity displays Order information in an easy way for the customer to understand
+ * Shows total cost, total caffeine, and all drinks purchased for that order
+ */
 public class OrderActivity extends AppCompatActivity {
     private static final String TAG = OrderActivity.class.getSimpleName();
     public static final int REQUEST_CODE_UPDATE_ORDER = 5;
@@ -143,6 +146,7 @@ public class OrderActivity extends AppCompatActivity {
                             i.putExtra(Shop.PREF_SHOP, currShop);
                             i.putExtra(Order.EXTRA_ORDER_DATE, currOrder.getDate());
                             i.putExtra(Order.PREF_ORDER_ID, currOrder.getId());
+                            i.putExtra(Order.EXTRA_ORDER_TRIP, currOrder.getTrip());
 
                             Map<String, Pair<Drink, Integer>> map = currOrder.getDrinks();
                             StringBuilder sb = new StringBuilder();
@@ -160,6 +164,10 @@ public class OrderActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Called when return from CreateOrderActivity after edit an order
+     * Rerenders based on the edited order
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_CODE_UPDATE_ORDER) {
@@ -208,6 +216,11 @@ public class OrderActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Renders the visibility of views properly
+     * (In the past this was an editable activity, but that logic has been moved to CreateOrder instead
+     * This activity always renders as readonly)
+     */
     private void renderReadOnly() {
         readonly = true;
         textOrderTitle.setText(getResources().getString(R.string.viewOrder));
@@ -219,6 +232,10 @@ public class OrderActivity extends AppCompatActivity {
         btnEdit.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Inner class to generate and update the drinks list
+     * Renders each of the list items
+     */
     private class DrinkListAdapter extends ArrayAdapter<Drink> {
         public DrinkListAdapter(Context context, int resource, List<Drink> objects) {
             super(context, resource, objects);

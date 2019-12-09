@@ -18,6 +18,7 @@
 
     <TextView
         android:id="@+id/textAddress"
+        android:includeFontPadding="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
@@ -25,13 +26,14 @@
 
     <TextView
         android:id="@+id/textTotalRevenue"
+        android:includeFontPadding="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/totalRevenue"
         android:layout_marginTop="10dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/textPopDrink"
         app:layout_constraintTop_toBottomOf="@id/textAddress"/>
 
     <!--<TextView-->
@@ -46,14 +48,15 @@
 
     <TextView
         android:id="@+id/textPopDrink"
+        android:includeFontPadding="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/popDrink"
         android:layout_marginTop="10dp"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textTotalRevenue"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textTotalRevenue"/>
+        app:layout_constraintTop_toBottomOf="@id/textAddress"/>
 
     <ImageView
         android:id="@+id/imageShop"
