@@ -26,6 +26,7 @@ import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.Drink;
 import projects.chirolhill.juliette.csci310_project2.model.Shop;
+import projects.chirolhill.juliette.csci310_project2.model.Trip;
 import projects.chirolhill.juliette.csci310_project2.model.User;
 
 public class ShopInfoActivity extends AppCompatActivity {
@@ -154,6 +155,8 @@ public class ShopInfoActivity extends AppCompatActivity {
                     i.putExtra(Shop.PREF_SHOP, shop);
                     i.putExtra(Drink.EXTRA_DRINK, drinks.get(position));
                     i.putExtra(CreateOrderActivity.EXTRA_CREATE, true);
+                    Trip tripForOrder =  (Trip) getIntent().getSerializableExtra("Trip");
+                    if (tripForOrder != null) i.putExtra("Trip", tripForOrder);
                     startActivity(i);
                 }
             }

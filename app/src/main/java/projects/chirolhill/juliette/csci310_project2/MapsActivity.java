@@ -422,14 +422,13 @@ public class MapsActivity extends FragmentActivity implements
                         Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
                         i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
                         i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
-                        startActivity(i);
-                        // TODO create some sort of "trip summary" box to go on bottom of page
 
-                        // TODO: figure out how to connect this trip to whatever orders they make?
-                        // TODO check if shop is in DB and add if not?
-                        // save the trip object, pass it into the intent for shop info activity and
-                        // then create order activity
-                        // trip.setId(Database.getInstance().addTrip(trip));
+                        // push trip to database AND pass it to the next activity so that it's connected to
+                        // whatever order the user makes
+                        trip.setId(Database.getInstance().addTrip(trip));
+                        i.putExtra("Trip", trip);
+                        startActivity(i);
+                        // TODO create some sort of "trip summary" box to go on bottom of page?
 
                         // make map clickable again
                         mMap.getUiSettings().setAllGesturesEnabled(true);
