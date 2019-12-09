@@ -352,6 +352,10 @@ public class CreateOrderActivity extends AppCompatActivity {
 
             // add order to database
             if(create) { // create new order
+                // connect the order to the trip, if one exists
+                Trip tripForOrder = (Trip) getIntent().getSerializableExtra(Order.EXTRA_ORDER_TRIP);
+                if (tripForOrder != null) order.setTrip(tripForOrder);
+
                 order.setId(Database.getInstance().addOrder(order));
 
                 // get user from database

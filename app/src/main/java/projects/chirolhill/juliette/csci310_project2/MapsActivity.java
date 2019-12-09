@@ -54,6 +54,7 @@ import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.DirectionsStep;
 import projects.chirolhill.juliette.csci310_project2.model.MapShop;
+import projects.chirolhill.juliette.csci310_project2.model.Order;
 import projects.chirolhill.juliette.csci310_project2.model.Shop;
 import projects.chirolhill.juliette.csci310_project2.model.Trip;
 import projects.chirolhill.juliette.csci310_project2.model.User;
@@ -371,6 +372,7 @@ public class MapsActivity extends FragmentActivity implements
         Log.d(TAG, "calculateDirectionsForTrip: calculating directions.");
 
         final Marker finalMarker = marker;
+        final String finalMode = mode;
 
         // TRIP STUFF
         final Trip trip = new Trip();
@@ -380,6 +382,13 @@ public class MapsActivity extends FragmentActivity implements
             public void run() {
                 // prevent the user from messing with map while trip is happening
                 mMap.getUiSettings().setAllGesturesEnabled(false);
+                if (finalMode == "driving") {
+                    btnWalk.setVisibility(View.INVISIBLE);
+                    btnWalk.setEnabled(false);
+                } else {
+                    btnDrive.setVisibility(View.INVISIBLE);
+                    btnDrive.setEnabled(false);
+                }
 
                 if (ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapsActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(MapsActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -414,14 +423,13 @@ public class MapsActivity extends FragmentActivity implements
                         Intent i = new Intent(getApplicationContext(), ShopInfoActivity.class);
                         i.putExtra(ShopInfoActivity.PREF_READ_ONLY, true);
                         i.putExtra(Shop.PREF_BASIC_SHOP, selectedShop);
-                        startActivity(i);
-                        // TODO create some sort of "trip summary" box to go on bottom of page
 
-                        // TODO: figure out how to connect this trip to whatever orders they make?
-                        // TODO check if shop is in DB and add if not?
-                        // save the trip object, pass it into the intent for shop info activity and
-                        // then create order activity
+                        // push trip to database AND pass it to the next activity so that it's connected to
+                        // whatever order the user makes
                         trip.setId(Database.getInstance().addTrip(trip));
+                        i.putExtra(Order.EXTRA_ORDER_TRIP, trip);
+                        startActivity(i);
+                        // TODO create some sort of "trip summary" box to go on bottom of page?
 
                         // make map clickable again
                         mMap.getUiSettings().setAllGesturesEnabled(true);
@@ -498,6 +506,13 @@ public class MapsActivity extends FragmentActivity implements
             marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
             // make map clickable again
             mMap.getUiSettings().setAllGesturesEnabled(true);
+            if (!btnWalk.isEnabled()) {
+                btnWalk.setVisibility(View.VISIBLE);
+                btnWalk.setEnabled(true);
+            } else {
+                btnDrive.setVisibility(View.VISIBLE);
+                btnDrive.setEnabled(true);
+            }
             handler.removeCallbacks(mapChecker);
         } else { // START the trip
             trip.setTimeDiscover(new Date(System.currentTimeMillis()));
