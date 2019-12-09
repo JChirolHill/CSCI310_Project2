@@ -71,7 +71,7 @@ public class MapsActivity extends FragmentActivity implements
         {
     private final String TAG = MapsActivity.class.getSimpleName();
 
-    //    private Button btnFindShops;
+    private Button btnFindShops;
     private ImageButton imgProfile;
     private LocationManager locationManager;
     private Location myLocation;
@@ -91,7 +91,6 @@ public class MapsActivity extends FragmentActivity implements
     private Button btnWalk;
     private TextView bottomSheetContent;
     private Button btnStartStopTrip;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
