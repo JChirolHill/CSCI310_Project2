@@ -54,6 +54,7 @@ import projects.chirolhill.juliette.csci310_project2.model.BasicShop;
 import projects.chirolhill.juliette.csci310_project2.model.Database;
 import projects.chirolhill.juliette.csci310_project2.model.DirectionsStep;
 import projects.chirolhill.juliette.csci310_project2.model.MapShop;
+import projects.chirolhill.juliette.csci310_project2.model.Order;
 import projects.chirolhill.juliette.csci310_project2.model.Shop;
 import projects.chirolhill.juliette.csci310_project2.model.Trip;
 import projects.chirolhill.juliette.csci310_project2.model.User;
@@ -426,7 +427,7 @@ public class MapsActivity extends FragmentActivity implements
                         // push trip to database AND pass it to the next activity so that it's connected to
                         // whatever order the user makes
                         trip.setId(Database.getInstance().addTrip(trip));
-                        i.putExtra("Trip", trip);
+                        i.putExtra(Order.EXTRA_ORDER_TRIP, trip);
                         startActivity(i);
                         // TODO create some sort of "trip summary" box to go on bottom of page?
 
