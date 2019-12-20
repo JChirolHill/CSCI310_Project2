@@ -3,6 +3,10 @@
 
 ![Bean & Leaf Logo](https://firebasestorage.googleapis.com/v0/b/csci310project2-3206e.appspot.com/o/logo.png?alt=media&token=f66b152b-af3f-4129-b313-f2acfdde8305)
 
+Login | Shop Info | Shops
+--- | --- | ---
+![Demo1](https://firebasestorage.googleapis.com/v0/b/csci310project2-3206e.appspot.com/o/Demo1.png?alt=media&token=2eb46326-6837-468d-a947-f2071fa69064)|![Demo2](https://firebasestorage.googleapis.com/v0/b/csci310project2-3206e.appspot.com/o/Demo2.png?alt=media&token=54f835ee-26d1-4574-a9e1-74789cd5bbbe)|![Demo3](https://firebasestorage.googleapis.com/v0/b/csci310project2-3206e.appspot.com/o/Demo3.png?alt=media&token=50457e0d-364c-45ad-9532-fb132f60b587)
+
 To run this app, download the attached zip file, or, if one is not attached, go to https://github.com/JChirolHill/CSCI310_Project2 , click on the green button (labeled "Clone or download") on the right side of the page. Choose "Download Zip." Open the file location of the zip folder, and unzip it. Remember the file location of this unzipped folder. 
 
 Open Android Studio. Click on File --> Open. In the pop-up, find the file location of the file you just unzipped. Then click "OK".
