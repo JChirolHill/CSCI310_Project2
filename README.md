@@ -3,7 +3,7 @@
 
 ![Bean & Leaf Logo](https://firebasestorage.googleapis.com/v0/b/csci310project2-3206e.appspot.com/o/logo.png?alt=media&token=f66b152b-af3f-4129-b313-f2acfdde8305)
 
-Login | Shop Info | Shops
+Login | Shops | Shop Info
 --- | --- | ---
 ![Demo1](https://firebasestorage.googleapis.com/v0/b/csci310project2-3206e.appspot.com/o/Demo1.png?alt=media&token=2eb46326-6837-468d-a947-f2071fa69064)|![Demo2](https://firebasestorage.googleapis.com/v0/b/csci310project2-3206e.appspot.com/o/Demo2.png?alt=media&token=54f835ee-26d1-4574-a9e1-74789cd5bbbe)|![Demo3](https://firebasestorage.googleapis.com/v0/b/csci310project2-3206e.appspot.com/o/Demo3.png?alt=media&token=50457e0d-364c-45ad-9532-fb132f60b587)
 
